@@ -1,6 +1,6 @@
 {
-  "name": "providers",
-  "version": "0.0.1",
+  "name": "@movie-web/providers",
+  "version": "0.0.2",
   "description": "Package that contains all the providers of movie-web",
   "main": "./lib/providers.umd.cjs",
   "types": "./lib/providers.d.ts",
