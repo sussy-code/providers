@@ -27,7 +27,4 @@ module.exports = defineConfig({
       fileName: 'providers',
     },
   },
-  test: {
-    globals: true,
-  },
 });
