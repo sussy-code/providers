@@ -1,0 +1,59 @@
+{
+  "name": "providers",
+  "version": "0.0.1",
+  "description": "Package that contains all the providers of movie-web",
+  "main": "./lib/providers.umd.cjs",
+  "types": "./lib/providers.d.ts",
+  "files": [
+    "./lib"
+  ],
+  "exports": {
+    ".": {
+      "import": "./lib/providers.js",
+      "require": "./lib/providers.umd.cjs"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/movie-web/providers.git"
+  },
+  "keywords": [
+    "movie-web",
+    "providers"
+  ],
+  "author": "movie-web",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/movie-web/providers/issues"
+  },
+  "homepage": "https://github.com/movie-web/providers#readme",
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint --ext .ts,.js src/",
+    "lint:fix": "eslint --fix --ext .ts,.js src/",
+    "lint:report": "eslint --ext .ts,.js --output-file eslint_report.json --format json src/",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
+    "eslint": "^8.30.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.6.2",
+    "tsc-alias": "^1.6.7",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.6.3",
+    "vite": "^4.0.0",
+    "vite-plugin-dts": "^2.3.0",
+    "vite-plugin-eslint": "^1.8.1",
+    "vitest": "^0.32.2"
+  }
+}
