@@ -14,3 +14,13 @@ export interface Providers {}
 export function makeProviders(ops: ProviderBuilderOptions): Providers {
   return {};
 }
+
+//
+
+// const scrapers = makeProviders({
+//   fetcher: makeFetcher(fetch),
+// });
+
+// scrapers.scrape();
+// scrapers.callScraper(id);
+// scrapers.getScraper(id);
