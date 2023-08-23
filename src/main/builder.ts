@@ -1,4 +1,13 @@
-import { Fetcher } from '@/utils/fetcher';
+import { Fetcher } from '@/fetchers/types';
+import { MetaOutput, getAllEmbedMetaSorted, getAllSourceMetaSorted, getSpecificId } from '@/main/meta';
+import { EmbedRunOutput, RunOutput, SourceRunOutput } from '@/main/runner';
+import { getProviders } from '@/providers/all';
+
+// TODO meta data input (tmdb id, imdb id, title, release year)
+// TODO actually running scrapers
+// TODO documentation: examples for nodejs + browser
+// TODO documentation: how to use + usecases
+// TODO documentation: examples on how to make a custom fetcher
 
 export interface ProviderBuilderOptions {
   // fetcher, every web request gets called through here
@@ -9,18 +18,39 @@ export interface ProviderBuilderOptions {
   proxiedFetcher?: Fetcher;
 }
 
-export interface Providers {}
+export interface ProviderControls {
+  // Run all providers one by one. in order of rank (highest first)
+  // returns the stream, or null if none found
+  runAll(): Promise<RunOutput | null>;
 
-export function makeProviders(ops: ProviderBuilderOptions): Providers {
-  return {};
+  // Run a source provider
+  runSource(id: string): Promise<SourceRunOutput>;
+
+  // Run a embed provider
+  runEmbed(id: string): Promise<EmbedRunOutput>;
+
+  // get meta data about a source or embed.
+  getMetadata(id: string): MetaOutput | null;
+
+  // return all sources. sorted by rank (highest first)
+  listSources(): MetaOutput[];
+
+  // return all embed scrapers. sorted by rank (highest first)
+  listEmbeds(): MetaOutput[];
 }
 
-//
+export function makeProviders(_ops: ProviderBuilderOptions): ProviderControls {
+  const list = getProviders();
 
-// const scrapers = makeProviders({
-//   fetcher: makeFetcher(fetch),
-// });
-
-// scrapers.scrape();
-// scrapers.callScraper(id);
-// scrapers.getScraper(id);
+  return {
+    getMetadata(id) {
+      return getSpecificId(list, id);
+    },
+    listSources() {
+      return getAllSourceMetaSorted(list);
+    },
+    listEmbeds() {
+      return getAllEmbedMetaSorted(list);
+    },
+  };
+}

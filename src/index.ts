@@ -1,1 +1,1 @@
-export { ProviderBuilderOptions, Providers, makeProviders } from '@/main/builder';
+export { ProviderBuilderOptions, ProviderControls, makeProviders } from '@/main/builder';
