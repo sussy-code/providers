@@ -1,13 +1,11 @@
 import { Fetcher } from '@/fetchers/types';
+import { FullScraperEvents, SingleScraperEvents } from '@/main/events';
 import { MetaOutput, getAllEmbedMetaSorted, getAllSourceMetaSorted, getSpecificId } from '@/main/meta';
-import { EmbedRunOutput, RunOutput, SourceRunOutput } from '@/main/runner';
+import { ProviderRunnerOptions, RunOutput, SourceRunOutput, runAllProviders } from '@/main/runner';
 import { getProviders } from '@/providers/all';
 
 // TODO meta data input (tmdb id, imdb id, title, release year)
 // TODO actually running scrapers
-// TODO documentation: examples for nodejs + browser
-// TODO documentation: how to use + usecases
-// TODO documentation: examples on how to make a custom fetcher
 
 export interface ProviderBuilderOptions {
   // fetcher, every web request gets called through here
@@ -21,13 +19,10 @@ export interface ProviderBuilderOptions {
 export interface ProviderControls {
   // Run all providers one by one. in order of rank (highest first)
   // returns the stream, or null if none found
-  runAll(): Promise<RunOutput | null>;
+  runAll(cbs: FullScraperEvents): Promise<RunOutput | null>;
 
   // Run a source provider
-  runSource(id: string): Promise<SourceRunOutput>;
-
-  // Run a embed provider
-  runEmbed(id: string): Promise<EmbedRunOutput>;
+  runSource(id: string, cbs: SingleScraperEvents): Promise<SourceRunOutput>;
 
   // get meta data about a source or embed.
   getMetadata(id: string): MetaOutput | null;
@@ -39,10 +34,17 @@ export interface ProviderControls {
   listEmbeds(): MetaOutput[];
 }
 
-export function makeProviders(_ops: ProviderBuilderOptions): ProviderControls {
+export function makeProviders(ops: ProviderBuilderOptions): ProviderControls {
   const list = getProviders();
+  const providerRunnerOps: ProviderRunnerOptions = {
+    fetcher: ops.fetcher,
+    proxiedFetcher: ops.proxiedFetcher ?? ops.fetcher,
+  };
 
   return {
+    runAll(cbs) {
+      return runAllProviders(providerRunnerOps, cbs);
+    },
     getMetadata(id) {
       return getSpecificId(list, id);
     },

@@ -7,7 +7,7 @@ export type Qualities = '360' | '480' | '720' | '1080';
 
 export type FileBasedStream = {
   type: 'file';
-  qualities: Record<Qualities, StreamFile>;
+  qualities: Partial<Record<Qualities, StreamFile>>;
 };
 
 export type HlsBasedStream = {
