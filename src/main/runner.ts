@@ -1,5 +1,6 @@
 import { Fetcher } from '@/fetchers/types';
 import { FullScraperEvents } from '@/main/events';
+import { ScrapeMedia } from '@/main/media';
 import { Stream } from '@/providers/streams';
 
 export type RunOutput = {
@@ -22,9 +23,13 @@ export type EmbedRunOutput = {
 export type ProviderRunnerOptions = {
   fetcher: Fetcher;
   proxiedFetcher: Fetcher;
+  sourceOrder?: string[];
+  embedOrder?: string[];
+  events?: FullScraperEvents;
+  media: ScrapeMedia;
 };
 
-export async function runAllProviders(_ops: ProviderRunnerOptions, _cbs: FullScraperEvents): Promise<RunOutput | null> {
+export async function runAllProviders(_ops: ProviderRunnerOptions): Promise<RunOutput | null> {
   return {
     sourceId: '123',
     stream: {

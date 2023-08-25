@@ -15,3 +15,15 @@ features:
 > TODO documentation: how to use + usecases
 
 > TODO documentation: examples on how to make a custom fetcher
+
+> TODO functionality: running individual scrapers
+
+> TODO functionality: running all scrapers
+
+> TODO functionality: choose environment (for browser, for native)
+
+> TODO functionality: show which types are supported for scraper in meta
+
+> TODO content: add all scrapers/providers
+
+> TODO tests: add tests

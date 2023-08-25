@@ -1,11 +1,9 @@
 import { Fetcher } from '@/fetchers/types';
-import { FullScraperEvents, SingleScraperEvents } from '@/main/events';
+import { FullScraperEvents } from '@/main/events';
+import { ScrapeMedia } from '@/main/media';
 import { MetaOutput, getAllEmbedMetaSorted, getAllSourceMetaSorted, getSpecificId } from '@/main/meta';
-import { ProviderRunnerOptions, RunOutput, SourceRunOutput, runAllProviders } from '@/main/runner';
+import { RunOutput, runAllProviders } from '@/main/runner';
 import { getProviders } from '@/providers/all';
-
-// TODO meta data input (tmdb id, imdb id, title, release year)
-// TODO actually running scrapers
 
 export interface ProviderBuilderOptions {
   // fetcher, every web request gets called through here
@@ -16,13 +14,24 @@ export interface ProviderBuilderOptions {
   proxiedFetcher?: Fetcher;
 }
 
+export interface RunnerOptions {
+  // overwrite the order of sources to run. list of ids
+  sourceOrder?: string[];
+
+  // overwrite the order of embeds to run. list of ids
+  embedOrder?: string[];
+
+  // object of event functions
+  events?: FullScraperEvents;
+
+  // the media you want to see sources from
+  media: ScrapeMedia;
+}
+
 export interface ProviderControls {
   // Run all providers one by one. in order of rank (highest first)
   // returns the stream, or null if none found
-  runAll(cbs: FullScraperEvents): Promise<RunOutput | null>;
-
-  // Run a source provider
-  runSource(id: string, cbs: SingleScraperEvents): Promise<SourceRunOutput>;
+  runAll(runnerOps: RunnerOptions): Promise<RunOutput | null>;
 
   // get meta data about a source or embed.
   getMetadata(id: string): MetaOutput | null;
@@ -36,14 +45,17 @@ export interface ProviderControls {
 
 export function makeProviders(ops: ProviderBuilderOptions): ProviderControls {
   const list = getProviders();
-  const providerRunnerOps: ProviderRunnerOptions = {
+  const providerRunnerOps = {
     fetcher: ops.fetcher,
     proxiedFetcher: ops.proxiedFetcher ?? ops.fetcher,
   };
 
   return {
-    runAll(cbs) {
-      return runAllProviders(providerRunnerOps, cbs);
+    runAll(runnerOps: RunnerOptions) {
+      return runAllProviders({
+        ...providerRunnerOps,
+        ...runnerOps,
+      });
     },
     getMetadata(id) {
       return getSpecificId(list, id);
