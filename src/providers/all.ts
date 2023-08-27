@@ -1,14 +1,16 @@
 import { Embed, Sourcerer } from '@/providers/base';
+import { upcloudScraper } from '@/providers/embeds/upcloud';
+import { flixhqScraper } from '@/providers/sources/flixhq/index';
 import { hasDuplicates, isNotNull } from '@/utils/predicates';
 
 function gatherAllSources(): Array<Sourcerer | null> {
   // all sources are gathered here
-  return [];
+  return [flixhqScraper];
 }
 
 function gatherAllEmbeds(): Array<Embed | null> {
   // all embeds are gathered here
-  return [];
+  return [upcloudScraper];
 }
 
 export interface ProviderList {

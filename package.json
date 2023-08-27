@@ -38,6 +38,7 @@
     "prepublishOnly": "npm test && npm run lint"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.1.1",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
     "eslint": "^8.30.0",
@@ -53,5 +54,10 @@
     "vite-plugin-dts": "^2.3.0",
     "vite-plugin-eslint": "^1.8.1",
     "vitest": "^0.32.2"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "crypto-js": "^4.1.1",
+    "form-data": "^4.0.0"
   }
 }

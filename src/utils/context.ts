@@ -1,8 +1,8 @@
 import { UseableFetcher } from '@/fetchers/types';
 
 export type ScrapeContext = {
-  proxiedFetcher: UseableFetcher;
-  fetcher: UseableFetcher;
+  proxiedFetcher: <T>(...params: Parameters<UseableFetcher<T>>) => ReturnType<UseableFetcher<T>>;
+  fetcher: <T>(...params: Parameters<UseableFetcher<T>>) => ReturnType<UseableFetcher<T>>;
   progress(val: number): void;
 };
 

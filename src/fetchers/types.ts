@@ -1,3 +1,5 @@
+import * as FormData from 'form-data';
+
 export type FetcherOptions = {
   baseUrl?: string;
   headers?: Record<string, string>;
@@ -15,10 +17,10 @@ export type DefaultedFetcherOptions = {
 };
 
 export type Fetcher<T = any> = {
-  (url: string, ops: DefaultedFetcherOptions): T;
+  (url: string, ops: DefaultedFetcherOptions): Promise<T>;
 };
 
 // this feature has some quality of life features
 export type UseableFetcher<T = any> = {
-  (url: string, ops?: FetcherOptions): T;
+  (url: string, ops?: FetcherOptions): Promise<T>;
 };
