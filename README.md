@@ -9,16 +9,19 @@ features:
 
 > This package is still WIP
 
-> TODO documentation: examples for nodejs + browser
+Todos:
+ - add tests (integration, unit tests)
+ - running individual scrapers
+ - finish fetchers:
+   - make baseUrl param work
+   - proper serialization (with content-type headers) for standard fetcher
+   - automatically parse json
+ - error logging for failed scrapers
+ - make the lib not compile into one file, keep dependency structure
 
-> TODO documentation: how to use + usecases
-
-> TODO documentation: examples on how to make a custom fetcher
-
-> TODO functionality: running individual scrapers
-
-> TODO functionality: choose environment (for browser, for native)
-
-> TODO content: add all scrapers/providers
-
-> TODO tests: add tests
+Future todos:
+ - docs: examples for nodejs + browser
+ - docs: how to use + usecases
+ - docs: examples for custom fetcher
+ - choose an output environment (for browser or for native)
+ - flixhq show support

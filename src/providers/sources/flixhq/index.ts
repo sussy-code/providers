@@ -1,4 +1,5 @@
 import { makeSourcerer } from '@/providers/base';
+import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { getFlixhqSourceDetails, getFlixhqSources } from '@/providers/sources/flixhq/scrape';
 import { getFlixhqId } from '@/providers/sources/flixhq/search';
 import { NotFoundError } from '@/utils/errors';
@@ -19,7 +20,7 @@ export const flixhqScraper = makeSourcerer({
     return {
       embeds: [
         {
-          embedId: '', // TODO embed id
+          embedId: upcloudScraper.id,
           url: await getFlixhqSourceDetails(ctx, upcloudStream.episodeId),
         },
       ],

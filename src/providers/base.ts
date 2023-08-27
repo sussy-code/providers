@@ -19,8 +19,7 @@ export type Sourcerer = {
   scrapeShow?: (input: ScrapeContext & { media: ShowMedia }) => Promise<SourcererOutput>;
 };
 
-export function makeSourcerer(state: Sourcerer): Sourcerer | null {
-  if (state.disabled) return null;
+export function makeSourcerer(state: Sourcerer): Sourcerer {
   return state;
 }
 
@@ -36,7 +35,6 @@ export type Embed = {
   scrape: (input: EmbedScrapeContext) => Promise<EmbedOutput>;
 };
 
-export function makeEmbed(state: Embed): Embed | null {
-  if (state.disabled) return null;
+export function makeEmbed(state: Embed): Embed {
   return state;
 }
