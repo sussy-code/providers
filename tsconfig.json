@@ -9,7 +9,7 @@
     "baseUrl": "src",
     "experimentalDecorators": true,
     "isolatedModules": false,
-    "types": ["vitest/globals"],
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["./*"],
       "@entrypoint": ["./index.ts"]

@@ -58,6 +58,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "crypto-js": "^4.1.1",
-    "form-data": "^4.0.0"
+    "form-data": "^4.0.0",
+    "node-fetch": "^3.3.2"
   }
 }

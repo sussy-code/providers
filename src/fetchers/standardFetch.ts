@@ -1,3 +1,5 @@
+import fetch from 'node-fetch';
+
 import { makeFullUrl } from '@/fetchers/common';
 import { Fetcher } from '@/fetchers/types';
 
