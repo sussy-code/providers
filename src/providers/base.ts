@@ -16,7 +16,7 @@ export type Sourcerer = {
   rank: number; // the higher the number, the earlier it gets put on the queue
   disabled?: boolean;
   scrapeMovie?: (input: ScrapeContext & { media: MovieMedia }) => Promise<SourcererOutput>;
-  scrapeShow: (input: ScrapeContext & { media: ShowMedia }) => Promise<SourcererOutput>;
+  scrapeShow?: (input: ScrapeContext & { media: ShowMedia }) => Promise<SourcererOutput>;
 };
 
 export function makeSourcerer(state: Sourcerer): Sourcerer | null {
@@ -25,7 +25,7 @@ export function makeSourcerer(state: Sourcerer): Sourcerer | null {
 }
 
 export type EmbedOutput = {
-  stream?: Stream;
+  stream: Stream;
 };
 
 export type Embed = {

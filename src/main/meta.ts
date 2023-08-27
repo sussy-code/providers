@@ -1,3 +1,4 @@
+import { MediaTypes } from '@/main/media';
 import { ProviderList } from '@/providers/all';
 
 export type MetaOutput = {
@@ -5,17 +6,24 @@ export type MetaOutput = {
   id: string;
   rank: number;
   name: string;
+  mediaTypes?: Array<MediaTypes>;
 };
 
 export function getAllSourceMetaSorted(list: ProviderList): MetaOutput[] {
   return list.sources
     .sort((a, b) => b.rank - a.rank)
-    .map((v) => ({
-      type: 'source',
-      id: v.id,
-      name: v.name,
-      rank: v.rank,
-    }));
+    .map((v) => {
+      const types: Array<MediaTypes> = [];
+      if (v.scrapeMovie) types.push('movie');
+      if (v.scrapeShow) types.push('show');
+      return {
+        type: 'source',
+        id: v.id,
+        rank: v.rank,
+        name: v.name,
+        mediaTypes: types,
+      };
+    });
 }
 
 export function getAllEmbedMetaSorted(_list: ProviderList): MetaOutput[] {

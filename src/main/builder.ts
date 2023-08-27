@@ -1,3 +1,4 @@
+import { makeFullFetcher } from '@/fetchers/common';
 import { Fetcher } from '@/fetchers/types';
 import { FullScraperEvents } from '@/main/events';
 import { ScrapeMedia } from '@/main/media';
@@ -16,9 +17,11 @@ export interface ProviderBuilderOptions {
 
 export interface RunnerOptions {
   // overwrite the order of sources to run. list of ids
+  // any omitted ids are in added to the end in order of rank (highest first)
   sourceOrder?: string[];
 
   // overwrite the order of embeds to run. list of ids
+  // any omitted ids are in added to the end in order of rank (highest first)
   embedOrder?: string[];
 
   // object of event functions
@@ -46,13 +49,13 @@ export interface ProviderControls {
 export function makeProviders(ops: ProviderBuilderOptions): ProviderControls {
   const list = getProviders();
   const providerRunnerOps = {
-    fetcher: ops.fetcher,
-    proxiedFetcher: ops.proxiedFetcher ?? ops.fetcher,
+    fetcher: makeFullFetcher(ops.fetcher),
+    proxiedFetcher: makeFullFetcher(ops.proxiedFetcher ?? ops.fetcher),
   };
 
   return {
     runAll(runnerOps: RunnerOptions) {
-      return runAllProviders({
+      return runAllProviders(list, {
         ...providerRunnerOps,
         ...runnerOps,
       });

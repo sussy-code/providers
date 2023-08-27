@@ -1,4 +1,4 @@
-import { FetcherOptions } from '@/fetchers/types';
+import { Fetcher, FetcherOptions, UseableFetcher } from '@/fetchers/types';
 
 // make url with query params and base url used correctly
 export function makeFullUrl(url: string, ops?: FetcherOptions): string {
@@ -12,4 +12,16 @@ export function makeFullUrl(url: string, ops?: FetcherOptions): string {
   });
 
   return parsedUrl.toString();
+}
+
+export function makeFullFetcher(fetcher: Fetcher): UseableFetcher {
+  return (url, ops) => {
+    return fetcher(url, {
+      headers: ops?.headers ?? {},
+      method: ops?.method ?? 'GET',
+      query: ops?.query ?? {},
+      baseUrl: ops?.baseUrl ?? '',
+      body: ops?.body,
+    });
+  };
 }
