@@ -1,5 +1,6 @@
 import { MediaTypes } from '@/main/media';
-import { ProviderList } from '@/providers/all';
+import { Embed, Sourcerer } from '@/providers/base';
+import { ProviderList } from '@/providers/get';
 
 export type MetaOutput = {
   type: 'embed' | 'source';
@@ -9,36 +10,45 @@ export type MetaOutput = {
   mediaTypes?: Array<MediaTypes>;
 };
 
-export function getAllSourceMetaSorted(list: ProviderList): MetaOutput[] {
-  return list.sources
-    .sort((a, b) => b.rank - a.rank)
-    .map((v) => {
-      const types: Array<MediaTypes> = [];
-      if (v.scrapeMovie) types.push('movie');
-      if (v.scrapeShow) types.push('show');
-      return {
-        type: 'source',
-        id: v.id,
-        rank: v.rank,
-        name: v.name,
-        mediaTypes: types,
-      };
-    });
+function formatSourceMeta(v: Sourcerer): MetaOutput {
+  const types: Array<MediaTypes> = [];
+  if (v.scrapeMovie) types.push('movie');
+  if (v.scrapeShow) types.push('show');
+  return {
+    type: 'source',
+    id: v.id,
+    rank: v.rank,
+    name: v.name,
+    mediaTypes: types,
+  };
 }
 
-export function getAllEmbedMetaSorted(_list: ProviderList): MetaOutput[] {
-  return [];
+function formatEmbedMeta(v: Embed): MetaOutput {
+  return {
+    type: 'embed',
+    id: v.id,
+    rank: v.rank,
+    name: v.name,
+  };
+}
+
+export function getAllSourceMetaSorted(list: ProviderList): MetaOutput[] {
+  return list.sources.sort((a, b) => b.rank - a.rank).map(formatSourceMeta);
+}
+
+export function getAllEmbedMetaSorted(list: ProviderList): MetaOutput[] {
+  return list.embeds.sort((a, b) => b.rank - a.rank).map(formatEmbedMeta);
 }
 
 export function getSpecificId(list: ProviderList, id: string): MetaOutput | null {
   const foundSource = list.sources.find((v) => v.id === id);
   if (foundSource) {
-    return {
-      type: 'source',
-      id: foundSource.id,
-      name: foundSource.name,
-      rank: foundSource.rank,
-    };
+    return formatSourceMeta(foundSource);
+  }
+
+  const foundEmbed = list.embeds.find((v) => v.id === id);
+  if (foundEmbed) {
+    return formatEmbedMeta(foundEmbed);
   }
 
   return null;

@@ -4,7 +4,7 @@ import { FullScraperEvents } from '@/main/events';
 import { ScrapeMedia } from '@/main/media';
 import { MetaOutput, getAllEmbedMetaSorted, getAllSourceMetaSorted, getSpecificId } from '@/main/meta';
 import { RunOutput, runAllProviders } from '@/main/runner';
-import { getProviders } from '@/providers/all';
+import { getProviders } from '@/providers/get';
 
 export interface ProviderBuilderOptions {
   // fetcher, every web request gets called through here
