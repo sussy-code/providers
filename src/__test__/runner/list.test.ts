@@ -2,7 +2,7 @@ import { mockEmbeds, mockSources } from '@/__test__/providerTests';
 import { makeProviders } from '@/main/builder';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-const mocks = await vi.hoisted(async () => (await import('@/__test__/providerTests')).makeProviderMocks());
+const mocks = await vi.hoisted(async () => (await import('../providerTests.ts')).makeProviderMocks());
 vi.mock('@/providers/all', () => mocks);
 
 describe('ProviderControls.listSources()', () => {
