@@ -29,7 +29,6 @@ Todos:
    - proper serialization (with content-type headers) for standard fetcher
    - automatically parse json
  - error logging for failed scrapers
- - make the lib not compile into one file, keep dependency structure
  - add all real providers
 
 Future todos:
