@@ -29,7 +29,7 @@
   "homepage": "https://github.com/movie-web/providers#readme",
   "scripts": {
     "build": "vite build",
-    "test": "vitest run --coverage",
+    "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint --ext .ts,.js src/",

@@ -1,8 +1,8 @@
 import { UseableFetcher } from '@/fetchers/types';
 import { FullScraperEvents } from '@/main/events';
 import { ScrapeMedia } from '@/main/media';
-import { ProviderList } from '@/providers/all';
 import { EmbedOutput, SourcererOutput } from '@/providers/base';
+import { ProviderList } from '@/providers/get';
 import { Stream } from '@/providers/streams';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
@@ -85,8 +85,8 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       ops.events?.update?.({
         percentage: 100,
         status: 'failure',
+        error: err,
       });
-      // TODO log error
       continue;
     }
     if (!output) throw new Error('Invalid media type');
@@ -139,8 +139,8 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         ops.events?.update?.({
           percentage: 100,
           status: 'failure',
+          error: err,
         });
-        // TODO log error
         continue;
       }
 

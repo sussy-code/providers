@@ -3,6 +3,7 @@ export type UpdateEventStatus = 'success' | 'failure' | 'notfound' | 'pending';
 export type UpdateEvent = {
   percentage: number;
   status: UpdateEventStatus;
+  error?: unknown;
 };
 
 export type InitEvent = {
