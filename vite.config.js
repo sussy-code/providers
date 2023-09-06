@@ -6,12 +6,7 @@ const dts = require('vite-plugin-dts');
 const main = path.resolve(__dirname, 'src/index.ts');
 
 module.exports = defineConfig({
-  plugins: [
-    eslint(),
-    dts({
-      include: [main],
-    }),
-  ],
+  plugins: [eslint(), dts({})],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -23,8 +18,8 @@ module.exports = defineConfig({
 
     lib: {
       entry: main,
-      name: 'providers',
-      fileName: 'providers',
+      name: 'index',
+      fileName: 'index',
     },
   },
 });
