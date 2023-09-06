@@ -79,6 +79,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         ops.events?.update?.({
           percentage: 100,
           status: 'notfound',
+          reason: err.message,
         });
         continue;
       }
@@ -133,6 +134,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
           ops.events?.update?.({
             percentage: 100,
             status: 'notfound',
+            reason: err.message,
           });
           continue;
         }

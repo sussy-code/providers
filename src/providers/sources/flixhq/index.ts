@@ -11,7 +11,7 @@ export const flixhqScraper = makeSourcerer({
   rank: 100,
   async scrapeMovie(ctx) {
     const id = await getFlixhqId(ctx, ctx.media);
-    if (!id) throw new NotFoundError();
+    if (!id) throw new NotFoundError('no search results match');
 
     const sources = await getFlixhqSources(ctx, id);
     const upcloudStream = sources.find((v) => v.embed.toLowerCase() === 'upcloud');
