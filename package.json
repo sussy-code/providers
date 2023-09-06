@@ -1,13 +1,19 @@
 {
   "name": "@movie-web/providers",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Package that contains all the providers of movie-web",
   "main": "./lib/index.umd.js",
-  "module": "./lib/index.mjs",
   "types": "./lib/index.d.ts",
   "files": [
     "./lib"
   ],
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.umd.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/movie-web/providers.git"
