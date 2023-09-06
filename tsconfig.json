@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "es2021",
     "lib": ["es2021"],
-    "module": "commonjs",
+    "module": "CommonJS",
+    "esModuleInterop": true,
     "declaration": true,
     "outDir": "./lib",
     "strict": true,
