@@ -30,6 +30,7 @@ Todos:
      - does json responses get automatically parsed?
  - add all real providers
  - fetcher for MW's simple-proxy
+ - make default fetcher maker thing work with both undici and node-fetch
 
 Future todos:
  - docs: examples for nodejs + browser
