@@ -1,7 +1,7 @@
 export type CommonMedia = {
   title: string;
   releaseYear: number;
-  imdbId: string;
+  imdbId?: string;
   tmdbId: string;
 };
 
