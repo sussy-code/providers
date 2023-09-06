@@ -7,7 +7,7 @@ features:
  - scrape popular streaming websites
  - works in both browser and server-side
 
-> This package is still WIP
+> **This package is still WIP**
 
 Todos:
  - add tests
@@ -21,9 +21,6 @@ Todos:
      - does serialisation work as expected? (formdata + json + string)
      - does json responses get automatically parsed?
  - running individual scrapers
- - finish fetchers:
-   - automatically parse json
- - error logging for failed scrapers
  - add all real providers
 
 Future todos:
