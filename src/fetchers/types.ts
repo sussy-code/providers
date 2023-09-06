@@ -5,7 +5,7 @@ export type FetcherOptions = {
   headers?: Record<string, string>;
   query?: Record<string, string>;
   method?: 'GET' | 'POST';
-  body?: Record<string, any> | string | FormData;
+  body?: Record<string, any> | string | FormData | URLSearchParams;
 };
 
 export type DefaultedFetcherOptions = {
