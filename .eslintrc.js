@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
   },
   extends: ['airbnb-base', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
-  ignorePatterns: ['lib/*', '/*.js', '/*.ts', '/**/*.test.ts'],
+  ignorePatterns: ['lib/*', '/*.js', '/*.ts', '/**/*.test.ts', 'test/*'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: './tsconfig.json',

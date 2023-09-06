@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "start:umd": "node index.mjs",
+    "start:cjs": "node index.js"
+  }
+}

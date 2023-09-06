@@ -1,6 +1,8 @@
-import { AES, enc } from 'crypto-js';
+import crypto from 'crypto-js';
 
 import { makeEmbed } from '@/providers/base';
+
+const { AES, enc } = crypto;
 
 interface StreamRes {
   server: number;
