@@ -1,16 +1,16 @@
 {
   "name": "@movie-web/providers",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Package that contains all the providers of movie-web",
-  "main": "./lib/providers.umd.js",
-  "types": "./lib/providers.d.ts",
+  "main": "./lib/index.umd.js",
+  "types": "./lib/index.d.ts",
   "files": [
     "./lib"
   ],
   "exports": {
     ".": {
-      "import": "./lib/providers.mjs",
-      "require": "./lib/providers.umd.js"
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.umd.js"
     }
   },
   "repository": {
