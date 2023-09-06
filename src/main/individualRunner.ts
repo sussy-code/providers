@@ -1,5 +1,5 @@
 import { UseableFetcher } from '@/fetchers/types';
-import { UpdateEvent } from '@/main/events';
+import { IndividualScraperEvents } from '@/main/events';
 import { ScrapeMedia } from '@/main/media';
 import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { ProviderList } from '@/providers/get';
@@ -10,9 +10,7 @@ export type IndividualSourceRunnerOptions = {
   proxiedFetcher: UseableFetcher;
   media: ScrapeMedia;
   id: string;
-  events: {
-    update?: (evt: UpdateEvent) => void;
-  };
+  events?: IndividualScraperEvents;
 };
 
 export async function scrapeInvidualSource(
@@ -56,9 +54,7 @@ export type IndividualEmbedRunnerOptions = {
   proxiedFetcher: UseableFetcher;
   url: string;
   id: string;
-  events?: {
-    update?: (evt: UpdateEvent) => void;
-  };
+  events?: IndividualScraperEvents;
 };
 
 export async function scrapeIndividualEmbed(

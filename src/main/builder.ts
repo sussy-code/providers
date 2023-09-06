@@ -1,9 +1,11 @@
 import { makeFullFetcher } from '@/fetchers/common';
 import { Fetcher } from '@/fetchers/types';
-import { FullScraperEvents } from '@/main/events';
+import { FullScraperEvents, IndividualScraperEvents } from '@/main/events';
+import { scrapeIndividualEmbed, scrapeInvidualSource } from '@/main/individualRunner';
 import { ScrapeMedia } from '@/main/media';
 import { MetaOutput, getAllEmbedMetaSorted, getAllSourceMetaSorted, getSpecificId } from '@/main/meta';
 import { RunOutput, runAllProviders } from '@/main/runner';
+import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { getProviders } from '@/providers/get';
 
 export interface ProviderBuilderOptions {
@@ -31,10 +33,38 @@ export interface RunnerOptions {
   media: ScrapeMedia;
 }
 
+export interface SourceRunnerOptions {
+  // object of event functions
+  events?: IndividualScraperEvents;
+
+  // the media you want to see sources from
+  media: ScrapeMedia;
+
+  // id of the source scraper you want to scrape from
+  id: string;
+}
+
+export interface EmbedRunnerOptions {
+  // object of event functions
+  events?: IndividualScraperEvents;
+
+  // the embed url
+  url: string;
+
+  // id of the embed scraper you want to scrape from
+  id: string;
+}
+
 export interface ProviderControls {
   // Run all providers one by one. in order of rank (highest first)
   // returns the stream, or null if none found
   runAll(runnerOps: RunnerOptions): Promise<RunOutput | null>;
+
+  // Run a specific source scraper
+  runSourceScraper(runnerOps: SourceRunnerOptions): Promise<SourcererOutput>;
+
+  // Run a specific embed scraper
+  runEmbedScraper(runnerOps: EmbedRunnerOptions): Promise<EmbedOutput>;
 
   // get meta data about a source or embed.
   getMetadata(id: string): MetaOutput | null;
@@ -54,8 +84,20 @@ export function makeProviders(ops: ProviderBuilderOptions): ProviderControls {
   };
 
   return {
-    runAll(runnerOps: RunnerOptions) {
+    runAll(runnerOps) {
       return runAllProviders(list, {
+        ...providerRunnerOps,
+        ...runnerOps,
+      });
+    },
+    runSourceScraper(runnerOps) {
+      return scrapeInvidualSource(list, {
+        ...providerRunnerOps,
+        ...runnerOps,
+      });
+    },
+    runEmbedScraper(runnerOps) {
+      return scrapeIndividualEmbed(list, {
         ...providerRunnerOps,
         ...runnerOps,
       });

@@ -46,3 +46,8 @@ export type FullScraperEvents = {
   // start scraping an item.
   start?: (id: string) => void;
 };
+
+export type IndividualScraperEvents = {
+  // update progress percentage and status of the currently scraping item
+  update?: (evt: UpdateEvent) => void;
+};

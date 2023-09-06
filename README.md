@@ -16,16 +16,25 @@ Todos:
      - custom source or embed order
      - are fetchers called?
      - is proxiedFetcher properly defaulted back to normal fetcher?
+   - ProviderControls.runSourceScraper()
+     - is source scraper called?
+     - does it return as expected?
+     - does it error when invalid type or id?
+   - ProviderControls.runEmbedScraper()
+     - is embed scraper called?
+     - does it return as expected?
+     - does it error when invalid id?
    - makeStandardFetcher()
      - do all parameters get passed to real fetch as expected?
      - does serialisation work as expected? (formdata + json + string)
      - does json responses get automatically parsed?
- - running individual scrapers
  - add all real providers
+ - fetcher for MW's simple-proxy
 
 Future todos:
  - docs: examples for nodejs + browser
  - docs: how to use + usecases
  - docs: examples for custom fetcher
- - choose an output environment (for browser or for native)
- - flixhq show support
+ - docs: example with tmdb search
+ - feature: choose an output environment (for browser or for native)
+ - feature: flixhq show support
