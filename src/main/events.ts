@@ -1,6 +1,7 @@
 export type UpdateEventStatus = 'success' | 'failure' | 'notfound' | 'pending';
 
 export type UpdateEvent = {
+  id: string; // id presented in start event
   percentage: number;
   status: UpdateEventStatus;
   error?: unknown; // set when status is failure
@@ -19,13 +20,6 @@ export type DiscoverEmbedsEvent = {
     id: string;
     embedScraperId: string;
   }>;
-};
-
-export type StartScrapingEvent = {
-  sourceId: string;
-
-  // embed Id (not embedScraperId)
-  embedId?: string;
 };
 
 export type SingleScraperEvents = {

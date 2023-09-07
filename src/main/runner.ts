@@ -42,12 +42,14 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
   });
   const embeds = reorderOnIdList(ops.embedOrder ?? [], list.embeds);
   const embedIds = embeds.map((v) => v.id);
+  let lastId = '';
 
   const contextBase: ScrapeContext = {
     fetcher: ops.fetcher,
     proxiedFetcher: ops.proxiedFetcher,
     progress(val) {
       ops.events?.update?.({
+        id: lastId,
         percentage: val,
         status: 'pending',
       });
@@ -60,6 +62,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
 
   for (const s of sources) {
     ops.events?.start?.(s.id);
+    lastId = s.id;
 
     // run source scrapers
     let output: SourcererOutput | null = null;
@@ -77,6 +80,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
     } catch (err) {
       if (err instanceof NotFoundError) {
         ops.events?.update?.({
+          id: s.id,
           percentage: 100,
           status: 'notfound',
           reason: err.message,
@@ -84,6 +88,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         continue;
       }
       ops.events?.update?.({
+        id: s.id,
         percentage: 100,
         status: 'failure',
         error: err,
@@ -123,6 +128,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       // run embed scraper
       const id = [s.id, ind].join('-');
       ops.events?.start?.(id);
+      lastId = id;
       let embedOutput: EmbedOutput;
       try {
         embedOutput = await scraper.scrape({
@@ -132,6 +138,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       } catch (err) {
         if (err instanceof NotFoundError) {
           ops.events?.update?.({
+            id,
             percentage: 100,
             status: 'notfound',
             reason: err.message,
@@ -139,6 +146,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
           continue;
         }
         ops.events?.update?.({
+          id,
           percentage: 100,
           status: 'failure',
           error: err,

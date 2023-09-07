@@ -27,6 +27,7 @@ export async function scrapeInvidualSource(
     proxiedFetcher: ops.proxiedFetcher,
     progress(val) {
       ops.events?.update?.({
+        id: sourceScraper.id,
         percentage: val,
         status: 'pending',
       });
@@ -70,6 +71,7 @@ export async function scrapeIndividualEmbed(
     url: ops.url,
     progress(val) {
       ops.events?.update?.({
+        id: embedScraper.id,
         percentage: val,
         status: 'pending',
       });
