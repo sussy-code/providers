@@ -10,22 +10,6 @@ features:
 > **This package is still WIP**
 
 Todos:
- - add tests
-   - ProviderControls.runAll()
-     - are events called?
-     - custom source or embed order
-     - are fetchers called?
-     - is proxiedFetcher properly defaulted back to normal fetcher?
-   - ProviderControls.runSourceScraper()
-     - is source scraper called?
-     - does it return as expected?
-     - does it error when invalid type or id?
-   - ProviderControls.runEmbedScraper()
-     - is embed scraper called?
-     - does it return as expected?
-     - does it error when invalid id?
-   - makeStandardFetcher()
-     - does serialisation work as expected? (formdata + json + string)
  - add all real providers
  - make default fetcher maker thing work with both undici and node-fetch
 
