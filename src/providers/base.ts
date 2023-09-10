@@ -1,4 +1,5 @@
 import { MovieMedia, ShowMedia } from '@/main/media';
+import { Flags } from '@/main/targets';
 import { Stream } from '@/providers/streams';
 import { EmbedScrapeContext, ScrapeContext } from '@/utils/context';
 
@@ -15,6 +16,7 @@ export type Sourcerer = {
   name: string; // displayed in the UI
   rank: number; // the higher the number, the earlier it gets put on the queue
   disabled?: boolean;
+  flags: Flags[];
   scrapeMovie?: (input: ScrapeContext & { media: MovieMedia }) => Promise<SourcererOutput>;
   scrapeShow?: (input: ScrapeContext & { media: ShowMedia }) => Promise<SourcererOutput>;
 };

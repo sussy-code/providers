@@ -1,5 +1,6 @@
 import crypto from 'crypto-js';
 
+import { flags } from '@/main/targets';
 import { makeEmbed } from '@/providers/base';
 
 const { AES, enc } = crypto;
@@ -69,6 +70,7 @@ export const upcloudScraper = makeEmbed({
       stream: {
         type: 'hls',
         playlist: sources.file,
+        flags: [flags.NO_CORS],
       },
     };
   },

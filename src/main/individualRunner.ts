@@ -1,11 +1,14 @@
 import { UseableFetcher } from '@/fetchers/types';
 import { IndividualScraperEvents } from '@/main/events';
 import { ScrapeMedia } from '@/main/media';
+import { FeatureMap, flagsAllowedInFeatures } from '@/main/targets';
 import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { ProviderList } from '@/providers/get';
 import { ScrapeContext } from '@/utils/context';
+import { NotFoundError } from '@/utils/errors';
 
 export type IndividualSourceRunnerOptions = {
+  features: FeatureMap;
   fetcher: UseableFetcher;
   proxiedFetcher: UseableFetcher;
   media: ScrapeMedia;
@@ -46,11 +49,17 @@ export async function scrapeInvidualSource(
       media: ops.media,
     });
 
+  // stream doesn't satisfy the feature flags, so gets removed in output
+  if (output?.stream && !flagsAllowedInFeatures(ops.features, output.stream.flags)) {
+    output.stream = undefined;
+  }
+
   if (!output) throw new Error('output is null');
   return output;
 }
 
 export type IndividualEmbedRunnerOptions = {
+  features: FeatureMap;
   fetcher: UseableFetcher;
   proxiedFetcher: UseableFetcher;
   url: string;
@@ -65,7 +74,7 @@ export async function scrapeIndividualEmbed(
   const embedScraper = list.embeds.find((v) => ops.id === v.id);
   if (!embedScraper) throw new Error('Embed with ID not found');
 
-  return embedScraper.scrape({
+  const output = await embedScraper.scrape({
     fetcher: ops.fetcher,
     proxiedFetcher: ops.proxiedFetcher,
     url: ops.url,
@@ -77,4 +86,8 @@ export async function scrapeIndividualEmbed(
       });
     },
   });
+
+  if (!flagsAllowedInFeatures(ops.features, output.stream.flags))
+    throw new NotFoundError("stream doesn't satisfy target feature flags");
+  return output;
 }

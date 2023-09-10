@@ -1,5 +1,6 @@
 import { mockEmbeds, mockSources } from '@/__test__/providerTests';
 import { makeProviders } from '@/main/builder';
+import { targets } from '@/main/targets.ts';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = await vi.hoisted(async () => (await import('../providerTests.ts')).makeProviderMocks());
@@ -15,6 +16,7 @@ describe('ProviderControls.getMetadata()', () => {
     mocks.gatherAllEmbeds.mockReturnValue([]);
     const p = makeProviders({
       fetcher: null as any,
+      target: targets.NATIVE,
     });
     expect(p.getMetadata(':)')).toEqual(null);
   });
@@ -24,6 +26,7 @@ describe('ProviderControls.getMetadata()', () => {
     mocks.gatherAllEmbeds.mockReturnValue([]);
     const p = makeProviders({
       fetcher: null as any,
+      target: targets.NATIVE,
     });
     expect(p.getMetadata(mockSources.fullSourceZBoth.id)).toEqual({
       type: 'source',
@@ -39,6 +42,7 @@ describe('ProviderControls.getMetadata()', () => {
     mocks.gatherAllEmbeds.mockReturnValue([mockEmbeds.fullEmbedX]);
     const p = makeProviders({
       fetcher: null as any,
+      target: targets.NATIVE,
     });
     expect(p.getMetadata(mockEmbeds.fullEmbedX.id)).toEqual({
       type: 'embed',
