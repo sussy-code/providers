@@ -3,11 +3,21 @@ const { defineConfig } = require('vitest/config');
 const { default: eslint } = require('vite-plugin-eslint');
 const dts = require('vite-plugin-dts');
 const pkg = require('./package.json');
+const fs = require('fs/promises');
 
 const main = path.resolve(__dirname, 'src/index.ts');
 
 module.exports = defineConfig({
-  plugins: [eslint(), dts({})],
+  plugins: [
+    eslint(),
+    dts({
+      rollupTypes: true,
+      async afterBuild() {
+        const filePath = path.join(__dirname, './lib/index.d.ts');
+        await fs.writeFile(filePath.replace('.d.ts', '.d.mts'), await fs.readFile(filePath, 'utf-8'), 'utf-8');
+      },
+    }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
