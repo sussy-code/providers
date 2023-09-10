@@ -14,3 +14,4 @@ export type {
 export { NotFoundError } from '@/utils/errors';
 export { makeProviders } from '@/main/builder';
 export { makeStandardFetcher } from '@/fetchers/standardFetch';
+export { makeSimpleProxyFetcher } from '@/fetchers/simpleProxy';
