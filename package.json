@@ -9,14 +9,13 @@
   ],
   "exports": {
     ".": {
-      "types": "./lib/index.d.ts",
       "import": {
-        "default": "./lib/index.mjs.js",
-        "types": "./lib/index.d.ts"
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.mjs.js"
       },
       "require": {
-        "default": "./lib/index.umd.js",
-        "types": "./lib/index.d.ts"
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.umd.js"
       }
     }
   },
