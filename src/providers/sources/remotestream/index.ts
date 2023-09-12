@@ -5,7 +5,7 @@ import { NotFoundError } from '@/utils/errors';
 import { remotestreamBase } from './common';
 
 // TODO tv shows are available in flixHQ, just no scraper yet
-export const remotreamScraper = makeSourcerer({
+export const remotestreamScraper = makeSourcerer({
   id: 'remotestream',
   name: 'Remote Stream',
   rank: 55,
