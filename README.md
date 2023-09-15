@@ -24,10 +24,8 @@ providers need to be ported to the new provider repo:
 embeds:
 
 * [x]  upcloud
-* [ ]  mp4upload
-* [ ]  playm4u
-* [ ]  streamm4u
-* [ ]  streamsb
+* [x]  mp4upload
+* [x]  streamsb
 
 providers that will not be ported:
 
@@ -37,4 +35,6 @@ providers that will not be ported:
 * m4ufree (disabled)
 * netfilm (disabled)
 * sflix (disabled)
+* playm4u (never worked)
+* streamm4u (never worked, throws 403)
 * streamflix (uses flixhq, we already have the content)
