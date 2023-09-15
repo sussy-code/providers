@@ -1,6 +1,6 @@
 import { load } from 'cheerio';
 
-import { ScrapeContext } from '@/utils/context';
+import type { ScrapeContext } from '@/utils/context';
 
 import { embedProviders, kissasianBase } from './common';
 

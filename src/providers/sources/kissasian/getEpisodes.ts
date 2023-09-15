@@ -1,4 +1,4 @@
-import { CheerioAPI } from 'cheerio';
+import type { CheerioAPI } from 'cheerio';
 
 export async function getEpisodes(dramaPage: CheerioAPI) {
   const episodesEl = dramaPage('tbody tr:not(:first-child)');
