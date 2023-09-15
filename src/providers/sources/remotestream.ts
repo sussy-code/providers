@@ -2,9 +2,8 @@ import { flags } from '@/main/targets';
 import { makeSourcerer } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
 
-import { remotestreamBase } from './common';
+const remotestreamBase = `https://fsa.remotestre.am`;
 
-// TODO tv shows are available in flixHQ, just no scraper yet
 export const remotestreamScraper = makeSourcerer({
   id: 'remotestream',
   name: 'Remote Stream',
@@ -16,8 +15,10 @@ export const remotestreamScraper = makeSourcerer({
 
     const playlistLink = `${remotestreamBase}/Shows/${ctx.media.tmdbId}/${seasonNumber}/${episodeNumber}/${episodeNumber}.m3u8`;
 
-    const streamRes = await ctx.fetcher<Blob>(playlistLink);
+    ctx.progress(30);
+    const streamRes = await ctx.fetcher<Blob>(playlistLink); // TODO support blobs in fetchers
     if (streamRes.type !== 'application/x-mpegurl') throw new NotFoundError('No watchable item found');
+    ctx.progress(90);
 
     return {
       embeds: [],
@@ -31,8 +32,10 @@ export const remotestreamScraper = makeSourcerer({
   async scrapeMovie(ctx) {
     const playlistLink = `${remotestreamBase}/Movies/${ctx.media.tmdbId}/${ctx.media.tmdbId}.m3u8`;
 
+    ctx.progress(30);
     const streamRes = await ctx.fetcher<Blob>(playlistLink);
     if (streamRes.type !== 'application/x-mpegurl') throw new NotFoundError('No watchable item found');
+    ctx.progress(90);
 
     return {
       embeds: [],
