@@ -18,7 +18,7 @@ providers need to be ported to the new provider repo:
 * [ ]  superstream
 * [x]  flixhq
 * [ ]  gomovies
-* [ ]  kissasian
+* [x]  kissasian
 * [x]  remotestream
 
 embeds:

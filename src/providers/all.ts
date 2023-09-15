@@ -3,11 +3,12 @@ import { mp4uploadScraper } from '@/providers/embeds/mp4upload';
 import { streamsbScraper } from '@/providers/embeds/streamsb';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { flixhqScraper } from '@/providers/sources/flixhq/index';
+import { kissAsianScraper } from '@/providers/sources/kissasian/index';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
 
 export function gatherAllSources(): Array<Sourcerer> {
   // all sources are gathered here
-  return [flixhqScraper, remotestreamScraper];
+  return [flixhqScraper, remotestreamScraper, kissAsianScraper];
 }
 
 export function gatherAllEmbeds(): Array<Embed> {
