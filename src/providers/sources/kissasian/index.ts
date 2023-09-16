@@ -25,7 +25,7 @@ export const kissAsianScraper = makeSourcerer({
 
     ctx.progress(30);
 
-    const drama = await ctx.fetcher<any>(targetDrama.url);
+    const drama = await ctx.proxiedFetcher<any>(targetDrama.url);
 
     const dramaPage = load(drama);
 
@@ -50,7 +50,7 @@ export const kissAsianScraper = makeSourcerer({
 
     ctx.progress(30);
 
-    const drama = await ctx.fetcher<any>(targetDrama.url);
+    const drama = await ctx.proxiedFetcher<any>(targetDrama.url);
 
     const dramaPage = load(drama);
 

@@ -13,7 +13,7 @@ export async function getEmbeds(
 ) {
   let embeds = await Promise.all(
     embedProviders.map(async (provider) => {
-      const watch = await ctx.fetcher<any>(`${kissasianBase}/${targetEpisode.url}&s=${provider.id}`);
+      const watch = await ctx.proxiedFetcher<any>(`${kissasianBase}/${targetEpisode.url}&s=${provider.id}`);
 
       const watchPage = load(watch);
 
