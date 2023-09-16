@@ -5,10 +5,11 @@ import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { flixhqScraper } from '@/providers/sources/flixhq/index';
 import { kissAsianScraper } from '@/providers/sources/kissasian/index';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
+import { superStreamScraper } from '@/providers/sources/superstream/index';
 
 export function gatherAllSources(): Array<Sourcerer> {
   // all sources are gathered here
-  return [flixhqScraper, remotestreamScraper, kissAsianScraper];
+  return [flixhqScraper, remotestreamScraper, kissAsianScraper, superStreamScraper];
 }
 
 export function gatherAllEmbeds(): Array<Embed> {
