@@ -1,6 +1,7 @@
 import { load } from 'cheerio';
 
 import type { ScrapeContext } from '@/utils/context';
+import { NotFoundError } from '@/utils/errors';
 
 import { embedProviders, kissasianBase } from './common';
 
@@ -8,11 +9,12 @@ export async function getEmbeds(
   ctx: ScrapeContext,
   targetEpisode: {
     number: string;
-    url: string;
+    url?: string;
   },
 ) {
   let embeds = await Promise.all(
     embedProviders.map(async (provider) => {
+      if (!targetEpisode.url) throw new NotFoundError('Episode not found');
       const watch = await ctx.proxiedFetcher<any>(targetEpisode.url, {
         baseUrl: kissasianBase,
         query: {
