@@ -9,13 +9,13 @@ import { getSource } from './source';
 
 export const gomoviesBase = `https://gomovies.sx`;
 
-export const remotestreamScraper = makeSourcerer({
+export const goMoviesScraper = makeSourcerer({
   id: 'gomovies',
   name: 'GOmovies',
   rank: 200,
   flags: [flags.NO_CORS],
   async scrapeShow(ctx) {
-    const search = await ctx.proxiedFetcher<any>(`${gomoviesBase}/ajax/search`, {
+    const search = await ctx.proxiedFetcher<string>(`/ajax/search`, {
       method: 'POST',
       body: JSON.stringify({
         keyword: ctx.media.title,
@@ -23,6 +23,7 @@ export const remotestreamScraper = makeSourcerer({
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
       },
+      baseUrl: gomoviesBase,
     });
 
     const searchPage = load(search);
@@ -60,10 +61,11 @@ export const remotestreamScraper = makeSourcerer({
 
     if (!targetSeason) throw new NotFoundError('Season not found');
 
-    const episodes = await ctx.proxiedFetcher<any>(`${gomoviesBase}/ajax/v2/season/episodes/${targetSeason.dataId}`, {
+    const episodes = await ctx.proxiedFetcher<string>(`/ajax/v2/season/episodes/${targetSeason.dataId}`, {
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
       },
+      baseUrl: gomoviesBase,
     });
 
     const episodesPage = load(episodes);
@@ -80,7 +82,8 @@ export const remotestreamScraper = makeSourcerer({
 
     mediaId = targetEpisode.dataId;
 
-    const sources = await ctx.proxiedFetcher<any>(`${gomoviesBase}/ajax/v2/episode/servers/${mediaId}`, {
+    const sources = await ctx.proxiedFetcher<string>(`ajax/v2/episode/servers/${mediaId}`, {
+      baseUrl: gomoviesBase,
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
       },
@@ -98,7 +101,7 @@ export const remotestreamScraper = makeSourcerer({
     };
   },
   async scrapeMovie(ctx) {
-    const search = await ctx.proxiedFetcher<any>(`${gomoviesBase}/ajax/search`, {
+    const search = await ctx.proxiedFetcher<string>(`ajax/search`, {
       method: 'POST',
       body: JSON.stringify({
         keyword: ctx.media.title,
@@ -106,6 +109,7 @@ export const remotestreamScraper = makeSourcerer({
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
       },
+      baseUrl: gomoviesBase,
     });
 
     const searchPage = load(search);
@@ -127,10 +131,11 @@ export const remotestreamScraper = makeSourcerer({
     // Example series path: /tv/watch-{slug}-{id}
     const mediaId = targetMedia.path.split('-').pop()?.replace('/', '');
 
-    const sources = await ctx.proxiedFetcher<any>(`${gomoviesBase}/ajax/movie/episodes/${mediaId}`, {
+    const sources = await ctx.proxiedFetcher<string>(`ajax/movie/episodes/${mediaId}`, {
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
       },
+      baseUrl: gomoviesBase,
     });
 
     const upcloudSource = await getSource(ctx, sources);

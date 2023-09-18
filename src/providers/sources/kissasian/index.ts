@@ -21,11 +21,11 @@ export const kissAsianScraper = makeSourcerer({
     const dramas = await search(ctx, ctx.media.title, seasonNumber);
 
     const targetDrama = dramas.find((d) => d.name?.toLowerCase() === ctx.media.title.toLowerCase()) ?? dramas[0];
-    if (!targetDrama) throw new Error('Drama not found');
+    if (!targetDrama) throw new NotFoundError('Drama not found');
 
     ctx.progress(30);
 
-    const drama = await ctx.proxiedFetcher<any>(targetDrama.url);
+    const drama = await ctx.proxiedFetcher<string>(targetDrama.url);
 
     const dramaPage = load(drama);
 
@@ -46,11 +46,11 @@ export const kissAsianScraper = makeSourcerer({
     const dramas = await search(ctx, ctx.media.title, undefined);
 
     const targetDrama = dramas.find((d) => d.name?.toLowerCase() === ctx.media.title.toLowerCase()) ?? dramas[0];
-    if (!targetDrama) throw new Error('Drama not found');
+    if (!targetDrama) throw new NotFoundError('Drama not found');
 
     ctx.progress(30);
 
-    const drama = await ctx.proxiedFetcher<any>(targetDrama.url);
+    const drama = await ctx.proxiedFetcher<string>(targetDrama.url);
 
     const dramaPage = load(drama);
 

@@ -18,10 +18,11 @@ export async function getSource(ctx: ScrapeContext, sources: any) {
     sources: [];
     title: string;
     tracks: [];
-  }>(`${gomoviesBase}/ajax/sources/${upcloudDataId}`, {
+  }>(`/ajax/sources/${upcloudDataId}`, {
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
     },
+    baseUrl: gomoviesBase,
   });
 
   if (!upcloudSource.link || upcloudSource.type !== 'iframe') throw new NotFoundError('No upcloud stream found');

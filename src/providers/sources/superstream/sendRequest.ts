@@ -40,6 +40,7 @@ export const sendRequest = async (ctx: ScrapeContext, data: object, altApi = fal
   formatted.append('platform', 'android');
   formatted.append('version', '129');
   formatted.append('medium', 'Website');
+  formatted.append('token', nanoid());
 
   const requestUrl = altApi ? apiUrls[1] : apiUrls[0];
 
@@ -49,7 +50,7 @@ export const sendRequest = async (ctx: ScrapeContext, data: object, altApi = fal
       Platform: 'android',
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: `${formatted.toString()}&token${nanoid()}`,
+    body: formatted,
   });
 
   return JSON.parse(response);

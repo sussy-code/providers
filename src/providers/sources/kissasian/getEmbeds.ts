@@ -8,12 +8,17 @@ export async function getEmbeds(
   ctx: ScrapeContext,
   targetEpisode: {
     number: string;
-    url?: string;
+    url: string;
   },
 ) {
   let embeds = await Promise.all(
     embedProviders.map(async (provider) => {
-      const watch = await ctx.proxiedFetcher<any>(`${kissasianBase}/${targetEpisode.url}&s=${provider.id}`);
+      const watch = await ctx.proxiedFetcher<any>(targetEpisode.url, {
+        baseUrl: kissasianBase,
+        query: {
+          s: provider.id,
+        },
+      });
 
       const watchPage = load(watch);
 

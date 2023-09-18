@@ -10,7 +10,7 @@ export async function search(ctx: ScrapeContext, title: string, seasonNumber?: n
   searchForm.append('keyword', `${title} ${seasonNumber ?? ''}`.trim());
   searchForm.append('type', 'Drama');
 
-  const searchResults = await ctx.proxiedFetcher<any>('/Search/SearchSuggest', {
+  const searchResults = await ctx.proxiedFetcher<string>('/Search/SearchSuggest', {
     baseUrl: kissasianBase,
     method: 'POST',
     body: searchForm,
