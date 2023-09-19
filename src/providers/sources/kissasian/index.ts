@@ -4,6 +4,7 @@ import { flags } from '@/main/targets';
 import { makeSourcerer } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
 
+import { kissasianBase } from './common';
 import { getEmbeds } from './getEmbeds';
 import { getEpisodes } from './getEpisodes';
 import { search } from './search';
@@ -25,7 +26,9 @@ export const kissAsianScraper = makeSourcerer({
 
     ctx.progress(30);
 
-    const drama = await ctx.proxiedFetcher<string>(targetDrama.url);
+    const drama = await ctx.proxiedFetcher<string>(targetDrama.url, {
+      baseUrl: kissasianBase,
+    });
 
     const dramaPage = load(drama);
 
@@ -50,11 +53,13 @@ export const kissAsianScraper = makeSourcerer({
 
     ctx.progress(30);
 
-    const drama = await ctx.proxiedFetcher<string>(targetDrama.url);
+    const drama = await ctx.proxiedFetcher<string>(targetDrama.url, {
+      baseUrl: kissasianBase,
+    });
 
     const dramaPage = load(drama);
 
-    const episodes = await getEpisodes(dramaPage);
+    const episodes = getEpisodes(dramaPage);
 
     const targetEpisode = episodes[0];
     if (!targetEpisode?.url) throw new NotFoundError('Episode not found');

@@ -43,10 +43,11 @@ export const goMoviesScraper = makeSourcerer({
     // Example series path: /tv/watch-{slug}-{id}
     let mediaId = targetMedia.path.split('-').pop()?.replace('/', '');
 
-    const seasons = await ctx.proxiedFetcher<any>(`${gomoviesBase}/ajax/v2/tv/seasons/${mediaId}`, {
+    const seasons = await ctx.proxiedFetcher<string>(`/ajax/v2/tv/seasons/${mediaId}`, {
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
       },
+      baseUrl: gomoviesBase,
     });
 
     const seasonsEl = load(seasons)('.ss-item');
