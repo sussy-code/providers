@@ -268,7 +268,7 @@ async function runQuestions() {
 
 async function runCommandLine() {
   program
-    .option('-f, --fetcher <fetcher>', 'Fetcher to use. Currently only \'node-fetch\' is suspported', 'node-fetch')
+    .option('-f, --fetcher <fetcher>', 'Fetcher to use. Either \'native\' \'node-fetch\'', 'node-fetch')
     .option('-sid, --source-id <id>', 'ID for the source to use. Either an embed or provider', '')
     .option('-tid, --tmdb-id <id>', 'TMDB ID for the media to scrape. Only used if source is a provider', '')
     .option('-t, --type <type>', 'Media type. Either \'movie\' or \'show\'. Only used if source is a provider', 'movie')
@@ -282,13 +282,8 @@ async function runCommandLine() {
 }
 
 async function processOptions(options: CommandLineArguments) {
-  if (options.fetcher !== 'node-fetch') {
-    // * Using native fetch in makeStandardFetcher throws the following TS error:
-    // *
-    // * Argument of type '(input: RequestInfo | URL, init?: RequestInit | undefined) => Promise<Response>' is not assignable to parameter of type 'typeof fetch'.
-    // *   Property 'isRedirect' is missing in type '(input: RequestInfo | URL, init?: RequestInit | undefined) => Promise<Response>' but required in type 'typeof fetch'. ts(2345)
-    // * index.d.ts(221, 14): 'isRedirect' is declared here.
-    throw new Error('Fetcher must be node-fetch');
+  if (options.fetcher !== 'node-fetch' && options.fetcher !== 'native') {
+    throw new Error('Fetcher must be either \'native\' or \'node-fetch\'');
   }
 
   if (!options.sourceId.trim()) {
@@ -341,7 +336,14 @@ async function processOptions(options: CommandLineArguments) {
     }
   }
 
-  const fetcher = makeStandardFetcher(nodeFetch);
+  let fetcher;
+
+  if (options.fetcher === 'native') {
+    fetcher = makeStandardFetcher(fetch as any);
+  } else {
+    fetcher = makeStandardFetcher(nodeFetch);
+  }
+
   const providers = makeProviders({
     fetcher: fetcher,
     target: targets.NATIVE
