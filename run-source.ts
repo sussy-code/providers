@@ -274,7 +274,7 @@ async function runCommandLine() {
     .option('-t, --type <type>', 'Media type. Either \'movie\' or \'show\'. Only used if source is a provider', 'movie')
     .option('-s, --season <number>', 'Season number. Only used if type is \'show\'', '0')
     .option('-e, --episode <number>', 'Episode number. Only used if type is \'show\'', '0')
-    .option('-u, --url <embed URL', 'URL to a video embed. Only used if source is an embed', '')
+    .option('-u, --url <embed URL>', 'URL to a video embed. Only used if source is an embed', '')
 
   program.parse();
 
