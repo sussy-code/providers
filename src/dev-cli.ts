@@ -47,8 +47,6 @@ if (!TMDB_API_KEY?.trim()) {
   throw new Error('Missing MOVIE_WEB_TMDB_API_KEY environment variable');
 }
 
-const sources = getAllSources();
-
 function getAllSources() {
   // * The only way to get a list of all sources is to
   // * create all these things. Maybe this should change
@@ -57,16 +55,16 @@ function getAllSources() {
     target: targets.NATIVE,
   });
 
-  const sources = providers.listSources();
-  const embeds = providers.listEmbeds();
-
-  const combined = [...sources, ...embeds];
+  const combined = [...providers.listSources(), ...providers.listEmbeds()];
 
   // * Remove dupes
   const map = new Map(combined.map((source) => [source.id, source]));
 
   return [...map.values()];
 }
+
+// * Defined here cuz ESLint didn't like the order these were defined in
+const sources = getAllSources();
 
 async function makeTMDBRequest(url: string): Promise<Response> {
   const headers: {
@@ -76,16 +74,20 @@ async function makeTMDBRequest(url: string): Promise<Response> {
     accept: 'application/json',
   };
 
+  // * Used to get around ESLint
+  // * Assignment to function parameter 'url'. eslint (no-param-reassign)
+  let requestURL = url;
+
   // * JWT keys always start with ey and are ONLY valid as a header.
   // * All other keys are ONLY valid as a query param.
   // * Thanks TMDB.
   if (TMDB_API_KEY!.startsWith('ey')) {
     headers.authorization = `Bearer ${TMDB_API_KEY}`;
   } else {
-    url += `?api_key=${TMDB_API_KEY}`;
+    requestURL += `?api_key=${TMDB_API_KEY}`;
   }
 
-  return fetch(url, {
+  return fetch(requestURL, {
     method: 'GET',
     headers,
   });
@@ -161,14 +163,132 @@ function joinMediaTypes(mediaTypes: string[] | undefined) {
   if (mediaTypes) {
     const formatted = mediaTypes
       .map((type: string) => {
-        type = type[0].toUpperCase() + type.substring(1).toLowerCase();
-        return `${type}s`;
+        return `${type[0].toUpperCase() + type.substring(1).toLowerCase()}s`;
       })
       .join(' / ');
 
     return `(${formatted})`;
   }
   return ''; // * Embed sources pass through here too
+}
+
+async function runScraper(providers: ProviderControls, source: MetaOutput, options: CommandLineArguments) {
+  const spinnies = new Spinnies();
+
+  if (source.type === 'embed') {
+    spinnies.add('scrape', { text: `Running ${source.name} scraper on ${options.url}` });
+    try {
+      const result = await providers.runEmbedScraper({
+        url: options.url,
+        id: source.id,
+      });
+      spinnies.succeed('scrape', { text: 'Done!' });
+      console.log(result);
+    } catch (error) {
+      let message = 'Unknown error';
+      if (error instanceof Error) {
+        message = error.message;
+      }
+
+      spinnies.fail('scrape', { text: `ERROR: ${message}` });
+    }
+  } else {
+    let media;
+
+    if (options.type === 'movie') {
+      media = await getMovieMediaDetails(options.tmdbId);
+    } else {
+      media = await getShowMediaDetails(options.tmdbId, options.season, options.episode);
+    }
+
+    spinnies.add('scrape', { text: `Running ${source.name} scraper on ${media.title}` });
+    try {
+      const result = await providers.runSourceScraper({
+        media,
+        id: source.id,
+      });
+      spinnies.succeed('scrape', { text: 'Done!' });
+      console.log(result);
+    } catch (error) {
+      let message = 'Unknown error';
+      if (error instanceof Error) {
+        message = error.message;
+      }
+
+      spinnies.fail('scrape', { text: `ERROR: ${message}` });
+    }
+  }
+}
+
+async function processOptions(options: CommandLineArguments) {
+  if (options.fetcher !== 'node-fetch' && options.fetcher !== 'native') {
+    throw new Error("Fetcher must be either 'native' or 'node-fetch'");
+  }
+
+  if (!options.sourceId.trim()) {
+    throw new Error('Source ID must be provided');
+  }
+
+  const source = sources.find(({ id }) => id === options.sourceId);
+
+  if (!source) {
+    throw new Error('Invalid source ID. No source found');
+  }
+
+  if (source.type === 'embed' && !options.url.trim()) {
+    throw new Error('Must provide an embed URL for embed sources');
+  }
+
+  if (source.type === 'source') {
+    if (!options.tmdbId.trim()) {
+      throw new Error('Must provide a TMDB ID for provider sources');
+    }
+
+    if (Number.isNaN(Number(options.tmdbId)) || Number(options.tmdbId) < 0) {
+      throw new Error('TMDB ID must be a number greater than 0');
+    }
+
+    if (!options.type.trim()) {
+      throw new Error('Must provide a type for provider sources');
+    }
+
+    if (options.type !== 'movie' && options.type !== 'show') {
+      throw new Error("Invalid media type. Must be either 'movie' or 'show'");
+    }
+
+    if (options.type === 'show') {
+      if (!options.season.trim()) {
+        throw new Error('Must provide a season number for TV shows');
+      }
+
+      if (!options.episode.trim()) {
+        throw new Error('Must provide an episode number for TV shows');
+      }
+
+      if (Number.isNaN(Number(options.season)) || Number(options.season) <= 0) {
+        throw new Error('Season number must be a number greater than 0');
+      }
+
+      if (Number.isNaN(Number(options.episode)) || Number(options.episode) <= 0) {
+        throw new Error('Episode number must be a number greater than 0');
+      }
+    }
+  }
+
+  let fetcher;
+
+  if (options.fetcher === 'native') {
+    fetcher = makeStandardFetcher(fetch as any);
+  } else {
+    fetcher = makeStandardFetcher(nodeFetch);
+  }
+
+  const providers = makeProviders({
+    fetcher,
+    target: targets.NATIVE,
+  });
+
+  await runScraper(providers, source, options);
 }
 
 async function runQuestions() {
@@ -212,7 +332,7 @@ async function runQuestions() {
   options.fetcher = answers.fetcher;
   options.sourceId = answers.source;
 
-  const source = sources.find((source) => source.id === answers.source)!;
+  const source = sources.find(({ id }) => id === answers.source)!;
 
   if (source.type === 'embed') {
     const sourceAnswers = await prompt<EmbedSourceAnswers>([
@@ -286,125 +406,6 @@ async function runCommandLine() {
   program.parse();
 
   await processOptions(program.opts());
-}
-
-async function processOptions(options: CommandLineArguments) {
-  if (options.fetcher !== 'node-fetch' && options.fetcher !== 'native') {
-    throw new Error("Fetcher must be either 'native' or 'node-fetch'");
-  }
-
-  if (!options.sourceId.trim()) {
-    throw new Error('Source ID must be provided');
-  }
-
-  const source = sources.find((source) => source.id === options.sourceId);
-
-  if (!source) {
-    throw new Error('Invalid source ID. No source found');
-  }
-
-  if (source.type === 'embed' && !options.url.trim()) {
-    throw new Error('Must provide an embed URL for embed sources');
-  }
-
-  if (source.type === 'source') {
-    if (!options.tmdbId.trim()) {
-      throw new Error('Must provide a TMDB ID for provider sources');
-    }
-
-    if (isNaN(Number(options.tmdbId)) || Number(options.tmdbId) < 0) {
-      throw new Error('TMDB ID must be a number greater than 0');
-    }
-
-    if (!options.type.trim()) {
-      throw new Error('Must provide a type for provider sources');
-    }
-
-    if (options.type !== 'movie' && options.type !== 'show') {
-      throw new Error("Invalid media type. Must be either 'movie' or 'show'");
-    }
-
-    if (options.type === 'show') {
-      if (!options.season.trim()) {
-        throw new Error('Must provide a season number for TV shows');
-      }
-
-      if (!options.episode.trim()) {
-        throw new Error('Must provide an episode number for TV shows');
-      }
-
-      if (isNaN(Number(options.season)) || Number(options.season) <= 0) {
-        throw new Error('Season number must be a number greater than 0');
-      }
-
-      if (isNaN(Number(options.episode)) || Number(options.episode) <= 0) {
-        throw new Error('Episode number must be a number greater than 0');
-      }
-    }
-  }
-
-  let fetcher;
-
-  if (options.fetcher === 'native') {
-    fetcher = makeStandardFetcher(fetch as any);
-  } else {
-    fetcher = makeStandardFetcher(nodeFetch);
-  }
-
-  const providers = makeProviders({
-    fetcher,
-    target: targets.NATIVE,
-  });
-
-  await runScraper(providers, source, options);
-}
-
-async function runScraper(providers: ProviderControls, source: MetaOutput, options: CommandLineArguments) {
-  const spinnies = new Spinnies();
-
-  if (source.type === 'embed') {
-    spinnies.add('scrape', { text: `Running ${source.name} scraper on ${options.url}` });
-    try {
-      const result = await providers.runEmbedScraper({
-        url: options.url,
-        id: source.id,
-      });
-      spinnies.succeed('scrape', { text: 'Done!' });
-      console.log(result);
-    } catch (error) {
-      let message = 'Unknown error';
-      if (error instanceof Error) {
-        message = error.message;
-      }
-
-      spinnies.fail('scrape', { text: `ERROR: ${message}` });
-    }
-  } else {
-    let media;
-
-    if (options.type === 'movie') {
-      media = await getMovieMediaDetails(options.tmdbId);
-    } else {
-      media = await getShowMediaDetails(options.tmdbId, options.season, options.episode);
-    }
-
-    spinnies.add('scrape', { text: `Running ${source.name} scraper on ${media.title}` });
-    try {
-      const result = await providers.runSourceScraper({
-        media,
-        id: source.id,
-      });
-      spinnies.succeed('scrape', { text: 'Done!' });
-      console.log(result);
-    } catch (error) {
-      let message = 'Unknown error';
-      if (error instanceof Error) {
-        message = error.message;
-      }
-
-      spinnies.fail('scrape', { text: `ERROR: ${message}` });
-    }
-  }
 }
 
 if (process.argv.length === 2) {
