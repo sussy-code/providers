@@ -332,7 +332,11 @@ async function runQuestions() {
   options.fetcher = answers.fetcher;
   options.sourceId = answers.source;
 
-  const source = sources.find(({ id }) => id === answers.source)!;
+  const source = sources.find(({ id }) => id === answers.source);
+
+  if (!source) {
+    throw new Error(`No source with ID ${answers.source} found`);
+  }
 
   if (source.type === 'embed') {
     const sourceAnswers = await prompt<EmbedSourceAnswers>([
