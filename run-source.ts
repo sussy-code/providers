@@ -38,6 +38,10 @@ type CommandLineArguments = {
 
 const TMDB_API_KEY = process.env.MOVIE_WEB_TMDB_API_KEY;
 
+if (!TMDB_API_KEY?.trim()) {
+  throw new Error('Missing MOVIE_WEB_TMDB_API_KEY environment variable');
+}
+
 const sources = getAllSources();
 
 function getAllSources() {
