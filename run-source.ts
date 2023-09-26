@@ -43,30 +43,15 @@ const sources = getAllSources();
 function getAllSources() {
   // * The only way to get a list of all sources is to
   // * create all these things. Maybe this should change
-  const nativeSources = makeProviders({
+  const providers = makeProviders({
     fetcher: makeStandardFetcher(nodeFetch),
     target: targets.NATIVE
-  }).listSources();
+  })
 
-  const browserSources = makeProviders({
-    fetcher: makeStandardFetcher(nodeFetch),
-    target: targets.BROWSER
-  }).listSources();
+  const sources = providers.listSources();
+  const embeds = providers.listEmbeds();
 
-  const nativeEmbeds = makeProviders({
-    fetcher: makeStandardFetcher(nodeFetch),
-    target: targets.NATIVE
-  }).listEmbeds();
-
-  const browserEmbeds = makeProviders({
-    fetcher: makeStandardFetcher(nodeFetch),
-    target: targets.BROWSER
-  }).listEmbeds();
-
-  const combined = [
-    ...nativeSources, ...browserSources,
-    ...nativeEmbeds, ...browserEmbeds
-  ];
+  const combined = [...sources, ...embeds];
 
   // * Remove dupes
   const map = new Map(combined.map(source => [source.id, source]));
