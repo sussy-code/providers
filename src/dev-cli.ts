@@ -41,7 +41,7 @@ type CommandLineArguments = {
   url: string;
 };
 
-const TMDB_API_KEY = process.env.MOVIE_WEB_TMDB_API_KEY;
+const TMDB_API_KEY = process.env.MOVIE_WEB_TMDB_API_KEY ?? '';
 
 if (!TMDB_API_KEY?.trim()) {
   throw new Error('Missing MOVIE_WEB_TMDB_API_KEY environment variable');
@@ -81,7 +81,7 @@ async function makeTMDBRequest(url: string): Promise<Response> {
   // * JWT keys always start with ey and are ONLY valid as a header.
   // * All other keys are ONLY valid as a query param.
   // * Thanks TMDB.
-  if (TMDB_API_KEY!.startsWith('ey')) {
+  if (TMDB_API_KEY.startsWith('ey')) {
     headers.authorization = `Bearer ${TMDB_API_KEY}`;
   } else {
     requestURL += `?api_key=${TMDB_API_KEY}`;
