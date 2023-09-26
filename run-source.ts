@@ -76,6 +76,10 @@ async function getMovieMediaDetails(id: string): Promise<MovieMedia> {
     throw new Error(movie.status_message);
   }
 
+  if (!movie.release_date) {
+    throw new Error(`${movie.title} has no release_date. Assuming unreleased`);
+  }
+
   return {
     type: 'movie',
     title: movie.title,
@@ -97,6 +101,10 @@ async function getShowMediaDetails(id: string, seasonNumber: string, episodeNumb
 
   if (series.success === false) {
     throw new Error(series.status_message);
+  }
+
+  if (!series.first_air_date) {
+    throw new Error(`${series.name} has no first_air_date. Assuming unaired`);
   }
 
   response = await fetch(`https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}?api_key=${TMDB_API_KEY}`, {
@@ -126,7 +134,7 @@ async function getShowMediaDetails(id: string, seasonNumber: string, episodeNumb
   return {
     type: 'show',
     title: series.name,
-    releaseYear: Number(series.first_air_date.split('-')[0]), // * Is this really what should go here?
+    releaseYear: Number(series.first_air_date.split('-')[0]),
     tmdbId: id,
     episode: {
       number: episode.episode_number,
