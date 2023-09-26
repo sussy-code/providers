@@ -8,7 +8,7 @@ import nodeFetch from 'node-fetch';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Spinnies from 'spinnies';
 
-import { MetaOutput, MovieMedia, ProviderControls, ShowMedia, makeProviders, makeStandardFetcher, targets } from '..';
+import { MetaOutput, MovieMedia, ProviderControls, ShowMedia, makeProviders, makeStandardFetcher, targets } from '.';
 
 dotenv.config();
 
