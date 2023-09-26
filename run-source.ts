@@ -268,7 +268,7 @@ async function runQuestions() {
 
 async function runCommandLine() {
   program
-    .option('-f, --fetcher <fetcher>', 'Fetcher to use. Either \'native\' \'node-fetch\'', 'node-fetch')
+    .option('-f, --fetcher <fetcher>', 'Fetcher to use. Either \'native\' or \'node-fetch\'', 'node-fetch')
     .option('-sid, --source-id <id>', 'ID for the source to use. Either an embed or provider', '')
     .option('-tid, --tmdb-id <id>', 'TMDB ID for the media to scrape. Only used if source is a provider', '')
     .option('-t, --type <type>', 'Media type. Either \'movie\' or \'show\'. Only used if source is a provider', 'movie')
