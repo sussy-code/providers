@@ -63,13 +63,31 @@ function getAllSources() {
   return [...map.values()]
 }
 
-async function getMovieMediaDetails(id: string): Promise<MovieMedia> {
-  const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${TMDB_API_KEY}`, {
+async function makeTMDBRequest(url: string): Promise<Response> {
+  const headers: {
+    accept: 'application/json';
+    authorization?: string;
+  } = {
+    accept: 'application/json'
+  };
+
+  // * JWT keys always start with ey and are ONLY valid as a header.
+  // * All other keys are ONLY valid as a query param.
+  // * Thanks TMDB.
+  if (TMDB_API_KEY!.startsWith('ey')) {
+    headers.authorization = `Bearer ${TMDB_API_KEY}`;
+  } else {
+    url += `?api_key=${TMDB_API_KEY}`;
+  }
+
+  return fetch(url, {
     method: 'GET',
-    headers: {
-      accept: 'application/json'
-    }
+    headers: headers
   });
+}
+
+async function getMovieMediaDetails(id: string): Promise<MovieMedia> {
+  const response = await makeTMDBRequest(`https://api.themoviedb.org/3/movie/${id}`);
   const movie = await response.json();
 
   if (movie.success === false) {
@@ -91,12 +109,7 @@ async function getMovieMediaDetails(id: string): Promise<MovieMedia> {
 async function getShowMediaDetails(id: string, seasonNumber: string, episodeNumber: string): Promise<ShowMedia> {
   // * TV shows require the TMDB ID for the series, season, and episode
   // * and the name of the series. Needs multiple requests
-  let response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${TMDB_API_KEY}`, {
-    method: 'GET',
-    headers: {
-      accept: 'application/json'
-    }
-  });
+  let response = await makeTMDBRequest(`https://api.themoviedb.org/3/tv/${id}`);
   const series = await response.json();
 
   if (series.success === false) {
@@ -107,24 +120,14 @@ async function getShowMediaDetails(id: string, seasonNumber: string, episodeNumb
     throw new Error(`${series.name} has no first_air_date. Assuming unaired`);
   }
 
-  response = await fetch(`https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}?api_key=${TMDB_API_KEY}`, {
-    method: 'GET',
-    headers: {
-      accept: 'application/json'
-    }
-  });
+  response = await makeTMDBRequest(`https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}`);
   const season = await response.json();
 
   if (season.success === false) {
     throw new Error(season.status_message);
   }
 
-  response = await fetch(`https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}/episode/${episodeNumber}?api_key=${TMDB_API_KEY}`, {
-    method: 'GET',
-    headers: {
-      accept: 'application/json'
-    }
-  });
+  response = await makeTMDBRequest(`https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}/episode/${episodeNumber}`);
   const episode = await response.json();
 
   if (episode.success === false) {
