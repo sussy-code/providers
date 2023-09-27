@@ -33,6 +33,7 @@ module.exports = {
     'no-eval': 'off',
     'no-await-in-loop': 'off',
     'no-nested-ternary': 'off',
+    'no-param-reassign': ["error", { "props": false }],
     'prefer-destructuring': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     'import/extensions': [
