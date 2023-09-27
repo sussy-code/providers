@@ -4,10 +4,9 @@ package that holds all providers of movie-web.
 Feel free to use for your own projects.
 
 features:
- - scrape popular streaming websites
- - works in both browser and server-side
 
-> **This package is still WIP**
+- scrape popular streaming websites
+- works in both browser and server-side
 
 ## Development
 To make testing scrapers easier during development a CLI tool is available to run specific sources. To run the CLI testing tool, use `npm run test:dev`. The script supports 2 execution modes
