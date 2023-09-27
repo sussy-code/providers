@@ -33,6 +33,3 @@ Example testing the FlixHQ source on the movie "Spirited Away"
 ```bash
 npm run test:dev -- -sid flixhq -tid 129 -t movie
 ```
-
-Todos:
- - make default fetcher maker thing work with both undici and node-fetch
