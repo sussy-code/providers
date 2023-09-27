@@ -1,9 +1,9 @@
 import { serializeBody } from '@/fetchers/body';
 import { makeFullUrl } from '@/fetchers/common';
-import { FetchType } from '@/fetchers/fetch';
+import { FetchLike } from '@/fetchers/fetch';
 import { Fetcher } from '@/fetchers/types';
 
-export function makeStandardFetcher(f: FetchType): Fetcher {
+export function makeStandardFetcher(f: FetchLike): Fetcher {
   const normalFetch: Fetcher = async (url, ops) => {
     const fullUrl = makeFullUrl(url, ops);
     const seralizedBody = serializeBody(ops.body);

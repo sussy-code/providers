@@ -10,7 +10,7 @@ export type FetchOps = {
 };
 
 export type FetchHeaders = {
-  get(key: string): string | undefined;
+  get(key: string): string | null;
 };
 
 export type FetchReply = {
@@ -19,4 +19,4 @@ export type FetchReply = {
   headers: FetchHeaders;
 };
 
-export type FetchType = (url: string, ops?: FetchOps) => Promise<FetchReply>;
+export type FetchLike = (url: string, ops?: FetchOps | undefined) => Promise<FetchReply>;

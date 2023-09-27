@@ -1,5 +1,5 @@
 import { makeFullUrl } from '@/fetchers/common';
-import { FetchType } from '@/fetchers/fetch';
+import { FetchLike } from '@/fetchers/fetch';
 import { makeStandardFetcher } from '@/fetchers/standardFetch';
 import { Fetcher } from '@/fetchers/types';
 
@@ -9,7 +9,7 @@ const headerMap: Record<string, string> = {
   origin: 'X-Origin',
 };
 
-export function makeSimpleProxyFetcher(proxyUrl: string, f: FetchType): Fetcher {
+export function makeSimpleProxyFetcher(proxyUrl: string, f: FetchLike): Fetcher {
   const fetcher = makeStandardFetcher(f);
   const proxiedFetch: Fetcher = async (url, ops) => {
     const fullUrl = makeFullUrl(url, ops);

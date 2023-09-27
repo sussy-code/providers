@@ -278,7 +278,7 @@ async function processOptions(options: CommandLineArguments) {
   let fetcher;
 
   if (options.fetcher === 'native') {
-    fetcher = makeStandardFetcher(fetch as any);
+    fetcher = makeStandardFetcher(fetch);
   } else {
     fetcher = makeStandardFetcher(nodeFetch);
   }
