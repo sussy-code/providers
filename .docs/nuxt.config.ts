@@ -6,6 +6,12 @@ export default defineNuxtConfig({
     '@/assets/css/main.css',
   ],
 
+  build: {
+    transpile: [
+      "chalk"
+    ]
+  },
+
   modules: [
     // https://github.com/nuxt-modules/plausible
     '@nuxtjs/plausible',
