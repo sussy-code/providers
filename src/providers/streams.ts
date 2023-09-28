@@ -6,7 +6,7 @@ export type StreamFile = {
   headers?: Record<string, string>;
 };
 
-export type Qualities = '360' | '480' | '720' | '1080';
+export type Qualities = 'unknown' | '360' | '480' | '720' | '1080';
 
 export type FileBasedStream = {
   type: 'file';

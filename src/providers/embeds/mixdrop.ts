@@ -27,10 +27,7 @@ export const mixdropScraper = makeEmbed({
             type: 'file',
             flags: [flags.NO_CORS],
             qualities: {
-              // TODO - Allow unknown qualitys?
-              // MixDrop does not give quality info
-              // This is just so it's even visible
-              '1080': {
+              unknown: {
                 type: 'mp4',
                 url: url.startsWith('http') ? url : `https:${url}`, // URLs don't always start with the protocol
                 headers: {
