@@ -28,7 +28,7 @@ jobs:
       run: npm run test
 
     - name: Run integration tests
-      run: npm run test:integration
+      run: npm run build && npm run test:integration
 
     - name: Run linting
       run: npm run lint
