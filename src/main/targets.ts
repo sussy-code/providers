@@ -7,6 +7,7 @@ export type Flags = (typeof flags)[keyof typeof flags];
 export const targets = {
   BROWSER: 'browser',
   NATIVE: 'native',
+  ALL: 'all',
 } as const;
 
 export type Targets = (typeof targets)[keyof typeof targets];
@@ -20,6 +21,9 @@ export const targetToFeatures: Record<Targets, FeatureMap> = {
     requires: [flags.NO_CORS],
   },
   native: {
+    requires: [],
+  },
+  all: {
     requires: [],
   },
 } as const;

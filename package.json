@@ -72,7 +72,8 @@
     "vite": "^4.0.0",
     "vite-plugin-dts": "^3.5.3",
     "vite-plugin-eslint": "^1.8.1",
-    "vitest": "^0.32.2"
+    "vitest": "^0.32.2",
+    "node-fetch": "^2.7.0"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",

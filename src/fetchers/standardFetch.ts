@@ -1,10 +1,9 @@
-import fetch from 'node-fetch';
-
 import { serializeBody } from '@/fetchers/body';
 import { makeFullUrl } from '@/fetchers/common';
+import { FetchLike } from '@/fetchers/fetch';
 import { Fetcher } from '@/fetchers/types';
 
-export function makeStandardFetcher(f: typeof fetch): Fetcher {
+export function makeStandardFetcher(f: FetchLike): Fetcher {
   const normalFetch: Fetcher = async (url, ops) => {
     const fullUrl = makeFullUrl(url, ops);
     const seralizedBody = serializeBody(ops.body);
