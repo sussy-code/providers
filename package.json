@@ -63,6 +63,7 @@
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
+    "node-fetch": "^2.7.0",
     "prettier": "^2.6.2",
     "spinnies": "^0.5.1",
     "ts-node": "^10.9.1",
@@ -72,14 +73,14 @@
     "vite": "^4.0.0",
     "vite-plugin-dts": "^3.5.3",
     "vite-plugin-eslint": "^1.8.1",
-    "vitest": "^0.32.2",
-    "node-fetch": "^2.7.0"
+    "vitest": "^0.32.2"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "crypto-js": "^4.1.1",
     "form-data": "^4.0.0",
     "node-fetch": "^2.7.0",
-    "randombytes": "^2.1.0"
+    "randombytes": "^2.1.0",
+    "unpacker": "^1.0.1"
   }
 }
