@@ -1,4 +1,5 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
+
 import { program } from 'commander';
 import dotenv from 'dotenv';
 import { prompt } from 'enquirer';
