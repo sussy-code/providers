@@ -23,7 +23,7 @@ export async function getFlixhqId(ctx: ScrapeContext, media: MovieMedia | ShowMe
       return {
         id,
         title,
-        year: +year,
+        year: parseInt(year, 10),
       };
     });
 
