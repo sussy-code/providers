@@ -83,8 +83,7 @@ export async function getZoeChipShowID(ctx: ScrapeContext, media: ShowMedia): Pr
   const releasedRegex = /<\/strong><\/span> (\d.*)-\d.*-\d.*/;
   const searchResults = await getZoeChipSearchResults(ctx, media);
 
-  // Since we don't have a year here, force them to be the same. Only compare titles
-  const filtered = searchResults.filter((v) => v && v.type === 'TV' && compareMedia(media, v.title, media.releaseYear));
+  const filtered = searchResults.filter((v) => v && v.type === 'TV' && compareMedia(media, v.title));
 
   for (const result of filtered) {
     // This gets filtered above but the linter Gods don't think so
