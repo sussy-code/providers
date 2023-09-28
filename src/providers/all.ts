@@ -1,4 +1,5 @@
 import { Embed, Sourcerer } from '@/providers/base';
+import { mixdropScraper } from '@/providers/embeds/mixdrop';
 import { mp4uploadScraper } from '@/providers/embeds/mp4upload';
 import { streamsbScraper } from '@/providers/embeds/streamsb';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
@@ -16,5 +17,5 @@ export function gatherAllSources(): Array<Sourcerer> {
 
 export function gatherAllEmbeds(): Array<Embed> {
   // all embeds are gathered here
-  return [upcloudScraper, mp4uploadScraper, streamsbScraper, upstreamScraper];
+  return [upcloudScraper, mp4uploadScraper, streamsbScraper, upstreamScraper, mixdropScraper];
 }
