@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
   },
   extends: ['airbnb-base', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
-  ignorePatterns: ['lib/*', '/*.js', '/*.ts', '/**/*.test.ts', 'test/*'],
+  ignorePatterns: ['lib/*', 'tests/*', '/*.js', '/*.ts', '/**/*.test.ts', 'test/*'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: './tsconfig.json',
@@ -33,7 +33,7 @@ module.exports = {
     'no-eval': 'off',
     'no-await-in-loop': 'off',
     'no-nested-ternary': 'off',
-    'no-param-reassign': ["error", { "props": false }],
+    'no-param-reassign': ['error', { props: false }],
     'prefer-destructuring': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     'import/extensions': [
