@@ -1,12 +1,11 @@
 import CryptoJS from 'crypto-js';
-import { customAlphabet } from 'nanoid';
+import randomBytes from 'randombytes';
 
 import type { ScrapeContext } from '@/utils/context';
 
 import { apiUrls, appId, appKey, key } from './common';
 import { encrypt, getVerify } from './crypto';
 
-const nanoid = customAlphabet('0123456789abcdef', 32);
 const expiry = () => Math.floor(Date.now() / 1000 + 60 * 60 * 12);
 
 export const sendRequest = async (ctx: ScrapeContext, data: object, altApi = false) => {
@@ -40,7 +39,7 @@ export const sendRequest = async (ctx: ScrapeContext, data: object, altApi = fal
   formatted.append('platform', 'android');
   formatted.append('version', '129');
   formatted.append('medium', 'Website');
-  formatted.append('token', nanoid());
+  formatted.append('token', randomBytes(16).toString('hex'));
 
   const requestUrl = altApi ? apiUrls[1] : apiUrls[0];
 

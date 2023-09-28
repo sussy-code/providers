@@ -12,8 +12,14 @@ export function compareTitle(a: string, b: string): boolean {
   return normalizeTitle(a) === normalizeTitle(b);
 }
 
-export function compareMedia(media: CommonMedia, title: string, releaseYear?: number): boolean {
+export function compareMedia(media: CommonMedia, title: string, releaseYear?: number, compareYear?: boolean): boolean {
   // if no year is provided, count as if its the correct year
-  const isSameYear = releaseYear === undefined ? true : media.releaseYear === releaseYear;
+  let isSameYear: boolean;
+  if (!compareYear) {
+    isSameYear = true;
+  } else {
+    isSameYear = releaseYear === undefined ? true : media.releaseYear === releaseYear;
+  }
+
   return compareTitle(media.title, title) && isSameYear;
 }

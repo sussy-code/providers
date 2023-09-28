@@ -1,11 +1,11 @@
 import { load } from 'cheerio';
 
-import { MovieMedia } from '@/main/media';
+import { MovieMedia, ShowMedia } from '@/main/media';
 import { flixHqBase } from '@/providers/sources/flixhq/common';
 import { compareMedia } from '@/utils/compare';
 import { ScrapeContext } from '@/utils/context';
 
-export async function getFlixhqId(ctx: ScrapeContext, media: MovieMedia): Promise<string | null> {
+export async function getFlixhqId(ctx: ScrapeContext, media: MovieMedia | ShowMedia): Promise<string | null> {
   const searchResults = await ctx.proxiedFetcher<string>(`/search/${media.title.replaceAll(/[^a-z0-9A-Z]/g, '-')}`, {
     baseUrl: flixHqBase,
   });

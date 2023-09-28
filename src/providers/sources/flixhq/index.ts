@@ -15,8 +15,25 @@ export const flixhqScraper = makeSourcerer({
     const id = await getFlixhqId(ctx, ctx.media);
     if (!id) throw new NotFoundError('no search results match');
 
-    const sources = await getFlixhqSources(ctx, id);
+    const sources = await getFlixhqSources(ctx, ctx.media, id);
     const upcloudStream = sources.find((v) => v.embed.toLowerCase() === 'upcloud');
+    if (!upcloudStream) throw new NotFoundError('upcloud stream not found for flixhq');
+
+    return {
+      embeds: [
+        {
+          embedId: upcloudScraper.id,
+          url: await getFlixhqSourceDetails(ctx, upcloudStream.episodeId),
+        },
+      ],
+    };
+  },
+  async scrapeShow(ctx) {
+    const id = await getFlixhqId(ctx, ctx.media);
+    if (!id) throw new NotFoundError('no search results match');
+
+    const sources = await getFlixhqSources(ctx, ctx.media, id);
+    const upcloudStream = sources.find((v) => v.embed.toLowerCase() === 'server upcloud');
     if (!upcloudStream) throw new NotFoundError('upcloud stream not found for flixhq');
 
     return {
