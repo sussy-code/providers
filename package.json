@@ -48,6 +48,7 @@
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
     "@types/node-fetch": "^2.6.6",
+    "@types/randombytes": "^2.0.1",
     "@types/spinnies": "^0.5.1",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
@@ -76,7 +77,7 @@
     "cheerio": "^1.0.0-rc.12",
     "crypto-js": "^4.1.1",
     "form-data": "^4.0.0",
-    "nanoid": "^5.0.1",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "randombytes": "^2.1.0"
   }
 }
