@@ -101,7 +101,7 @@ export async function getZoeChipShowID(ctx: ScrapeContext, media: ShowMedia): Pr
     const regexResult = html.match(releasedRegex);
     if (regexResult) {
       const year = Number(regexResult[1]);
-      if (!Number.isNaN(year) && year === media.releaseYear) {
+      if (!Number.isNaN(year) && compareMedia(media, result.title, year)) {
         return result.id;
       }
     }
