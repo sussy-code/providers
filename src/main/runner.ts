@@ -1,6 +1,7 @@
 import { UseableFetcher } from '@/fetchers/types';
 import { FullScraperEvents } from '@/main/events';
 import { ScrapeMedia } from '@/main/media';
+import { FeatureMap, flagsAllowedInFeatures } from '@/main/targets';
 import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { ProviderList } from '@/providers/get';
 import { Stream } from '@/providers/streams';
@@ -28,6 +29,7 @@ export type EmbedRunOutput = {
 export type ProviderRunnerOptions = {
   fetcher: UseableFetcher;
   proxiedFetcher: UseableFetcher;
+  features: FeatureMap;
   sourceOrder?: string[];
   embedOrder?: string[];
   events?: FullScraperEvents;
@@ -77,6 +79,9 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
           ...contextBase,
           media: ops.media,
         });
+      if (output?.stream && !flagsAllowedInFeatures(ops.features, output.stream.flags)) {
+        throw new NotFoundError("stream doesn't satisfy target feature flags");
+      }
     } catch (err) {
       if (err instanceof NotFoundError) {
         ops.events?.update?.({
@@ -135,6 +140,9 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
           ...contextBase,
           url: e.url,
         });
+        if (!flagsAllowedInFeatures(ops.features, embedOutput.stream.flags)) {
+          throw new NotFoundError("stream doesn't satisfy target feature flags");
+        }
       } catch (err) {
         if (err instanceof NotFoundError) {
           ops.events?.update?.({

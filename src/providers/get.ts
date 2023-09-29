@@ -1,3 +1,4 @@
+import { FeatureMap, flagsAllowedInFeatures } from '@/main/targets';
 import { gatherAllEmbeds, gatherAllSources } from '@/providers/all';
 import { Embed, Sourcerer } from '@/providers/base';
 import { hasDuplicates } from '@/utils/predicates';
@@ -7,7 +8,7 @@ export interface ProviderList {
   embeds: Embed[];
 }
 
-export function getProviders(): ProviderList {
+export function getProviders(features: FeatureMap): ProviderList {
   const sources = gatherAllSources().filter((v) => !v?.disabled);
   const embeds = gatherAllEmbeds().filter((v) => !v?.disabled);
   const combined = [...sources, ...embeds];
@@ -21,7 +22,7 @@ export function getProviders(): ProviderList {
   if (anyDuplicateEmbedRank) throw new Error('Duplicate rank found in embeds');
 
   return {
-    sources,
+    sources: sources.filter((s) => flagsAllowedInFeatures(features, s.flags)),
     embeds,
   };
 }

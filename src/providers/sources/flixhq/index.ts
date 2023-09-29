@@ -1,3 +1,4 @@
+import { flags } from '@/main/targets';
 import { makeSourcerer } from '@/providers/base';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { getFlixhqSourceDetails, getFlixhqSources } from '@/providers/sources/flixhq/scrape';
@@ -9,6 +10,7 @@ export const flixhqScraper = makeSourcerer({
   id: 'flixhq',
   name: 'FlixHQ',
   rank: 100,
+  flags: [flags.NO_CORS],
   async scrapeMovie(ctx) {
     const id = await getFlixhqId(ctx, ctx.media);
     if (!id) throw new NotFoundError('no search results match');

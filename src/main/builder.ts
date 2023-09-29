@@ -5,6 +5,7 @@ import { scrapeIndividualEmbed, scrapeInvidualSource } from '@/main/individualRu
 import { ScrapeMedia } from '@/main/media';
 import { MetaOutput, getAllEmbedMetaSorted, getAllSourceMetaSorted, getSpecificId } from '@/main/meta';
 import { RunOutput, runAllProviders } from '@/main/runner';
+import { Targets, getTargetFeatures } from '@/main/targets';
 import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { getProviders } from '@/providers/get';
 
@@ -15,6 +16,9 @@ export interface ProviderBuilderOptions {
   // proxied fetcher, if the scraper needs to access a CORS proxy. this fetcher will be called instead
   // of the normal fetcher. Defaults to the normal fetcher.
   proxiedFetcher?: Fetcher;
+
+  // target of where the streams will be used
+  target: Targets;
 }
 
 export interface RunnerOptions {
@@ -77,8 +81,10 @@ export interface ProviderControls {
 }
 
 export function makeProviders(ops: ProviderBuilderOptions): ProviderControls {
-  const list = getProviders();
+  const features = getTargetFeatures(ops.target);
+  const list = getProviders(features);
   const providerRunnerOps = {
+    features,
     fetcher: makeFullFetcher(ops.fetcher),
     proxiedFetcher: makeFullFetcher(ops.proxiedFetcher ?? ops.fetcher),
   };

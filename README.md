@@ -4,35 +4,32 @@ package that holds all providers of movie-web.
 Feel free to use for your own projects.
 
 features:
- - scrape popular streaming websites
- - works in both browser and server-side
+- scrape popular streaming websites
+- works in both browser and server-side
 
-> **This package is still WIP**
+Visit documentation here: https://providers.docs.movie-web.app/
 
-Todos:
- - add tests
-   - ProviderControls.runAll()
-     - are events called?
-     - custom source or embed order
-     - are fetchers called?
-     - is proxiedFetcher properly defaulted back to normal fetcher?
-   - ProviderControls.runSourceScraper()
-     - is source scraper called?
-     - does it return as expected?
-     - does it error when invalid type or id?
-   - ProviderControls.runEmbedScraper()
-     - is embed scraper called?
-     - does it return as expected?
-     - does it error when invalid id?
-   - makeStandardFetcher()
-     - does serialisation work as expected? (formdata + json + string)
- - add all real providers
- - make default fetcher maker thing work with both undici and node-fetch
+## Development
+To make testing scrapers easier during development a CLI tool is available to run specific sources. To run the CLI testing tool, use `npm run test:dev`. The script supports 2 execution modes
 
-Future todos:
- - docs: examples for nodejs + browser
- - docs: how to use + usecases
- - docs: examples for custom fetcher
- - docs: example with tmdb search
- - feature: choose an output environment (for browser or for native)
- - feature: flixhq show support
+- CLI Mode, for passing in arguments directly to the script
+- Question Mode, where the script asks you questions about which source you wish to test
+
+The following CLI Mode arguments are available
+
+| Argument      | Alias  | Description                                                             | Default      |
+|---------------|--------|-------------------------------------------------------------------------|--------------|
+| `--fetcher`   | `-f`   | Fetcher type. Either `node-fetch` or `native`                           | `node-fetch` |
+| `--source-id` | `-sid` | Source ID for the source to be tested                                   |              |
+| `--tmdb-id`   | `-tid` | TMDB ID for the media to scrape. Only used if source is a provider      |              |
+| `--type`      | `-t`   | Media type. Either `movie` or `show`. Only used if source is a provider | `movie`      |
+| `--season`    | `-s`   | Season number. Only used if type is `show`                              | `0`          |
+| `--episode`   | `-e`   | Episode number. Only used if type is `show`                             | `0`          |
+| `--url`       | `-u`   | URL to a video embed. Only used if source is an embed                   |              |
+| `--help`      | `-h`   | Shows help for the command arguments                                    |              |
+
+Example testing the FlixHQ source on the movie "Spirited Away"
+
+```bash
+npm run test:dev -- -sid flixhq -tid 129 -t movie
+```

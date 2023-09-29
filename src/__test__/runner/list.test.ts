@@ -1,5 +1,6 @@
 import { mockEmbeds, mockSources } from '@/__test__/providerTests';
 import { makeProviders } from '@/main/builder';
+import { targets } from '@/main/targets.ts';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = await vi.hoisted(async () => (await import('../providerTests.ts')).makeProviderMocks());
@@ -15,6 +16,7 @@ describe('ProviderControls.listSources()', () => {
     mocks.gatherAllEmbeds.mockReturnValue([]);
     const p = makeProviders({
       fetcher: null as any,
+      target: targets.NATIVE,
     });
     expect(p.listSources()).toEqual([
       {
@@ -32,6 +34,7 @@ describe('ProviderControls.listSources()', () => {
     mocks.gatherAllEmbeds.mockReturnValue([]);
     const p = makeProviders({
       fetcher: null as any,
+      target: targets.NATIVE,
     });
     expect(p.listSources()).toEqual([
       {
@@ -49,6 +52,7 @@ describe('ProviderControls.listSources()', () => {
     mocks.gatherAllEmbeds.mockReturnValue([]);
     const p = makeProviders({
       fetcher: null as any,
+      target: targets.NATIVE,
     });
     expect(p.listSources()).toEqual([
       {
@@ -66,6 +70,7 @@ describe('ProviderControls.listSources()', () => {
     mocks.gatherAllEmbeds.mockReturnValue([]);
     const p1 = makeProviders({
       fetcher: null as any,
+      target: targets.NATIVE,
     });
     const l1 = p1.listSources();
     expect(l1.map((v) => v.id).join(',')).toEqual('z,y');
@@ -74,6 +79,7 @@ describe('ProviderControls.listSources()', () => {
     mocks.gatherAllEmbeds.mockReturnValue([]);
     const p2 = makeProviders({
       fetcher: null as any,
+      target: targets.NATIVE,
     });
     const l2 = p2.listSources();
     expect(l2.map((v) => v.id).join(',')).toEqual('z,y');
@@ -90,6 +96,7 @@ describe('ProviderControls.getAllEmbedMetaSorted()', () => {
     mocks.gatherAllEmbeds.mockReturnValue([mockEmbeds.fullEmbedX]);
     const p = makeProviders({
       fetcher: null as any,
+      target: targets.NATIVE,
     });
     expect(p.listEmbeds()).toEqual([
       {
@@ -106,6 +113,7 @@ describe('ProviderControls.getAllEmbedMetaSorted()', () => {
     mocks.gatherAllEmbeds.mockReturnValue([mockEmbeds.fullEmbedX, mockEmbeds.fullEmbedZ]);
     const p1 = makeProviders({
       fetcher: null as any,
+      target: targets.NATIVE,
     });
     const l1 = p1.listEmbeds();
     expect(l1.map((v) => v.id).join(',')).toEqual('z,x');
@@ -114,6 +122,7 @@ describe('ProviderControls.getAllEmbedMetaSorted()', () => {
     mocks.gatherAllEmbeds.mockReturnValue([mockEmbeds.fullEmbedZ, mockEmbeds.fullEmbedX]);
     const p2 = makeProviders({
       fetcher: null as any,
+      target: targets.NATIVE,
     });
     const l2 = p2.listEmbeds();
     expect(l2.map((v) => v.id).join(',')).toEqual('z,x');

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2021",
-    "lib": ["es2021"],
+    "lib": ["es2021", "DOM"],
     "module": "CommonJS",
     "esModuleInterop": true,
     "declaration": true,
@@ -17,5 +17,8 @@
     }
   },
   "include": ["src"],
-  "exclude": ["node_modules", "**/__tests__/*"]
+  "exclude": ["node_modules", "**/__tests__/*"],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
 }
