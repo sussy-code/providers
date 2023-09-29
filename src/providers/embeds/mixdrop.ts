@@ -25,7 +25,7 @@ export const mixdropScraper = makeEmbed({
         return {
           stream: {
             type: 'file',
-            flags: [flags.NO_CORS],
+            flags: [],
             qualities: {
               unknown: {
                 type: 'mp4',
