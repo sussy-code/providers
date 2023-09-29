@@ -16,31 +16,38 @@ export const mixdropScraper = makeEmbed({
     const streamRes = await ctx.proxiedFetcher<string>(ctx.url);
     const packed = streamRes.match(packedRegex);
 
-    if (packed) {
-      const unpacked = unpacker.unpack(packed[1]);
-      const link = unpacked.match(linkRegex);
-
-      if (link) {
-        const url = link[1];
-        return {
-          stream: {
-            type: 'file',
-            flags: [],
-            qualities: {
-              unknown: {
-                type: 'mp4',
-                url: url.startsWith('http') ? url : `https:${url}`, // URLs don't always start with the protocol
-                headers: {
-                  // MixDrop requires this header on all streams
-                  Referer: 'https://mixdrop.co/',
-                },
-              },
-            },
-          },
-        };
-      }
+    // MixDrop uses a queue system for embeds
+    // If an embed is too new, the queue will
+    // not be completed and thus the packed
+    // JavaScript not present
+    if (!packed) {
+      throw new Error('failed to find packed mixdrop JavaScript');
     }
 
-    throw new Error('mixdrop source not found');
+    const unpacked = unpacker.unpack(packed[1]);
+    const link = unpacked.match(linkRegex);
+
+    if (!link) {
+      throw new Error('failed to find packed mixdrop source link');
+    }
+
+    const url = link[1];
+
+    return {
+      stream: {
+        type: 'file',
+        flags: [],
+        qualities: {
+          unknown: {
+            type: 'mp4',
+            url: url.startsWith('http') ? url : `https:${url}`, // URLs don't always start with the protocol
+            headers: {
+              // MixDrop requires this header on all streams
+              Referer: 'https://mixdrop.co/',
+            },
+          },
+        },
+      },
+    };
   },
 });
