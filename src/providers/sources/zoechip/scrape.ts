@@ -73,13 +73,13 @@ export async function getZoeChipSeasonID(ctx: ScrapeContext, media: ShowMedia, s
       };
     });
 
-  for (const season of seasons) {
-    if (season.season === media.season.number) {
-      return season.id;
-    }
+  const foundSeason = seasons.find((season) => season.season === media.season.number);
+
+  if (!foundSeason) {
+    return null;
   }
 
-  return null;
+  return foundSeason.id;
 }
 
 export async function getZoeChipEpisodeID(
@@ -116,11 +116,11 @@ export async function getZoeChipEpisodeID(
       };
     });
 
-  for (const episode of episodes) {
-    if (episode.episode === media.episode.number) {
-      return episode.id;
-    }
+  const foundEpisode = episodes.find((episode) => episode.episode === media.episode.number);
+
+  if (!foundEpisode) {
+    return null;
   }
 
-  return null;
+  return foundEpisode.id;
 }
