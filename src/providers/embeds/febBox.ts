@@ -1,8 +1,11 @@
 import { flags } from '@/main/targets';
 import { makeEmbed } from '@/providers/base';
+import { StreamFile } from '@/providers/streams';
 import { NotFoundError } from '@/utils/errors';
 
 const febBoxBase = `https://www.febbox.com`;
+
+const allowedQualities = ['360', '480', '720', '1080'];
 
 export const febBoxScraper = makeEmbed({
   id: 'febBox',
@@ -40,18 +43,22 @@ export const febBoxScraper = makeEmbed({
     const sourcesMatch = player?.match(/var sources = (\[[^\]]+\]);/);
     const qualities = sourcesMatch ? JSON.parse(sourcesMatch[0].replace('var sources = ', '').replace(';', '')) : null;
 
-    if (!qualities) throw new NotFoundError('no result found');
+    const embedQualities: Record<string, StreamFile> = {};
+
+    qualities.forEach((quality: { file: string; label: string }) => {
+      if (allowedQualities.includes(quality.label.replace('P', ''))) {
+        embedQualities[quality.label.replace('p', '')] = {
+          type: 'mp4',
+          url: quality.file,
+        };
+      }
+    });
 
     return {
       stream: {
         type: 'file',
         flags: [flags.NO_CORS],
-        qualities: {
-          '360': {
-            type: 'mp4',
-            url: qualities[0].file,
-          },
-        },
+        qualities: embedQualities,
       },
     };
   },

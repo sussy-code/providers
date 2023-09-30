@@ -1,6 +1,3 @@
-// https://www.febbox.com/file/file_share_list?share_key=${id}&pwd= > data.file_list[0].fid
-// https://www.febbox.com/file/player FORM: {hare_key} > "parse js"
-
 import { load } from 'cheerio';
 
 import { flags } from '@/main/targets';

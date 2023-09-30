@@ -6,8 +6,6 @@ import { NotFoundError } from '@/utils/errors';
 import { getStreamQualities } from './getStreamQualities';
 import { sendRequest } from './sendRequest';
 
-export const allowedQualities = ['360', '480', '720', '1080'];
-
 export const superStreamScraper = makeSourcerer({
   id: 'superstream',
   name: 'Superstream',
