@@ -17,6 +17,10 @@ export function makeStandardFetcher(f: FetchLike): Fetcher {
       body: seralizedBody.body,
     });
 
+    if (ops.returnRaw) {
+      return res;
+    }
+
     const isJson = res.headers.get('content-type')?.includes('application/json');
     if (isJson) return res.json();
     return res.text();

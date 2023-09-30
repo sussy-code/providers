@@ -34,6 +34,7 @@ export function makeFullFetcher(fetcher: Fetcher): UseableFetcher {
       query: ops?.query ?? {},
       baseUrl: ops?.baseUrl ?? '',
       body: ops?.body,
+      returnRaw: ops?.returnRaw,
     });
   };
 }

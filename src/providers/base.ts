@@ -7,6 +7,7 @@ export type SourcererOutput = {
   embeds: {
     embedId: string;
     url: string;
+    headers?: Record<string, string>;
   }[];
   stream?: Stream;
 };
