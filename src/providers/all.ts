@@ -7,13 +7,22 @@ import { upstreamScraper } from '@/providers/embeds/upstream';
 import { flixhqScraper } from '@/providers/sources/flixhq/index';
 import { goMoviesScraper } from '@/providers/sources/gomovies/index';
 import { kissAsianScraper } from '@/providers/sources/kissasian/index';
+import { lookmovieScraper } from '@/providers/sources/lookmovie';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
 import { superStreamScraper } from '@/providers/sources/superstream/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
 export function gatherAllSources(): Array<Sourcerer> {
   // all sources are gathered here
-  return [flixhqScraper, remotestreamScraper, kissAsianScraper, superStreamScraper, goMoviesScraper, zoechipScraper];
+  return [
+    flixhqScraper,
+    remotestreamScraper,
+    kissAsianScraper,
+    superStreamScraper,
+    goMoviesScraper,
+    zoechipScraper,
+    lookmovieScraper,
+  ];
 }
 
 export function gatherAllEmbeds(): Array<Embed> {
