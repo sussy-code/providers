@@ -1,3 +1,5 @@
+import util from 'node:util';
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { program } from 'commander';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -45,6 +47,10 @@ const TMDB_API_KEY = process.env.MOVIE_WEB_TMDB_API_KEY ?? '';
 
 if (!TMDB_API_KEY?.trim()) {
   throw new Error('Missing MOVIE_WEB_TMDB_API_KEY environment variable');
+}
+
+function showOutput(object: object) {
+  console.log(util.inspect(object, { showHidden: false, depth: null, colors: true }));
 }
 
 function getAllSources() {
