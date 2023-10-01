@@ -8,8 +8,12 @@ async function universalScraper(ctx: ShowContext | MovieContext): Promise<Source
   const lookmovieData = await searchAndFindMedia(ctx.media);
   if (!lookmovieData) throw new NotFoundError('Media not found');
 
+  ctx.progress(30);
+
   const videoUrl = await scrape(ctx.media, lookmovieData);
   if (!videoUrl) throw new NotFoundError('No video found');
+
+  ctx.progress(60);
 
   return {
     embeds: [],
