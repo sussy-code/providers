@@ -80,6 +80,7 @@
     "crypto-js": "^4.1.1",
     "form-data": "^4.0.0",
     "node-fetch": "^2.7.0",
-    "randombytes": "^2.1.0"
+    "randombytes": "^2.1.0",
+    "unpacker": "^1.0.1"
   }
 }

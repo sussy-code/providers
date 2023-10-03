@@ -16,7 +16,15 @@ import { showBoxScraper } from './sources/showbox';
 
 export function gatherAllSources(): Array<Sourcerer> {
   // all sources are gathered here
-  return [flixhqScraper, remotestreamScraper, kissAsianScraper, superStreamScraper, goMoviesScraper, zoechipScraper, showBoxScraper];
+  return [
+    flixhqScraper,
+    remotestreamScraper,
+    kissAsianScraper,
+    superStreamScraper,
+    goMoviesScraper,
+    zoechipScraper,
+    showBoxScraper,
+  ];
 }
 
 export function gatherAllEmbeds(): Array<Embed> {
