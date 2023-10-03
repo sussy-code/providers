@@ -13,7 +13,7 @@ export const febBoxScraper = makeEmbed({
   rank: 160,
   async scrape(ctx) {
     const shareKey = ctx.url.split('/')[4];
-    const streams = await ctx.fetcher<{
+    const streams = await ctx.proxiedFetcher<{
       data?: {
         file_list?: {
           fid?: string;
@@ -34,7 +34,7 @@ export const febBoxScraper = makeEmbed({
     formParams.append('fid', fid);
     formParams.append('share_key', shareKey);
 
-    const player = await ctx.fetcher<string>('/file/player', {
+    const player = await ctx.proxiedFetcher<string>('/file/player', {
       baseUrl: febBoxBase,
       body: formParams,
       method: 'POST',

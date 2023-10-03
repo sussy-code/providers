@@ -14,7 +14,7 @@ export const showBoxScraper = makeSourcerer({
   rank: 20,
   flags: [flags.NO_CORS],
   async scrapeMovie(ctx) {
-    const search = await ctx.fetcher<string>('/search', {
+    const search = await ctx.proxiedFetcher<string>('/search', {
       baseUrl: showboxBase,
       query: {
         keyword: ctx.media.title,
@@ -39,7 +39,7 @@ export const showBoxScraper = makeSourcerer({
 
     if (!result?.path) throw new NotFoundError('no result found');
 
-    const febboxResult = await ctx.fetcher<{
+    const febboxResult = await ctx.proxiedFetcher<{
       data?: { link?: string };
     }>('/index/share_link', {
       baseUrl: showboxBase,
