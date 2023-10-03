@@ -1,6 +1,6 @@
 {
   "name": "@movie-web/providers",
-  "version": "0.0.12",
+  "version": "1.0.1",
   "description": "Package that contains all the providers of movie-web",
   "main": "./lib/index.umd.js",
   "types": "./lib/index.d.ts",
@@ -32,12 +32,13 @@
   "bugs": {
     "url": "https://github.com/movie-web/providers/issues"
   },
-  "homepage": "https://github.com/movie-web/providers#readme",
+  "homepage": "https://providers.docs.movie-web.app/",
   "scripts": {
     "build": "vite build",
     "test": "vitest run",
     "test:dev": "ts-node ./src/dev-cli.ts",
     "test:watch": "vitest",
+    "test:integration": "node ./tests/cjs && node ./tests/esm",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint --ext .ts,.js src/",
     "lint:fix": "eslint --fix --ext .ts,.js src/",
@@ -62,6 +63,7 @@
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
+    "node-fetch": "^2.7.0",
     "prettier": "^2.6.2",
     "spinnies": "^0.5.1",
     "ts-node": "^10.9.1",

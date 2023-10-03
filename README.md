@@ -4,9 +4,10 @@ package that holds all providers of movie-web.
 Feel free to use for your own projects.
 
 features:
-
 - scrape popular streaming websites
 - works in both browser and server-side
+
+Visit documentation here: https://providers.docs.movie-web.app/
 
 ## Development
 To make testing scrapers easier during development a CLI tool is available to run specific sources. To run the CLI testing tool, use `npm run test:dev`. The script supports 2 execution modes
@@ -32,6 +33,3 @@ Example testing the FlixHQ source on the movie "Spirited Away"
 ```bash
 npm run test:dev -- -sid flixhq -tid 129 -t movie
 ```
-
-Todos:
- - make default fetcher maker thing work with both undici and node-fetch

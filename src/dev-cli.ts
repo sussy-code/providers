@@ -2,12 +2,9 @@ import util from 'node:util';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { program } from 'commander';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import dotenv from 'dotenv';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { prompt } from 'enquirer';
 import nodeFetch from 'node-fetch';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Spinnies from 'spinnies';
 
 import { MetaOutput, MovieMedia, ProviderControls, ShowMedia, makeProviders, makeStandardFetcher, targets } from '.';
@@ -284,7 +281,7 @@ async function processOptions(options: CommandLineArguments) {
   let fetcher;
 
   if (options.fetcher === 'native') {
-    fetcher = makeStandardFetcher(fetch as any);
+    fetcher = makeStandardFetcher(fetch);
   } else {
     fetcher = makeStandardFetcher(nodeFetch);
   }
