@@ -1,7 +1,7 @@
 import { flags } from '@/main/targets';
 import { makeSourcerer } from '@/providers/base';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
-import { getFlixhqSourceDetails, getFlixhqSources } from '@/providers/sources/flixhq/scrape';
+import { getFlixhqMovieSources, getFlixhqShowSources, getFlixhqSourceDetails } from '@/providers/sources/flixhq/scrape';
 import { getFlixhqId } from '@/providers/sources/flixhq/search';
 import { NotFoundError } from '@/utils/errors';
 
@@ -15,7 +15,7 @@ export const flixhqScraper = makeSourcerer({
     const id = await getFlixhqId(ctx, ctx.media);
     if (!id) throw new NotFoundError('no search results match');
 
-    const sources = await getFlixhqSources(ctx, ctx.media, id);
+    const sources = await getFlixhqMovieSources(ctx, ctx.media, id);
     const upcloudStream = sources.find((v) => v.embed.toLowerCase() === 'upcloud');
     if (!upcloudStream) throw new NotFoundError('upcloud stream not found for flixhq');
 
@@ -32,7 +32,7 @@ export const flixhqScraper = makeSourcerer({
     const id = await getFlixhqId(ctx, ctx.media);
     if (!id) throw new NotFoundError('no search results match');
 
-    const sources = await getFlixhqSources(ctx, ctx.media, id);
+    const sources = await getFlixhqShowSources(ctx, ctx.media, id);
     const upcloudStream = sources.find((v) => v.embed.toLowerCase() === 'server upcloud');
     if (!upcloudStream) throw new NotFoundError('upcloud stream not found for flixhq');
 
