@@ -47,6 +47,7 @@ export const febBoxScraper = makeEmbed({
 
     qualities.forEach((quality: { file: string; label: string }) => {
       if (allowedQualities.includes(quality.label.replace('P', ''))) {
+        if (!quality.file) return;
         embedQualities[quality.label.replace('p', '')] = {
           type: 'mp4',
           url: quality.file,

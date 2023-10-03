@@ -20,7 +20,7 @@ export async function getStreamQualities(ctx: ScrapeContext, apiQuery: object) {
 
   allowedQualities.forEach((quality) => {
     const foundQuality = qualityMap.find((q) => q.quality === quality);
-    if (foundQuality) {
+    if (foundQuality && foundQuality.url) {
       qualities[quality] = {
         type: 'mp4',
         url: foundQuality.url,
