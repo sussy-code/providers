@@ -5,6 +5,14 @@ import { flixHqBase } from '@/providers/sources/flixhq/common';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
+export async function getFlixhqSourceDetails(ctx: ScrapeContext, sourceId: string): Promise<string> {
+  const jsonData = await ctx.proxiedFetcher<Record<string, any>>(`/ajax/sources/${sourceId}`, {
+    baseUrl: flixHqBase,
+  });
+
+  return jsonData.link;
+}
+
 export async function getFlixhqMovieSources(ctx: ScrapeContext, media: MovieMedia, id: string) {
   const episodeParts = id.split('-');
   const episodeId = episodeParts[episodeParts.length - 1];
@@ -28,14 +36,6 @@ export async function getFlixhqMovieSources(ctx: ScrapeContext, media: MovieMedi
     });
 
   return sourceLinks;
-}
-
-export async function getFlixhqSourceDetails(ctx: ScrapeContext, sourceId: string): Promise<string> {
-  const jsonData = await ctx.proxiedFetcher<Record<string, any>>(`/ajax/sources/${sourceId}`, {
-    baseUrl: flixHqBase,
-  });
-
-  return jsonData.link;
 }
 
 export async function getFlixhqShowSources(ctx: ScrapeContext, media: ShowMedia, id: string) {
