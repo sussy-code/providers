@@ -189,7 +189,7 @@ async function runScraper(providers: ProviderControls, source: MetaOutput, optio
         id: source.id,
       });
       spinnies.succeed('scrape', { text: 'Done!' });
-      console.log(logDeepObject(result));
+      logDeepObject(result);
     } catch (error) {
       let message = 'Unknown error';
       if (error instanceof Error) {
@@ -214,7 +214,7 @@ async function runScraper(providers: ProviderControls, source: MetaOutput, optio
         id: source.id,
       });
       spinnies.succeed('scrape', { text: 'Done!' });
-      console.log(logDeepObject(result));
+      logDeepObject(result);
     } catch (error) {
       let message = 'Unknown error';
       if (error instanceof Error) {
