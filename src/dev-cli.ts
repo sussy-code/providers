@@ -1,6 +1,7 @@
+/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
+
 import util from 'node:util';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { program } from 'commander';
 import dotenv from 'dotenv';
 import { prompt } from 'enquirer';
