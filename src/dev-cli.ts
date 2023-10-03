@@ -49,7 +49,7 @@ if (!TMDB_API_KEY?.trim()) {
   throw new Error('Missing MOVIE_WEB_TMDB_API_KEY environment variable');
 }
 
-function showOutput(object: object) {
+function logDeepObject(object: Record<any, any>) {
   console.log(util.inspect(object, { showHidden: false, depth: null, colors: true }));
 }
 
@@ -189,7 +189,7 @@ async function runScraper(providers: ProviderControls, source: MetaOutput, optio
         id: source.id,
       });
       spinnies.succeed('scrape', { text: 'Done!' });
-      console.log(JSON.stringify(result, null, 2));
+      console.log(logDeepObject(result));
     } catch (error) {
       let message = 'Unknown error';
       if (error instanceof Error) {
@@ -214,7 +214,7 @@ async function runScraper(providers: ProviderControls, source: MetaOutput, optio
         id: source.id,
       });
       spinnies.succeed('scrape', { text: 'Done!' });
-      console.log(JSON.stringify(result, null, 2));
+      console.log(logDeepObject(result));
     } catch (error) {
       let message = 'Unknown error';
       if (error instanceof Error) {
