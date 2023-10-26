@@ -8,6 +8,7 @@ import { Stream } from '@/providers/streams';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 import { reorderOnIdList } from '@/utils/list';
+import { isValidStream } from '@/utils/valid';
 
 export type RunOutput = {
   sourceId: string;
@@ -79,6 +80,9 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
           ...contextBase,
           media: ops.media,
         });
+      if (!isValidStream(output?.stream)) {
+        throw new NotFoundError('stream is incomplete');
+      }
       if (output?.stream && !flagsAllowedInFeatures(ops.features, output.stream.flags)) {
         throw new NotFoundError("stream doesn't satisfy target feature flags");
       }
