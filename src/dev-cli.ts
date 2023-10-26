@@ -1,5 +1,7 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
 
+import util from 'node:util';
+
 import { program } from 'commander';
 import dotenv from 'dotenv';
 import { prompt } from 'enquirer';
@@ -43,6 +45,10 @@ const TMDB_API_KEY = process.env.MOVIE_WEB_TMDB_API_KEY ?? '';
 
 if (!TMDB_API_KEY?.trim()) {
   throw new Error('Missing MOVIE_WEB_TMDB_API_KEY environment variable');
+}
+
+function logDeepObject(object: Record<any, any>) {
+  console.log(util.inspect(object, { showHidden: false, depth: null, colors: true }));
 }
 
 function getAllSources() {
@@ -181,7 +187,7 @@ async function runScraper(providers: ProviderControls, source: MetaOutput, optio
         id: source.id,
       });
       spinnies.succeed('scrape', { text: 'Done!' });
-      console.log(result);
+      logDeepObject(result);
     } catch (error) {
       let message = 'Unknown error';
       if (error instanceof Error) {
@@ -206,7 +212,7 @@ async function runScraper(providers: ProviderControls, source: MetaOutput, optio
         id: source.id,
       });
       spinnies.succeed('scrape', { text: 'Done!' });
-      console.log(result);
+      logDeepObject(result);
     } catch (error) {
       let message = 'Unknown error';
       if (error instanceof Error) {

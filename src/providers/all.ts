@@ -1,4 +1,5 @@
 import { Embed, Sourcerer } from '@/providers/base';
+import { febBoxScraper } from '@/providers/embeds/febBox';
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
 import { mp4uploadScraper } from '@/providers/embeds/mp4upload';
 import { streamsbScraper } from '@/providers/embeds/streamsb';
@@ -11,12 +12,22 @@ import { remotestreamScraper } from '@/providers/sources/remotestream';
 import { superStreamScraper } from '@/providers/sources/superstream/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
+import { showBoxScraper } from './sources/showbox';
+
 export function gatherAllSources(): Array<Sourcerer> {
   // all sources are gathered here
-  return [flixhqScraper, remotestreamScraper, kissAsianScraper, superStreamScraper, goMoviesScraper, zoechipScraper];
+  return [
+    flixhqScraper,
+    remotestreamScraper,
+    kissAsianScraper,
+    superStreamScraper,
+    goMoviesScraper,
+    zoechipScraper,
+    showBoxScraper,
+  ];
 }
 
 export function gatherAllEmbeds(): Array<Embed> {
   // all embeds are gathered here
-  return [upcloudScraper, mp4uploadScraper, streamsbScraper, upstreamScraper, mixdropScraper];
+  return [upcloudScraper, mp4uploadScraper, streamsbScraper, upstreamScraper, febBoxScraper, mixdropScraper];
 }
