@@ -9,7 +9,7 @@ import { NotFoundError } from '@/utils/errors';
 const showboxBase = `https://www.showbox.media`;
 
 export const showBoxScraper = makeSourcerer({
-  id: 'showBox',
+  id: 'show_box',
   name: 'ShowBox',
   rank: 20,
   flags: [flags.NO_CORS],
