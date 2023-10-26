@@ -6,6 +6,7 @@ import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { ProviderList } from '@/providers/get';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
+import { isValidStream } from '@/utils/valid';
 
 export type IndividualSourceRunnerOptions = {
   features: FeatureMap;
@@ -50,7 +51,7 @@ export async function scrapeInvidualSource(
     });
 
   // stream doesn't satisfy the feature flags, so gets removed in output
-  if (output?.stream && !flagsAllowedInFeatures(ops.features, output.stream.flags)) {
+  if (output?.stream && (!isValidStream(output.stream) || !flagsAllowedInFeatures(ops.features, output.stream.flags))) {
     output.stream = undefined;
   }
 
@@ -87,7 +88,9 @@ export async function scrapeIndividualEmbed(
     },
   });
 
+  if (!isValidStream(output.stream)) throw new NotFoundError('stream is incomplete');
   if (!flagsAllowedInFeatures(ops.features, output.stream.flags))
     throw new NotFoundError("stream doesn't satisfy target feature flags");
+
   return output;
 }
