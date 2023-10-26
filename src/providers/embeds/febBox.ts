@@ -8,7 +8,7 @@ const febBoxBase = `https://www.febbox.com`;
 const allowedQualities = ['360', '480', '720', '1080'];
 
 export const febBoxScraper = makeEmbed({
-  id: 'febBox',
+  id: 'febbox',
   name: 'FebBox',
   rank: 160,
   async scrape(ctx) {
@@ -20,6 +20,9 @@ export const febBoxScraper = makeEmbed({
         }[];
       };
     }>('/file/file_share_list', {
+      headers: {
+        'accept-language': 'en', // without this header, the request is marked as a webscraper
+      },
       baseUrl: febBoxBase,
       query: {
         share_key: shareKey,
@@ -38,6 +41,9 @@ export const febBoxScraper = makeEmbed({
       baseUrl: febBoxBase,
       body: formParams,
       method: 'POST',
+      headers: {
+        'accept-language': 'en', // without this header, the request is marked as a webscraper
+      },
     });
 
     const sourcesMatch = player?.match(/var sources = (\[[^\]]+\]);/);
@@ -46,9 +52,10 @@ export const febBoxScraper = makeEmbed({
     const embedQualities: Record<string, StreamFile> = {};
 
     qualities.forEach((quality: { file: string; label: string }) => {
-      if (allowedQualities.includes(quality.label.replace('P', ''))) {
+      const normalizedLabel = quality.label.toLowerCase().replace('p', '');
+      if (allowedQualities.includes(normalizedLabel)) {
         if (!quality.file) return;
-        embedQualities[quality.label.replace('P', '')] = {
+        embedQualities[normalizedLabel] = {
           type: 'mp4',
           url: quality.file,
         };
