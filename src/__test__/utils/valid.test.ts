@@ -53,20 +53,3 @@ describe('isValidStream()', () => {
     })).toBe(false);
   });
 });
-
-describe("test", () => {
-  it("should work", async () => {
-    const providers = makeProviders({
-      fetcher: makeStandardFetcher(fetch),
-      target: targets.BROWSER
-    })
-    console.log(await providers.runAll({
-      media: {
-        title: "Spider-Man: Across the Spider-Verse",
-        tmdbId: "569094",
-        releaseYear: 2023,
-        type: "movie",
-      }
-    }))
-  })
-})
