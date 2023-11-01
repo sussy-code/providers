@@ -13,14 +13,14 @@ export const superStreamScraper = makeSourcerer({
   flags: [flags.NO_CORS],
   async scrapeShow(ctx) {
     const searchQuery = {
-      module: 'Search3',
+      module: 'Search4',
       page: '1',
       type: 'all',
       keyword: ctx.media.title,
       pagelimit: '20',
     };
 
-    const searchRes = (await sendRequest(ctx, searchQuery, true)).data;
+    const searchRes = (await sendRequest(ctx, searchQuery, true)).data.list;
     ctx.progress(33);
 
     const superstreamEntry = searchRes.find(
@@ -54,14 +54,14 @@ export const superStreamScraper = makeSourcerer({
   },
   async scrapeMovie(ctx) {
     const searchQuery = {
-      module: 'Search3',
+      module: 'Search4',
       page: '1',
       type: 'all',
       keyword: ctx.media.title,
       pagelimit: '20',
     };
 
-    const searchRes = (await sendRequest(ctx, searchQuery, true)).data;
+    const searchRes = (await sendRequest(ctx, searchQuery, true)).data.list;
     ctx.progress(33);
 
     const superstreamEntry = searchRes.find(
