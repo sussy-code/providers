@@ -34,7 +34,7 @@ function extractKey(script: string): [number, number][] | null {
   const switchBody = script.slice(startOfSwitch, endOfCases);
 
   const nums: [number, number][] = [];
-  const matches = switchBody.matchAll(/:[a-zA-Z]+=([a-zA-Z]+),[a-zA-Z]+=([a-zA-Z]+);/g);
+  const matches = switchBody.matchAll(/:[a-zA-Z0-9]+=([a-zA-Z0-9]+),[a-zA-Z0-9]+=([a-zA-Z0-9]+);/g);
   for (const match of matches) {
     const innerNumbers: number[] = [];
     for (const varMatch of [match[1], match[2]]) {
