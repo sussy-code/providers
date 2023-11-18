@@ -1,12 +1,13 @@
-import { Caption } from '@/providers/captions';
+import { Caption, getCaptionTypeFromUrl } from '@/providers/captions';
 import { sendRequest } from '@/providers/sources/superstream/sendRequest';
 import { ScrapeContext } from '@/utils/context';
 
 interface CaptionApiResponse {
   data: {
     list: {
-      language: string;
       subtitles: {
+        order: number;
+        lang: string;
         file_path: string;
       }[];
     }[];
@@ -31,7 +32,23 @@ export async function getSubtitles(
     season: seasonId?.toString(),
     group: episodeId ? '' : undefined,
   };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _subtitleList = ((await sendRequest(ctx, subtitleApiQuery)) as CaptionApiResponse).data.list;
-  return [];
+
+  const subtitleList = ((await sendRequest(ctx, subtitleApiQuery)) as CaptionApiResponse).data.list;
+  const output: Caption[] = [];
+
+  subtitleList.forEach((sub) => {
+    const subtitle = sub.subtitles.sort((a, b) => a.order - b.order)[0];
+    if (!subtitle) return;
+    const subtitleType = getCaptionTypeFromUrl(subtitle.file_path);
+    if (!subtitleType) return;
+
+    output.push({
+      language: subtitle.lang,
+      hasCorsRestrictions: true,
+      type: subtitleType,
+      url: subtitle.file_path,
+    });
+  });
+
+  return output;
 }
