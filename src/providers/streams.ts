@@ -1,4 +1,5 @@
 import { Flags } from '@/main/targets';
+import { Caption } from '@/providers/captions';
 
 export type StreamFile = {
   type: 'mp4';
@@ -18,6 +19,7 @@ export type HlsBasedStream = {
   type: 'hls';
   flags: Flags[];
   playlist: string;
+  captions: Caption[];
 };
 
 export type Stream = FileBasedStream | HlsBasedStream;

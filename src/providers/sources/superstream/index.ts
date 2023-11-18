@@ -1,5 +1,6 @@
 import { flags } from '@/main/targets';
 import { makeSourcerer } from '@/providers/base';
+import { getSubtitles } from '@/providers/sources/superstream/subtitles';
 import { compareTitle } from '@/utils/compare';
 import { NotFoundError } from '@/utils/errors';
 
@@ -41,11 +42,19 @@ export const superStreamScraper = makeSourcerer({
       group: '',
     };
 
-    const qualities = await getStreamQualities(ctx, apiQuery);
+    const { qualities, fid } = await getStreamQualities(ctx, apiQuery);
 
     return {
       embeds: [],
       stream: {
+        captions: await getSubtitles(
+          ctx,
+          superstreamId,
+          fid,
+          'show',
+          ctx.media.episode.number,
+          ctx.media.season.number,
+        ),
         qualities,
         type: 'file',
         flags: [flags.NO_CORS],
@@ -80,11 +89,12 @@ export const superStreamScraper = makeSourcerer({
       group: '',
     };
 
-    const qualities = await getStreamQualities(ctx, apiQuery);
+    const { qualities, fid } = await getStreamQualities(ctx, apiQuery);
 
     return {
       embeds: [],
       stream: {
+        captions: await getSubtitles(ctx, superstreamId, fid, 'movie'),
         qualities,
         type: 'file',
         flags: [flags.NO_CORS],
