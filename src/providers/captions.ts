@@ -1,3 +1,5 @@
+import ISO6391 from 'iso-639-1';
+
 export const captionTypes = {
   srt: 'srt',
   vtt: 'vtt',
@@ -16,4 +18,15 @@ export function getCaptionTypeFromUrl(url: string): CaptionType | null {
   const type = extensions.find((v) => url.endsWith(`.${v}`));
   if (!type) return null;
   return type;
+}
+
+export function labelToLanguageCode(label: string): string | null {
+  const code = ISO6391.getCode(label);
+  if (code.length === 0) return null;
+  return code;
+}
+
+export function isValidLanguageCode(code: string | null): boolean {
+  if (!code) return false;
+  return ISO6391.validate(code);
 }

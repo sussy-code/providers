@@ -1,4 +1,4 @@
-import { Caption, getCaptionTypeFromUrl } from '@/providers/captions';
+import { Caption, getCaptionTypeFromUrl, isValidLanguageCode } from '@/providers/captions';
 import { sendRequest } from '@/providers/sources/superstream/sendRequest';
 import { ScrapeContext } from '@/utils/context';
 
@@ -41,6 +41,9 @@ export async function getSubtitles(
     if (!subtitle) return;
     const subtitleType = getCaptionTypeFromUrl(subtitle.file_path);
     if (!subtitleType) return;
+
+    const validCode = isValidLanguageCode(subtitle.lang);
+    if (!validCode) return;
 
     output.push({
       language: subtitle.lang,

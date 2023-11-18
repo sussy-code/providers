@@ -2,7 +2,7 @@ import crypto from 'crypto-js';
 
 import { flags } from '@/main/targets';
 import { makeEmbed } from '@/providers/base';
-import { Caption, getCaptionTypeFromUrl } from '@/providers/captions';
+import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '@/providers/captions';
 
 const { AES, enc } = crypto;
 
@@ -102,8 +102,10 @@ export const upcloudScraper = makeEmbed({
       if (track.kind !== 'captions') return;
       const type = getCaptionTypeFromUrl(track.file);
       if (!type) return;
+      const language = labelToLanguageCode(track.label);
+      if (!language) return;
       captions.push({
-        language: track.label, // TODO Turn language name into ISO code
+        language,
         hasCorsRestrictions: false,
         type,
         url: track.file,
