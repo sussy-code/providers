@@ -2,6 +2,7 @@ import crypto from 'crypto-js';
 
 import { flags } from '@/main/targets';
 import { makeEmbed } from '@/providers/base';
+import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '@/providers/captions';
 
 const { AES, enc } = crypto;
 
@@ -96,11 +97,27 @@ export const upcloudScraper = makeEmbed({
 
     if (!sources) throw new Error('upcloud source not found');
 
+    const captions: Caption[] = [];
+    streamRes.tracks.forEach((track) => {
+      if (track.kind !== 'captions') return;
+      const type = getCaptionTypeFromUrl(track.file);
+      if (!type) return;
+      const language = labelToLanguageCode(track.label);
+      if (!language) return;
+      captions.push({
+        language,
+        hasCorsRestrictions: false,
+        type,
+        url: track.file,
+      });
+    });
+
     return {
       stream: {
         type: 'hls',
         playlist: sources.file,
         flags: [flags.NO_CORS],
+        captions,
       },
     };
   },

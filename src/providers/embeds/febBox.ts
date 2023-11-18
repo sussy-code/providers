@@ -65,6 +65,7 @@ export const febBoxScraper = makeEmbed({
     return {
       stream: {
         type: 'file',
+        captions: [],
         flags: [flags.NO_CORS],
         qualities: embedQualities,
       },
