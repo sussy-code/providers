@@ -159,6 +159,7 @@ export const streamsbScraper = makeEmbed({
         type: 'file',
         flags: [flags.NO_CORS],
         qualities,
+        captions: [],
       },
     };
   },

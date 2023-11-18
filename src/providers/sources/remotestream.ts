@@ -23,6 +23,7 @@ export const remotestreamScraper = makeSourcerer({
     return {
       embeds: [],
       stream: {
+        captions: [],
         playlist: playlistLink,
         type: 'hls',
         flags: [flags.NO_CORS],
@@ -40,6 +41,7 @@ export const remotestreamScraper = makeSourcerer({
     return {
       embeds: [],
       stream: {
+        captions: [],
         playlist: playlistLink,
         type: 'hls',
         flags: [flags.NO_CORS],
