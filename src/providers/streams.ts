@@ -13,6 +13,7 @@ export type FileBasedStream = {
   type: 'file';
   flags: Flags[];
   qualities: Partial<Record<Qualities, StreamFile>>;
+  captions: Caption[];
 };
 
 export type HlsBasedStream = {
