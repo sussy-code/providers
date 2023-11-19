@@ -27,7 +27,8 @@ export async function getSubtitles(
     fid,
     uid: '',
     module,
-    mid: id,
+    mid: type === 'movie' ? id : undefined,
+    tid: type !== 'movie' ? id : undefined,
     episode: episodeId?.toString(),
     season: seasonId?.toString(),
     group: episodeId ? '' : undefined,
@@ -37,7 +38,7 @@ export async function getSubtitles(
   const output: Caption[] = [];
 
   subtitleList.forEach((sub) => {
-    const subtitle = sub.subtitles.sort((a, b) => a.order - b.order)[0];
+    const subtitle = sub.subtitles.sort((a, b) => b.order - a.order)[0];
     if (!subtitle) return;
     const subtitleType = getCaptionTypeFromUrl(subtitle.file_path);
     if (!subtitleType) return;
