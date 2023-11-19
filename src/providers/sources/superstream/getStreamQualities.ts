@@ -9,8 +9,6 @@ export async function getStreamQualities(ctx: ScrapeContext, apiQuery: object) {
   const mediaRes: { list: { path: string; quality: string; fid?: number }[] } = (await sendRequest(ctx, apiQuery)).data;
   ctx.progress(66);
 
-  console.log(mediaRes);
-
   const qualityMap = mediaRes.list
     .filter((file) => allowedQualities.includes(file.quality.replace('p', '')))
     .map((file) => ({
