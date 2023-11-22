@@ -8,12 +8,21 @@ import { Result } from './type';
 import { getVideoUrl } from './video';
 
 export async function searchAndFindMedia(media: MovieMedia | ShowMedia): Promise<Result | undefined> {
-  const searchRes = await fetch(
-    `https://lookmovie2.to/api/v1/${media.type}s/do-search/?q=${encodeURIComponent(media.title)}`,
-  ).then((d) => d.json());
-  const results = searchRes.result;
-  const result = results.find((res: Result) => compareMedia(media, res.title, Number(res.year)));
-  return result;
+  if (media.type === "show") {
+    const searchRes = await fetch(`https://lmscript.xyz/v1/shows?filters[q]=${encodeURIComponent(media.title)}`).then((d) => d.json());
+
+    const results = searchRes.result;
+    const result = results.find((res: Result) => compareMedia(media, res.title, Number(res.year)));
+    return result;
+  } else if (media.type === "movie")  {
+    const searchRes = await fetch(`https://lmscript.xyz/v1/movies?filters[q]=${encodeURIComponent(media.title)}`).then((d) => d.json());
+
+    const results = searchRes.items;
+    const result = results.find((res: Result) => compareMedia(media, res.title, Number(res.year)));
+    return result;
+  }
+ 
+
 }
 
 export async function scrape(media: MovieMedia | ShowMedia, result: Result) {
