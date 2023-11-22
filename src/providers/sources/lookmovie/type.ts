@@ -28,4 +28,5 @@ export interface Result {
   slug: string;
   year: string;
   id_movie?: string;
+  id_show?: string;
 }
