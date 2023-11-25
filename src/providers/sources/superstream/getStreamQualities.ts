@@ -3,24 +3,24 @@ import { ScrapeContext } from '@/utils/context';
 
 import { sendRequest } from './sendRequest';
 
-import { allowedQualities } from '.';
+const allowedQualities = ['360', '480', '720', '1080'];
 
 export async function getStreamQualities(ctx: ScrapeContext, apiQuery: object) {
-  const mediaRes: { list: { path: string; real_quality: string }[] } = (await sendRequest(ctx, apiQuery)).data;
+  const mediaRes: { list: { path: string; quality: string; fid?: number }[] } = (await sendRequest(ctx, apiQuery)).data;
   ctx.progress(66);
 
   const qualityMap = mediaRes.list
-    .filter((file) => allowedQualities.includes(file.real_quality.replace('p', '')))
+    .filter((file) => allowedQualities.includes(file.quality.replace('p', '')))
     .map((file) => ({
       url: file.path,
-      quality: file.real_quality.replace('p', ''),
+      quality: file.quality.replace('p', ''),
     }));
 
   const qualities: Record<string, StreamFile> = {};
 
   allowedQualities.forEach((quality) => {
     const foundQuality = qualityMap.find((q) => q.quality === quality);
-    if (foundQuality) {
+    if (foundQuality && foundQuality.url) {
       qualities[quality] = {
         type: 'mp4',
         url: foundQuality.url,
@@ -28,5 +28,8 @@ export async function getStreamQualities(ctx: ScrapeContext, apiQuery: object) {
     }
   });
 
-  return qualities;
+  return {
+    qualities,
+    fid: mediaRes.list[0]?.fid,
+  };
 }

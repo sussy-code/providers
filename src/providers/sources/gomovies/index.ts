@@ -17,9 +17,7 @@ export const goMoviesScraper = makeSourcerer({
   async scrapeShow(ctx) {
     const search = await ctx.proxiedFetcher<string>(`/ajax/search`, {
       method: 'POST',
-      body: JSON.stringify({
-        keyword: ctx.media.title,
-      }),
+      body: new URLSearchParams({ keyword: ctx.media.title }),
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
       },
@@ -104,9 +102,7 @@ export const goMoviesScraper = makeSourcerer({
   async scrapeMovie(ctx) {
     const search = await ctx.proxiedFetcher<string>(`ajax/search`, {
       method: 'POST',
-      body: JSON.stringify({
-        keyword: ctx.media.title,
-      }),
+      body: new URLSearchParams({ keyword: ctx.media.title }),
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
       },
