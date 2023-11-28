@@ -152,6 +152,7 @@ async function getShowMediaDetails(id: string, seasonNumber: string, episodeNumb
     title: series.name,
     releaseYear: Number(series.first_air_date.split('-')[0]),
     tmdbId: id,
+    totalSeasons: series.number_of_seasons,
     episode: {
       number: episode.episode_number,
       tmdbId: episode.id,
