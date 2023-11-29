@@ -18,7 +18,7 @@ export function compareMedia(media: CommonMedia, title: string, releaseYear?: nu
   return compareTitle(media.title, title) && isSameYear;
 }
 
-export const compareTwoStrings = (firstParam: string, secondParam: string): number => {
+export const getSimilarityBetweenStrings = (firstParam: string, secondParam: string): number => {
   const first = firstParam.replace(/\s+/g, '');
   const second = secondParam.replace(/\s+/g, '');
 
