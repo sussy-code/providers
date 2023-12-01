@@ -43,6 +43,7 @@ export const superStreamScraper = makeSourcerer({
     };
 
     const { qualities, fid } = await getStreamQualities(ctx, apiQuery);
+    if (fid === undefined) throw new NotFoundError('No streamable file found');
 
     return {
       embeds: [],
@@ -90,6 +91,7 @@ export const superStreamScraper = makeSourcerer({
     };
 
     const { qualities, fid } = await getStreamQualities(ctx, apiQuery);
+    if (fid === undefined) throw new NotFoundError('No streamable file found');
 
     return {
       embeds: [],

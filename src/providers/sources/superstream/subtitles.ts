@@ -31,10 +31,10 @@ export async function getSubtitles(
     tid: type !== 'movie' ? id : undefined,
     episode: episodeId?.toString(),
     season: seasonId?.toString(),
-    group: episodeId ? '' : undefined,
   };
 
-  const subtitleList = ((await sendRequest(ctx, subtitleApiQuery)) as CaptionApiResponse).data.list;
+  const subResult = (await sendRequest(ctx, subtitleApiQuery)) as CaptionApiResponse;
+  const subtitleList = subResult.data.list;
   const output: Caption[] = [];
 
   subtitleList.forEach((sub) => {
