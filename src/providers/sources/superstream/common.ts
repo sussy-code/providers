@@ -11,3 +11,7 @@ export const apiUrls = [
 ];
 export const appKey = atob('bW92aWVib3g=');
 export const appId = atob('Y29tLnRkby5zaG93Ym94');
+export const captionsDomains = [
+  atob('bWJwaW1hZ2VzLmNodWF4aW4uY29t'),
+  atob('aW1hZ2VzLnNoZWd1Lm5ldA=='),
+];
