@@ -42,9 +42,12 @@ export async function getSubtitles(
   subtitleList.forEach((sub) => {
     const subtitle = sub.subtitles.sort((a, b) => b.order - a.order)[0];
     if (!subtitle) return;
-    const subtitleFilePath = subtitle.file_path.replace(captionsDomains[0], captionsDomains[1]).replace(/\s/g, '+').replace(/[()]/g, (c) => {
-      return '%' + c.charCodeAt(0).toString(16);
-    });
+    const subtitleFilePath = subtitle.file_path
+      .replace(captionsDomains[0], captionsDomains[1])
+      .replace(/\s/g, '+')
+      .replace(/[()]/g, (c) => {
+        return `%${c.charCodeAt(0).toString(16)}`;
+      });
     const subtitleType = getCaptionTypeFromUrl(subtitleFilePath);
     if (!subtitleType) return;
 
