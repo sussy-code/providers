@@ -2,6 +2,8 @@ import { Caption, getCaptionTypeFromUrl, isValidLanguageCode } from '@/providers
 import { sendRequest } from '@/providers/sources/superstream/sendRequest';
 import { ScrapeContext } from '@/utils/context';
 
+import { captionsDomains } from './common';
+
 interface CaptionApiResponse {
   data: {
     list: {
@@ -40,7 +42,13 @@ export async function getSubtitles(
   subtitleList.forEach((sub) => {
     const subtitle = sub.subtitles.sort((a, b) => b.order - a.order)[0];
     if (!subtitle) return;
-    const subtitleType = getCaptionTypeFromUrl(subtitle.file_path);
+    const subtitleFilePath = subtitle.file_path
+      .replace(captionsDomains[0], captionsDomains[1])
+      .replace(/\s/g, '+')
+      .replace(/[()]/g, (c) => {
+        return `%${c.charCodeAt(0).toString(16)}`;
+      });
+    const subtitleType = getCaptionTypeFromUrl(subtitleFilePath);
     if (!subtitleType) return;
 
     const validCode = isValidLanguageCode(subtitle.lang);
@@ -50,7 +58,7 @@ export async function getSubtitles(
       language: subtitle.lang,
       hasCorsRestrictions: true,
       type: subtitleType,
-      url: subtitle.file_path,
+      url: subtitleFilePath,
     });
   });
 
