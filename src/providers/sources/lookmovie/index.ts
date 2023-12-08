@@ -5,11 +5,11 @@ import { scrape, searchAndFindMedia } from './util';
 import { MovieContext, ShowContext } from '../zoechip/common';
 
 async function universalScraper(ctx: ShowContext | MovieContext): Promise<SourcererOutput> {
-  const lookmovieData = await searchAndFindMedia(ctx.media);
+  const lookmovieData = await searchAndFindMedia(ctx, ctx.media);
   if (!lookmovieData) throw new NotFoundError('Media not found');
 
   ctx.progress(30);
-  const videoUrl = await scrape(ctx.media, lookmovieData);
+  const videoUrl = await scrape(ctx, ctx.media, lookmovieData);
   if (!videoUrl) throw new NotFoundError('No video found');
 
   ctx.progress(60);
