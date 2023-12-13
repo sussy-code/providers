@@ -4,13 +4,15 @@ import { ScrapeContext } from '@/utils/context';
 export async function getVideoSources(ctx: ScrapeContext, id: any, media: MovieMedia | ShowMedia): Promise<any> {
   // Fetch video sources
 
-  let url = '';
+  let path = '';
   if (media.type === 'show') {
-    url = `https://lmscript.xyz/v1/episodes/view?expand=streams&id=${id}`;
+    path = `/v1/episodes/view?expand=streams&id=${id}`;
   } else if (media.type === 'movie') {
-    url = `https://lmscript.xyz/v1/movies/view?expand=streams&id=${id}`;
+    path = `/v1/movies/view?expand=streams&id=${id}`;
   }
-  const data = await ctx.fetcher<any>(url).then((d) => d);
+  const data = await ctx.fetcher<any>(path, {
+    baseUrl: 'https://lmscript.xyz',
+  });
   return data;
 }
 

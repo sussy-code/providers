@@ -37,7 +37,7 @@ export async function scrape(ctx: ScrapeContext, media: MovieMedia | ShowMedia, 
   if (media.type === 'movie') {
     id = result.id_movie;
   } else if (media.type === 'show') {
-    const data = await ctx.fetcher<any>(`https://lmscript.xyz/v1/shows?expand=episodes&id=${result.id_show}`, {
+    const data = await ctx.fetcher<any>(`/v1/shows?expand=episodes&id=${result.id_show}`, {
       baseUrl: 'https://lmscript.xyz',
     });
 
