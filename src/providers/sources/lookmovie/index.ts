@@ -20,6 +20,7 @@ async function universalScraper(ctx: ShowContext | MovieContext): Promise<Source
       playlist: videoUrl,
       type: 'hls',
       flags: [],
+      captions: [],
     },
   };
 }
