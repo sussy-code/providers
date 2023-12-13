@@ -37,9 +37,9 @@ export async function scrape(ctx: ScrapeContext, media: MovieMedia | ShowMedia, 
   if (media.type === 'movie') {
     id = result.id_movie;
   } else if (media.type === 'show') {
-    const data: any = await ctx
-      .fetcher<any>(`https://lmscript.xyz/v1/shows?expand=episodes&id=${result.id_show}`)
-      .then((d) => d);
+    const data = await ctx.fetcher<any>(`https://lmscript.xyz/v1/shows?expand=episodes&id=${result.id_show}`, {
+      baseUrl: 'https://lmscript.xyz',
+    });
 
     const episodeObj = data.episodes?.find((v: any) => {
       return Number(v.season) === Number(media.season.number) && Number(v.episode) === Number(media.episode.number);
