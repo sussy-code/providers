@@ -74,7 +74,12 @@ export const upcloudScraper = makeEmbed({
     let sources: { file: string; type: string } | null = null;
 
     if (!isJSON(streamRes.sources)) {
-      const scriptJs = await ctx.proxiedFetcher<string>(`https://rabbitstream.net/js/player/prod/e4-player.min.js`);
+      const scriptJs = await ctx.proxiedFetcher<string>(`https://rabbitstream.net/js/player/prod/e4-player.min.js`, {
+        query: {
+          // browser side caching on this endpoint is quite extreme. Add version query paramter to circumvent any caching
+          v: Date.now().toString(),
+        },
+      });
       const decryptionKey = extractKey(scriptJs);
       if (!decryptionKey) throw new Error('Key extraction failed');
 

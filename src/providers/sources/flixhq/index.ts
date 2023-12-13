@@ -5,7 +5,6 @@ import { getFlixhqMovieSources, getFlixhqShowSources, getFlixhqSourceDetails } f
 import { getFlixhqId } from '@/providers/sources/flixhq/search';
 import { NotFoundError } from '@/utils/errors';
 
-// TODO tv shows are available in flixHQ, just no scraper yet
 export const flixhqScraper = makeSourcerer({
   id: 'flixhq',
   name: 'FlixHQ',
