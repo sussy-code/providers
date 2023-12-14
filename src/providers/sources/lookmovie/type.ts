@@ -1,3 +1,5 @@
+import { MovieMedia } from '@/main/media';
+
 // ! Types
 interface BaseConfig {
   /** The website's slug. Formatted as `1839578-person-of-interest-2011` */
@@ -33,15 +35,26 @@ export interface ShowDataResult {
   episodes: episodeObj[];
 }
 
-export interface StreamsDataResult {
-  streams: any[];
+interface VideoSources {
+  [key: string]: string;
 }
 
-export interface Result {
+export interface StreamsDataResult {
+  streams: VideoSources;
+}
+
+export interface ResultItem {
   title: string;
   slug: string;
   year: string;
   id_movie: string;
   id_show: string;
-  items: any[];
+}
+
+export interface Result {
+  title(media: MovieMedia, title: any, arg2: number): boolean;
+  year(year: any): number | undefined;
+  id_movie: any;
+  id_show: string;
+  items: ResultItem[];
 }

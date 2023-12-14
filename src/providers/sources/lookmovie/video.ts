@@ -3,7 +3,11 @@ import { ScrapeContext } from '@/utils/context';
 
 import { StreamsDataResult } from './type';
 
-export async function getVideoSources(ctx: ScrapeContext, id: string, media: MovieMedia | ShowMedia): Promise<any> {
+export async function getVideoSources(
+  ctx: ScrapeContext,
+  id: string,
+  media: MovieMedia | ShowMedia,
+): Promise<StreamsDataResult> {
   // Fetch video sources
 
   let path = '';
