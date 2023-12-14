@@ -1,3 +1,4 @@
+import { flags } from '@/main/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
 
@@ -19,7 +20,7 @@ async function universalScraper(ctx: ShowContext | MovieContext): Promise<Source
     stream: {
       playlist: videoUrl,
       type: 'hls',
-      flags: [],
+      flags: [flags.IP_LOCKED],
       captions: [],
     },
   };

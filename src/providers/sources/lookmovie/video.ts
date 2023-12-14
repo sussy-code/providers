@@ -1,22 +1,29 @@
 import { MovieMedia, ShowMedia } from '@/main/media';
 import { ScrapeContext } from '@/utils/context';
 
+import { StreamsDataResult } from './type';
+
 export async function getVideoSources(ctx: ScrapeContext, id: any, media: MovieMedia | ShowMedia): Promise<any> {
   // Fetch video sources
 
   let path = '';
   if (media.type === 'show') {
-    path = `/v1/episodes/view?expand=streams&id=${id}`;
+    path = `/v1/episodes/view`;
   } else if (media.type === 'movie') {
-    path = `/v1/movies/view?expand=streams&id=${id}`;
+    path = `/v1/movies/view`;
   }
-  const data = await ctx.fetcher<any>(path, {
+  const data = await ctx.fetcher<StreamsDataResult>(path, {
     baseUrl: 'https://lmscript.xyz',
+    query: { expand: 'streams', id },
   });
   return data;
 }
 
-export async function getVideoUrl(ctx: ScrapeContext, id: any, media: MovieMedia | ShowMedia): Promise<string | null> {
+export async function getVideoUrl(
+  ctx: ScrapeContext,
+  id: string,
+  media: MovieMedia | ShowMedia,
+): Promise<string | null> {
   // Get sources
   const data = await getVideoSources(ctx, id, media);
   const videoSources = data.streams;

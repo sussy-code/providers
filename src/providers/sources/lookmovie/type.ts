@@ -23,10 +23,25 @@ interface MovieConfig extends BaseConfig {
 }
 export type Config = MovieConfig | TvConfig;
 
+export interface episodeObj {
+  season: string;
+  episode: string;
+  id: string;
+}
+
+export interface ShowDataResult {
+  episodes: episodeObj[];
+}
+
+export interface StreamsDataResult {
+  streams: any[];
+}
+
 export interface Result {
   title: string;
   slug: string;
   year: string;
-  id_movie?: string;
-  id_show?: string;
+  id_movie: string;
+  id_show: string;
+  items: any[];
 }

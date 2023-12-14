@@ -3,7 +3,7 @@ import { compareMedia } from '@/utils/compare';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-import { Result } from './type';
+import { Result, ShowDataResult, episodeObj } from './type';
 import { getVideoUrl } from './video';
 
 export async function searchAndFindMedia(
@@ -11,8 +11,9 @@ export async function searchAndFindMedia(
   media: MovieMedia | ShowMedia,
 ): Promise<Result | undefined> {
   if (media.type === 'show') {
-    const searchRes = await ctx.fetcher<any>(`/v1/shows?filters[q]=${media.title}`, {
+    const searchRes = await ctx.fetcher<Result>(`/v1/shows`, {
       baseUrl: 'https://lmscript.xyz',
+      query: { 'filters[q]': media.title },
     });
 
     const results = searchRes.items;
@@ -21,8 +22,9 @@ export async function searchAndFindMedia(
     return result;
   }
   if (media.type === 'movie') {
-    const searchRes = await ctx.fetcher<any>(`/v1/movies?filters[q]=${media.title}`, {
+    const searchRes = await ctx.fetcher<Result>(`/v1/movies`, {
       baseUrl: 'https://lmscript.xyz',
+      query: { 'filters[q]': media.title },
     });
 
     const results = searchRes.items;
@@ -37,15 +39,16 @@ export async function scrape(ctx: ScrapeContext, media: MovieMedia | ShowMedia, 
   if (media.type === 'movie') {
     id = result.id_movie;
   } else if (media.type === 'show') {
-    const data = await ctx.fetcher<any>(`/v1/shows?expand=episodes&id=${result.id_show}`, {
+    const data = await ctx.fetcher<ShowDataResult>(`/v1/shows`, {
       baseUrl: 'https://lmscript.xyz',
+      query: { expand: 'episodes', id: result.id_show },
     });
 
-    const episodeObj = data.episodes?.find((v: any) => {
+    const episode = data.episodes?.find((v: episodeObj) => {
       return Number(v.season) === Number(media.season.number) && Number(v.episode) === Number(media.episode.number);
     });
 
-    if (episodeObj) id = episodeObj.id;
+    if (episode) id = episode.id;
   }
 
   // Check ID
