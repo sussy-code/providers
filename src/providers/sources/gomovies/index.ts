@@ -12,7 +12,7 @@ export const gomoviesBase = `https://gomovies.sx`;
 export const goMoviesScraper = makeSourcerer({
   id: 'gomovies',
   name: 'GOmovies',
-  rank: 200,
+  rank: 110,
   flags: [flags.NO_CORS],
   async scrapeShow(ctx) {
     const search = await ctx.proxiedFetcher<string>(`/ajax/search`, {
