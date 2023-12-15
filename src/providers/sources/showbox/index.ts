@@ -12,6 +12,7 @@ export const showBoxScraper = makeSourcerer({
   id: 'show_box',
   name: 'ShowBox',
   rank: 20,
+  disabled: true,
   flags: [flags.NO_CORS],
   async scrapeMovie(ctx) {
     const search = await ctx.proxiedFetcher<string>('/search', {
