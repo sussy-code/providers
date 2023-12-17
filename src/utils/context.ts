@@ -1,4 +1,5 @@
 import { UseableFetcher } from '@/fetchers/types';
+import { MovieMedia, ShowMedia } from '@/main/media';
 
 export type ScrapeContext = {
   proxiedFetcher: <T>(...params: Parameters<UseableFetcher<T>>) => ReturnType<UseableFetcher<T>>;
@@ -11,3 +12,11 @@ export type EmbedInput = {
 };
 
 export type EmbedScrapeContext = EmbedInput & ScrapeContext;
+
+export type MovieScrapeContext = ScrapeContext & {
+  media: MovieMedia;
+};
+
+export type ShowScrapeContext = ScrapeContext & {
+  media: ShowMedia;
+};

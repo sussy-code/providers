@@ -1,19 +1,10 @@
-import { MovieMedia, ShowMedia } from '@/main/media';
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { upstreamScraper } from '@/providers/embeds/upstream';
 import { getZoeChipSourceURL, getZoeChipSources } from '@/providers/sources/zoechip/scrape';
-import { ScrapeContext } from '@/utils/context';
+import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
 export const zoeBase = 'https://zoechip.cc';
-
-export type MovieContext = ScrapeContext & {
-  media: MovieMedia;
-};
-
-export type ShowContext = ScrapeContext & {
-  media: ShowMedia;
-};
 
 export type ZoeChipSourceDetails = {
   type: string; // Only seen "iframe" so far
@@ -23,7 +14,10 @@ export type ZoeChipSourceDetails = {
   title: string;
 };
 
-export async function formatSource(ctx: MovieContext | ShowContext, source: { embed: string; episodeId: string }) {
+export async function formatSource(
+  ctx: MovieScrapeContext | ShowScrapeContext,
+  source: { embed: string; episodeId: string },
+) {
   const link = await getZoeChipSourceURL(ctx, source.episodeId);
   if (link) {
     const embed = {
@@ -51,7 +45,7 @@ export async function formatSource(ctx: MovieContext | ShowContext, source: { em
   }
 }
 
-export async function createZoeChipStreamData(ctx: MovieContext | ShowContext, id: string) {
+export async function createZoeChipStreamData(ctx: MovieScrapeContext | ShowScrapeContext, id: string) {
   const sources = await getZoeChipSources(ctx, id);
   const embeds: {
     embedId: string;
