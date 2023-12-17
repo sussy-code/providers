@@ -4,27 +4,26 @@ import { flags } from '@/main/targets';
 import { makeEmbed } from '@/providers/base';
 
 const packedRegex = /(eval\(function\(p,a,c,k,e,d\).*\)\)\))/;
-const linkRegex = /sources:\[{file:"(.*?)"/;
+const linkRegex = /src:"(https:\/\/[^"]+)"/;
 
-export const upstreamScraper = makeEmbed({
-  id: 'upstream',
-  name: 'UpStream',
-  rank: 199,
+export const streamvidScraper = makeEmbed({
+  id: 'streamvid',
+  name: 'Streamvid',
+  rank: 215,
   async scrape(ctx) {
-    // Example url: https://upstream.to/embed-omscqgn6jc8r.html
+    // Example url: https://streamvid.net/fu1jaf96vofx
     const streamRes = await ctx.proxiedFetcher<string>(ctx.url);
     const packed = streamRes.match(packedRegex);
 
     if (packed) {
       const unpacked = unpacker.unpack(packed[1]);
-
       const link = unpacked.match(linkRegex);
 
       if (link) {
         return {
           stream: {
             type: 'hls',
-            playlist: link[1].startsWith('http') ? link[1] : `https://s30.upstreamcdn.co${link[1]}`,
+            playlist: link[1],
             flags: [flags.NO_CORS],
             captions: [],
           },
@@ -32,6 +31,6 @@ export const upstreamScraper = makeEmbed({
       }
     }
 
-    throw new Error('upstream source not found');
+    throw new Error('streamvid source not found');
   },
 });
