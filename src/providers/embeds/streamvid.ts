@@ -15,22 +15,19 @@ export const streamvidScraper = makeEmbed({
     const streamRes = await ctx.proxiedFetcher<string>(ctx.url);
     const packed = streamRes.match(packedRegex);
 
-    if (packed) {
-      const unpacked = unpacker.unpack(packed[1]);
-      const link = unpacked.match(linkRegex);
+    if (!packed) throw new Error('streamvid packed not found');
 
-      if (link) {
-        return {
-          stream: {
-            type: 'hls',
-            playlist: link[1],
-            flags: [flags.NO_CORS],
-            captions: [],
-          },
-        };
-      }
-    }
+    const unpacked = unpacker.unpack(packed[1]);
+    const link = unpacked.match(linkRegex);
 
-    throw new Error('streamvid source not found');
+    if (!link) throw new Error('streamvid link not found');
+    return {
+      stream: {
+        type: 'hls',
+        playlist: link[1],
+        flags: [flags.NO_CORS],
+        captions: [],
+      },
+    };
   },
 });

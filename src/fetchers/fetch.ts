@@ -1,5 +1,3 @@
-import { Blob as NodeBlob } from 'node-fetch';
-
 /**
  * This file is a very relaxed definition of the fetch api
  * Only containing what we need for it to function.
@@ -18,7 +16,6 @@ export type FetchHeaders = {
 export type FetchReply = {
   text(): Promise<string>;
   json(): Promise<any>;
-  blob(): Promise<Blob | NodeBlob>;
   headers: FetchHeaders;
 };
 

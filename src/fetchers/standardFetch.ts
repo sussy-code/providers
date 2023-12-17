@@ -19,7 +19,6 @@ export function makeStandardFetcher(f: FetchLike): Fetcher {
 
     const isJson = res.headers.get('content-type')?.includes('application/json');
     if (isJson) return res.json();
-    if (res.headers.get('content-type')?.includes('application/octet-stream')) return res.blob();
 
     return res.text();
   };
