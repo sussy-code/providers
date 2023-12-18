@@ -26,10 +26,13 @@ export const smashyStreamFScraper = makeEmbed({
           if (match) {
             const [, language, url] = match;
             if (language && url) {
+              const languageCode = labelToLanguageCode(language);
+              const captionType = getCaptionTypeFromUrl(url);
+              if (!languageCode || !captionType) return null;
               return {
                 url: url.replace(',', ''),
-                language: labelToLanguageCode(language) ?? '',
-                type: getCaptionTypeFromUrl(url) ?? 'vtt',
+                language: languageCode,
+                type: captionType,
                 hasCorsRestrictions: false,
               };
             }
