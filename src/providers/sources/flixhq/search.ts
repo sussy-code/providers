@@ -18,18 +18,18 @@ export async function getFlixhqId(ctx: ScrapeContext, media: MovieMedia | ShowMe
       const id = query.find('div.film-poster > a').attr('href')?.slice(1);
       const title = query.find('div.film-detail > h2 > a').attr('title');
       const year = query.find('div.film-detail > div.fd-infor > span:nth-child(1)').text();
-      const seasons = year.includes('SS') ? parseInt(year.split('SS')[1]) : 0;
+      const seasons = year.includes('SS') ? year.split('SS')[1] : "0";
 
       if (!id || !title || !year) return null;
       return {
         id,
         title,
         year: parseInt(year, 10),
-        seasons,
+        seasons: parseInt(seasons, 10),
       };
     });
 
-  const matchingItem = items.find(v => {
+  const matchingItem = items.find((v) => {
     if (!v) return false;
 
     if (media.type === 'movie') {
