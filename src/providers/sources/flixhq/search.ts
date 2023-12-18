@@ -34,7 +34,7 @@ export async function getFlixhqId(ctx: ScrapeContext, media: MovieMedia | ShowMe
 
     if (media.type === 'movie') {
       return compareMedia(media, v.title, v.year);
-    };
+    }
 
     return compareTitle(media.title, v.title) && media.season.number < v.seasons + 1;
   });
