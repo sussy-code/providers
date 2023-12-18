@@ -29,7 +29,11 @@ export async function getFlixhqId(ctx: ScrapeContext, media: MovieMedia | ShowMe
       };
     });
 
-  const matchingItem = items.find((v) => v && (media.type === 'movie' ? compareMedia(media, v.title, v.year) : compareTitle(media.title, v.title) && media.season.number === v.seasons || media.season.number < v.seasons || media.season.number < v.seasons + 1));
+  const matchingItem = items.find(
+    (v) => v &&
+      (media.type === 'movie' ? compareMedia(media, v.title, v.year) :
+       compareTitle(media.title, v.title) && media.season.number < v.seasons + 1)
+  );
 
   if (!matchingItem) return null;
   return matchingItem.id;
