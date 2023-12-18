@@ -1,10 +1,10 @@
 import { load } from 'cheerio';
 
 import { ShowMedia } from '@/main/media';
-import { MovieContext, ShowContext, ZoeChipSourceDetails, zoeBase } from '@/providers/sources/zoechip/common';
-import { ScrapeContext } from '@/utils/context';
+import { ZoeChipSourceDetails, zoeBase } from '@/providers/sources/zoechip/common';
+import { MovieScrapeContext, ScrapeContext, ShowScrapeContext } from '@/utils/context';
 
-export async function getZoeChipSources(ctx: MovieContext | ShowContext, id: string) {
+export async function getZoeChipSources(ctx: MovieScrapeContext | ShowScrapeContext, id: string) {
   // Movies use /ajax/episode/list/ID
   // Shows use /ajax/episode/servers/ID
   const endpoint = ctx.media.type === 'movie' ? 'list' : 'servers';
