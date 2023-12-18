@@ -12,7 +12,7 @@ type DPlayerSourcesResponse = {
 export const smashyStreamDScraper = makeEmbed({
   id: 'smashystream-d',
   name: 'SmashyStream (D)',
-  rank: 410,
+  rank: 71,
   async scrape(ctx) {
     const mainPageRes = await ctx.proxiedFetcher<string>(ctx.url, {
       headers: {

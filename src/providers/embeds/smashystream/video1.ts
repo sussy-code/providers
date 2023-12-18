@@ -1,6 +1,6 @@
 import { flags } from '@/main/targets';
 import { makeEmbed } from '@/providers/base';
-import { Caption } from '@/providers/captions';
+import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '@/providers/captions';
 
 type FPlayerResponse = {
   sourceUrls: string[];
@@ -10,7 +10,7 @@ type FPlayerResponse = {
 export const smashyStreamFScraper = makeEmbed({
   id: 'smashystream-f',
   name: 'SmashyStream (F)',
-  rank: 400,
+  rank: 70,
   async scrape(ctx) {
     const res = await ctx.proxiedFetcher<FPlayerResponse>(ctx.url, {
       headers: {
@@ -28,9 +28,8 @@ export const smashyStreamFScraper = makeEmbed({
             if (language && url) {
               return {
                 url: url.replace(',', ''),
-                language,
-                kind: 'subtitles',
-                type: url.includes('.vtt') ? 'vtt' : 'srt',
+                language: labelToLanguageCode(language) ?? '',
+                type: getCaptionTypeFromUrl(url) ?? 'vtt',
                 hasCorsRestrictions: false,
               };
             }
