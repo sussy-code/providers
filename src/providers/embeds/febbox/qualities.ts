@@ -1,13 +1,11 @@
+import { sendRequest } from '@/providers/sources/showbox/sendRequest';
 import { StreamFile } from '@/providers/streams';
 import { ScrapeContext } from '@/utils/context';
 
-import { sendRequest } from './sendRequest';
-
-const allowedQualities = ['360', '480', '720', '1080'];
+const allowedQualities = ['360', '480', '720', '1080', '4k'];
 
 export async function getStreamQualities(ctx: ScrapeContext, apiQuery: object) {
   const mediaRes: { list: { path: string; quality: string; fid?: number }[] } = (await sendRequest(ctx, apiQuery)).data;
-  ctx.progress(66);
 
   const qualityMap = mediaRes.list
     .filter((file) => allowedQualities.includes(file.quality.replace('p', '')))
