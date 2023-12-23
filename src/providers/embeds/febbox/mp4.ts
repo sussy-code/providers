@@ -1,6 +1,6 @@
-import { MediaTypes } from '@/main/media';
 import { flags } from '@/main/targets';
 import { makeEmbed } from '@/providers/base';
+import { parseInputUrl } from '@/providers/embeds/febbox/common';
 import { getStreamQualities } from '@/providers/embeds/febbox/qualities';
 import { getSubtitles } from '@/providers/embeds/febbox/subtitles';
 
@@ -9,9 +9,7 @@ export const febboxMp4Scraper = makeEmbed({
   name: 'Febbox (MP4)',
   rank: 190,
   async scrape(ctx) {
-    const [type, id, seasonId, episodeId] = ctx.url.slice(1).split('/');
-    const season = seasonId ? parseInt(seasonId, 10) : undefined;
-    const episode = episodeId ? parseInt(episodeId, 10) : undefined;
+    const { type, id, season, episode } = parseInputUrl(ctx.url);
     let apiQuery: object | null = null;
 
     if (type === 'movie') {
@@ -42,7 +40,7 @@ export const febboxMp4Scraper = makeEmbed({
 
     return {
       stream: {
-        captions: await getSubtitles(ctx, id, fid, type as MediaTypes, episode, season),
+        captions: await getSubtitles(ctx, id, fid, type, episode, season),
         qualities,
         type: 'file',
         flags: [flags.NO_CORS],

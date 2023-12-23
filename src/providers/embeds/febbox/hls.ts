@@ -1,7 +1,7 @@
 import { MediaTypes } from '@/main/media';
 import { flags } from '@/main/targets';
 import { makeEmbed } from '@/providers/base';
-import { parseInput } from '@/providers/embeds/febbox/common';
+import { parseInputUrl } from '@/providers/embeds/febbox/common';
 import { getStreams } from '@/providers/embeds/febbox/fileList';
 import { getSubtitles } from '@/providers/embeds/febbox/subtitles';
 import { showboxBase } from '@/providers/sources/showbox/common';
@@ -17,7 +17,7 @@ export const febboxHlsScraper = makeEmbed({
   name: 'Febbox (HLS)',
   rank: 160,
   async scrape(ctx) {
-    const { type, id, season, episode } = parseInput(ctx.url);
+    const { type, id, season, episode } = parseInputUrl(ctx.url);
     const sharelinkResult = await ctx.proxiedFetcher<{
       data?: { link?: string };
     }>('/index/share_link', {

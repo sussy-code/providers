@@ -10,7 +10,7 @@ export interface FebboxFileList {
   is_dir: 0 | 1;
 }
 
-export function parseInput(url: string) {
+export function parseInputUrl(url: string) {
   const [type, id, seasonId, episodeId] = url.slice(1).split('/');
   const season = seasonId ? parseInt(seasonId, 10) : undefined;
   const episode = episodeId ? parseInt(episodeId, 10) : undefined;
