@@ -1,64 +1,72 @@
-import { load } from 'cheerio';
-
 import { flags } from '@/main/targets';
-import { makeSourcerer } from '@/providers/base';
-import { febBoxScraper } from '@/providers/embeds/febBox';
-import { compareMedia } from '@/utils/compare';
+import { SourcererOutput, makeSourcerer } from '@/providers/base';
+import { febboxHlsScraper } from '@/providers/embeds/febbox/hls';
+import { febboxMp4Scraper } from '@/providers/embeds/febbox/mp4';
+import { showboxBase } from '@/providers/sources/showbox/common';
+import { compareTitle } from '@/utils/compare';
+import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-const showboxBase = `https://www.showbox.media`;
+import { sendRequest } from './sendRequest';
 
-export const showBoxScraper = makeSourcerer({
-  id: 'show_box',
-  name: 'ShowBox',
-  rank: 20,
-  disabled: true,
+async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
+  const searchQuery = {
+    module: 'Search4',
+    page: '1',
+    type: 'all',
+    keyword: ctx.media.title,
+    pagelimit: '20',
+  };
+
+  const searchRes = (await sendRequest(ctx, searchQuery, true)).data.list;
+  ctx.progress(33);
+
+  const showboxEntry = searchRes.find(
+    (res: any) => compareTitle(res.title, ctx.media.title) && res.year === Number(ctx.media.releaseYear),
+  );
+
+  if (!showboxEntry) throw new NotFoundError('No entry found');
+  const id = showboxEntry.id;
+
+  const sharelinkResult = await ctx.proxiedFetcher<{
+    data?: { link?: string };
+  }>('/index/share_link', {
+    baseUrl: showboxBase,
+    query: {
+      id,
+      type: ctx.media.type === 'movie' ? '1' : '2',
+    },
+  });
+  if (!sharelinkResult?.data?.link) throw new NotFoundError('No embed url found');
+  ctx.progress(80);
+
+  const season = ctx.media.type === 'show' ? ctx.media.season.number : '';
+  const episode = ctx.media.type === 'show' ? ctx.media.episode.number : '';
+
+  const embeds = [
+    {
+      embedId: febboxMp4Scraper.id,
+      url: `/${ctx.media.type}/${id}/${season}/${episode}`,
+    },
+  ];
+
+  if (sharelinkResult?.data?.link) {
+    embeds.push({
+      embedId: febboxHlsScraper.id,
+      url: sharelinkResult.data.link,
+    });
+  }
+
+  return {
+    embeds,
+  };
+}
+
+export const showboxScraper = makeSourcerer({
+  id: 'showbox',
+  name: 'Showbox',
+  rank: 300,
   flags: [flags.NO_CORS],
-  async scrapeMovie(ctx) {
-    const search = await ctx.proxiedFetcher<string>('/search', {
-      baseUrl: showboxBase,
-      query: {
-        keyword: ctx.media.title,
-      },
-    });
-
-    const searchPage = load(search);
-    const result = searchPage('.film-name > a')
-      .toArray()
-      .map((el) => {
-        const titleContainer = el.parent?.parent;
-        if (!titleContainer) return;
-        const year = searchPage(titleContainer).find('.fdi-item').first().text();
-
-        return {
-          title: el.attribs.title,
-          path: el.attribs.href,
-          year: !year.includes('SS') ? parseInt(year, 10) : undefined,
-        };
-      })
-      .find((v) => v && compareMedia(ctx.media, v.title, v.year ? v.year : undefined));
-
-    if (!result?.path) throw new NotFoundError('no result found');
-
-    const febboxResult = await ctx.proxiedFetcher<{
-      data?: { link?: string };
-    }>('/index/share_link', {
-      baseUrl: showboxBase,
-      query: {
-        id: result.path.split('/')[3],
-        type: '1',
-      },
-    });
-
-    if (!febboxResult?.data?.link) throw new NotFoundError('no result found');
-
-    return {
-      embeds: [
-        {
-          embedId: febBoxScraper.id,
-          url: febboxResult.data.link,
-        },
-      ],
-    };
-  },
+  scrapeShow: comboScraper,
+  scrapeMovie: comboScraper,
 });
