@@ -38,6 +38,7 @@ export const febboxMp4Scraper = makeEmbed({
 
     const { qualities, fid } = await getStreamQualities(ctx, apiQuery);
     if (fid === undefined) throw new Error('No streamable file found');
+    ctx.progress(70);
 
     return {
       stream: {

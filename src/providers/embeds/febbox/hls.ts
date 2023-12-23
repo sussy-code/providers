@@ -1,7 +1,10 @@
+import { MediaTypes } from '@/main/media';
 import { flags } from '@/main/targets';
 import { makeEmbed } from '@/providers/base';
-import { FebboxFileList, febBoxBase } from '@/providers/embeds/febbox/common';
-import { EmbedScrapeContext } from '@/utils/context';
+import { parseInput } from '@/providers/embeds/febbox/common';
+import { getStreams } from '@/providers/embeds/febbox/fileList';
+import { getSubtitles } from '@/providers/embeds/febbox/subtitles';
+import { showboxBase } from '@/providers/sources/showbox/common';
 
 // structure: https://www.febbox.com/share/<random_key>
 export function extractShareKey(url: string): string {
@@ -9,44 +12,35 @@ export function extractShareKey(url: string): string {
   const shareKey = parsedUrl.pathname.split('/')[2];
   return shareKey;
 }
-
-export async function getFileList(ctx: EmbedScrapeContext, shareKey: string): Promise<FebboxFileList[]> {
-  const streams = await ctx.proxiedFetcher<{
-    data?: {
-      file_list?: FebboxFileList[];
-    };
-  }>('/file/file_share_list', {
-    headers: {
-      'accept-language': 'en', // without this header, the request is marked as a webscraper
-    },
-    baseUrl: febBoxBase,
-    query: {
-      share_key: shareKey,
-      pwd: '',
-    },
-  });
-
-  return streams.data?.file_list ?? [];
-}
-
 export const febboxHlsScraper = makeEmbed({
   id: 'febbox-hls',
   name: 'Febbox (HLS)',
   rank: 160,
   async scrape(ctx) {
-    const shareKey = extractShareKey(ctx.url);
-    const fileList = await getFileList(ctx, shareKey);
-    const firstMp4 = fileList.find((v) => v.ext === 'mp4');
-    // TODO support TV, file list is gotten differently
-    // TODO support subtitles with getSubtitles
-    if (!firstMp4) throw new Error('No playable mp4 stream found');
+    const { type, id, season, episode } = parseInput(ctx.url);
+    const sharelinkResult = await ctx.proxiedFetcher<{
+      data?: { link?: string };
+    }>('/index/share_link', {
+      baseUrl: showboxBase,
+      query: {
+        id,
+        type: type === 'movie' ? '1' : '2',
+      },
+    });
+    if (!sharelinkResult?.data?.link) throw new Error('No embed url found');
+    ctx.progress(30);
+    const shareKey = extractShareKey(sharelinkResult.data.link);
+    const fileList = await getStreams(ctx, shareKey, type, season, episode);
+    const firstStream = fileList[0];
+    if (!firstStream) throw new Error('No playable mp4 stream found');
+    ctx.progress(70);
 
     return {
       stream: {
         type: 'hls',
         flags: [flags.NO_CORS],
-        captions: [],
-        playlist: `https://www.febbox.com/hls/main/${firstMp4.oss_fid}.m3u8`,
+        captions: await getSubtitles(ctx, id, firstStream.fid, type as MediaTypes, season, episode),
+        playlist: `https://www.febbox.com/hls/main/${firstStream.oss_fid}.m3u8`,
       },
     };
   },

@@ -2,7 +2,6 @@ import { flags } from '@/main/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { febboxHlsScraper } from '@/providers/embeds/febbox/hls';
 import { febboxMp4Scraper } from '@/providers/embeds/febbox/mp4';
-import { showboxBase } from '@/providers/sources/showbox/common';
 import { compareTitle } from '@/utils/compare';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
@@ -19,46 +18,28 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
   };
 
   const searchRes = (await sendRequest(ctx, searchQuery, true)).data.list;
-  ctx.progress(33);
+  ctx.progress(50);
 
   const showboxEntry = searchRes.find(
     (res: any) => compareTitle(res.title, ctx.media.title) && res.year === Number(ctx.media.releaseYear),
   );
-
   if (!showboxEntry) throw new NotFoundError('No entry found');
+
   const id = showboxEntry.id;
-
-  const sharelinkResult = await ctx.proxiedFetcher<{
-    data?: { link?: string };
-  }>('/index/share_link', {
-    baseUrl: showboxBase,
-    query: {
-      id,
-      type: ctx.media.type === 'movie' ? '1' : '2',
-    },
-  });
-  if (!sharelinkResult?.data?.link) throw new NotFoundError('No embed url found');
-  ctx.progress(80);
-
   const season = ctx.media.type === 'show' ? ctx.media.season.number : '';
   const episode = ctx.media.type === 'show' ? ctx.media.episode.number : '';
 
-  const embeds = [
-    {
-      embedId: febboxMp4Scraper.id,
-      url: `/${ctx.media.type}/${id}/${season}/${episode}`,
-    },
-  ];
-
-  if (sharelinkResult?.data?.link) {
-    embeds.push({
-      embedId: febboxHlsScraper.id,
-      url: sharelinkResult.data.link,
-    });
-  }
-
   return {
-    embeds,
+    embeds: [
+      {
+        embedId: febboxHlsScraper.id,
+        url: `/${ctx.media.type}/${id}/${season}/${episode}`,
+      },
+      {
+        embedId: febboxMp4Scraper.id,
+        url: `/${ctx.media.type}/${id}/${season}/${episode}`,
+      },
+    ],
   };
 }
 
