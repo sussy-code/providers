@@ -22,12 +22,15 @@ export const remotestreamScraper = makeSourcerer({
 
     return {
       embeds: [],
-      stream: {
-        captions: [],
-        playlist: playlistLink,
-        type: 'hls',
-        flags: [flags.CORS_ALLOWED],
-      },
+      stream: [
+        {
+          id: 'primary',
+          captions: [],
+          playlist: playlistLink,
+          type: 'hls',
+          flags: [flags.CORS_ALLOWED],
+        },
+      ],
     };
   },
   async scrapeMovie(ctx) {
@@ -40,12 +43,15 @@ export const remotestreamScraper = makeSourcerer({
 
     return {
       embeds: [],
-      stream: {
-        captions: [],
-        playlist: playlistLink,
-        type: 'hls',
-        flags: [flags.CORS_ALLOWED],
-      },
+      stream: [
+        {
+          id: 'primary',
+          captions: [],
+          playlist: playlistLink,
+          type: 'hls',
+          flags: [flags.CORS_ALLOWED],
+        },
+      ],
     };
   },
 });

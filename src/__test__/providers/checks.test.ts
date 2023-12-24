@@ -1,9 +1,9 @@
 import { mockEmbeds, mockSources } from '@/__test__/providerTests';
-import { FeatureMap } from '@/main/targets.ts';
+import { FeatureMap } from '@/main/targets';
 import { getProviders } from '@/providers/get';
 import { vi, describe, it, expect, afterEach } from 'vitest';
 
-const mocks = await vi.hoisted(async () => (await import('../providerTests.ts')).makeProviderMocks());
+const mocks = await vi.hoisted(async () => (await import('../providerTests')).makeProviderMocks());
 vi.mock('@/providers/all', () => mocks);
 
 const features: FeatureMap = {

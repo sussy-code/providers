@@ -18,13 +18,13 @@ export type RunOutput = {
 
 export type SourceRunOutput = {
   sourceId: string;
-  stream?: Stream;
+  stream: Stream[];
   embeds: [];
 };
 
 export type EmbedRunOutput = {
   embedId: string;
-  stream?: Stream;
+  stream: Stream[];
 };
 
 export type ProviderRunnerOptions = {

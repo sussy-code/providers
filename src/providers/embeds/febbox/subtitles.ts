@@ -54,6 +54,7 @@ export async function getSubtitles(
     if (!validCode) return;
 
     output.push({
+      id: subtitleFilePath,
       language: subtitle.lang,
       hasCorsRestrictions: true,
       type: subtitleType,

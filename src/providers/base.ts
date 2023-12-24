@@ -9,7 +9,7 @@ export type SourcererEmbed = {
 
 export type SourcererOutput = {
   embeds: SourcererEmbed[];
-  stream?: Stream;
+  stream?: Stream[];
 };
 
 export type Sourcerer = {
@@ -27,7 +27,7 @@ export function makeSourcerer(state: Sourcerer): Sourcerer {
 }
 
 export type EmbedOutput = {
-  stream: Stream;
+  stream: Stream[];
 };
 
 export type Embed = {

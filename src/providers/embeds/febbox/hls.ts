@@ -36,12 +36,15 @@ export const febboxHlsScraper = makeEmbed({
     ctx.progress(70);
 
     return {
-      stream: {
-        type: 'hls',
-        flags: [flags.CORS_ALLOWED],
-        captions: await getSubtitles(ctx, id, firstStream.fid, type as MediaTypes, season, episode),
-        playlist: `https://www.febbox.com/hls/main/${firstStream.oss_fid}.m3u8`,
-      },
+      stream: [
+        {
+          id: 'primary',
+          type: 'hls',
+          flags: [flags.CORS_ALLOWED],
+          captions: await getSubtitles(ctx, id, firstStream.fid, type as MediaTypes, season, episode),
+          playlist: `https://www.febbox.com/hls/main/${firstStream.oss_fid}.m3u8`,
+        },
+      ],
     };
   },
 });

@@ -21,12 +21,15 @@ export const upstreamScraper = makeEmbed({
 
       if (link) {
         return {
-          stream: {
-            type: 'hls',
-            playlist: link[1],
-            flags: [flags.CORS_ALLOWED],
-            captions: [],
-          },
+          stream: [
+            {
+              id: 'primary',
+              type: 'hls',
+              playlist: link[1],
+              flags: [flags.CORS_ALLOWED],
+              captions: [],
+            },
+          ],
         };
       }
     }

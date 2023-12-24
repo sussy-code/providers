@@ -30,6 +30,7 @@ export const smashyStreamFScraper = makeEmbed({
               const captionType = getCaptionTypeFromUrl(url);
               if (!languageCode || !captionType) return null;
               return {
+                id: url,
                 url: url.replace(',', ''),
                 language: languageCode,
                 type: captionType,
@@ -42,12 +43,15 @@ export const smashyStreamFScraper = makeEmbed({
         .filter((x): x is Caption => x !== null) ?? [];
 
     return {
-      stream: {
-        playlist: res.sourceUrls[0],
-        type: 'hls',
-        flags: [flags.CORS_ALLOWED],
-        captions,
-      },
+      stream: [
+        {
+          id: 'primary',
+          playlist: res.sourceUrls[0],
+          type: 'hls',
+          flags: [flags.CORS_ALLOWED],
+          captions,
+        },
+      ],
     };
   },
 });

@@ -39,12 +39,15 @@ export const febboxMp4Scraper = makeEmbed({
     ctx.progress(70);
 
     return {
-      stream: {
-        captions: await getSubtitles(ctx, id, fid, type, episode, season),
-        qualities,
-        type: 'file',
-        flags: [flags.CORS_ALLOWED],
-      },
+      stream: [
+        {
+          id: 'primary',
+          captions: await getSubtitles(ctx, id, fid, type, episode, season),
+          qualities,
+          type: 'file',
+          flags: [flags.CORS_ALLOWED],
+        },
+      ],
     };
   },
 });

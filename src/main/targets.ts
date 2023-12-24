@@ -47,7 +47,7 @@ export const targetToFeatures: Record<Targets, FeatureMap> = {
     requires: [],
     disallowed: [],
   },
-} as const;
+};
 
 export function getTargetFeatures(target: Targets): FeatureMap {
   return targetToFeatures[target];

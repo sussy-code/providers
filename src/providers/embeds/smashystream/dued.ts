@@ -57,12 +57,15 @@ export const smashyStreamDScraper = makeEmbed({
     );
 
     return {
-      stream: {
-        playlist: playlistRes,
-        type: 'hls',
-        flags: [flags.CORS_ALLOWED],
-        captions: [],
-      },
+      stream: [
+        {
+          id: 'primary',
+          playlist: playlistRes,
+          type: 'hls',
+          flags: [flags.CORS_ALLOWED],
+          captions: [],
+        },
+      ],
     };
   },
 });

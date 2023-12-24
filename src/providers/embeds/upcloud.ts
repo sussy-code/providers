@@ -110,6 +110,7 @@ export const upcloudScraper = makeEmbed({
       const language = labelToLanguageCode(track.label);
       if (!language) return;
       captions.push({
+        id: track.file,
         language,
         hasCorsRestrictions: false,
         type,
@@ -118,12 +119,15 @@ export const upcloudScraper = makeEmbed({
     });
 
     return {
-      stream: {
-        type: 'hls',
-        playlist: sources.file,
-        flags: [flags.CORS_ALLOWED],
-        captions,
-      },
+      stream: [
+        {
+          id: 'primary',
+          type: 'hls',
+          playlist: sources.file,
+          flags: [flags.CORS_ALLOWED],
+          captions,
+        },
+      ],
     };
   },
 });

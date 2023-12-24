@@ -17,12 +17,15 @@ async function universalScraper(ctx: MovieScrapeContext | ShowScrapeContext): Pr
 
   return {
     embeds: [],
-    stream: {
-      playlist: videoUrl,
-      type: 'hls',
-      flags: [flags.IP_LOCKED],
-      captions: [],
-    },
+    stream: [
+      {
+        id: 'primary',
+        playlist: videoUrl,
+        type: 'hls',
+        flags: [flags.IP_LOCKED],
+        captions: [],
+      },
+    ],
   };
 }
 

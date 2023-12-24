@@ -155,12 +155,15 @@ export const streamsbScraper = makeEmbed({
     }, {} as Record<string, StreamFile>);
 
     return {
-      stream: {
-        type: 'file',
-        flags: [flags.CORS_ALLOWED],
-        qualities,
-        captions: [],
-      },
+      stream: [
+        {
+          id: 'primary',
+          type: 'file',
+          flags: [flags.CORS_ALLOWED],
+          qualities,
+          captions: [],
+        },
+      ],
     };
   },
 });
