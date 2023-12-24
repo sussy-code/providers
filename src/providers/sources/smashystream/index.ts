@@ -58,7 +58,7 @@ export const smashyStreamScraper = makeSourcerer({
   id: 'smashystream',
   name: 'SmashyStream',
   rank: 70,
-  flags: [flags.NO_CORS],
+  flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
 });

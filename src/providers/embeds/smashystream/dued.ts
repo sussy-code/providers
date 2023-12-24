@@ -60,7 +60,7 @@ export const smashyStreamDScraper = makeEmbed({
       stream: {
         playlist: playlistRes,
         type: 'hls',
-        flags: [flags.NO_CORS],
+        flags: [flags.CORS_ALLOWED],
         captions: [],
       },
     };

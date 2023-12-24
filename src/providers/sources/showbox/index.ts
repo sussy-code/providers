@@ -47,7 +47,7 @@ export const showboxScraper = makeSourcerer({
   id: 'showbox',
   name: 'Showbox',
   rank: 300,
-  flags: [flags.NO_CORS],
+  flags: [flags.CORS_ALLOWED],
   scrapeShow: comboScraper,
   scrapeMovie: comboScraper,
 });

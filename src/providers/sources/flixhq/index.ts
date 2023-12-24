@@ -9,7 +9,7 @@ export const flixhqScraper = makeSourcerer({
   id: 'flixhq',
   name: 'FlixHQ',
   rank: 100,
-  flags: [flags.NO_CORS],
+  flags: [flags.CORS_ALLOWED],
   async scrapeMovie(ctx) {
     const id = await getFlixhqId(ctx, ctx.media);
     if (!id) throw new NotFoundError('no search results match');

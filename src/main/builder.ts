@@ -5,7 +5,7 @@ import { scrapeIndividualEmbed, scrapeInvidualSource } from '@/main/individualRu
 import { ScrapeMedia } from '@/main/media';
 import { MetaOutput, getAllEmbedMetaSorted, getAllSourceMetaSorted, getSpecificId } from '@/main/meta';
 import { RunOutput, runAllProviders } from '@/main/runner';
-import { Targets, getTargetFeatures } from '@/main/targets';
+import { Targets, flags, getTargetFeatures } from '@/main/targets';
 import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { getProviders } from '@/providers/get';
 
@@ -19,6 +19,10 @@ export interface ProviderBuilderOptions {
 
   // target of where the streams will be used
   target: Targets;
+
+  // Set this to true, if the requests will have the same IP as
+  // the device that the stream will be played on
+  consistentIpForRequests?: boolean;
 }
 
 export interface RunnerOptions {
@@ -82,6 +86,7 @@ export interface ProviderControls {
 
 export function makeProviders(ops: ProviderBuilderOptions): ProviderControls {
   const features = getTargetFeatures(ops.target);
+  if (!ops.consistentIpForRequests) features.disallowed.push(flags.IP_LOCKED);
   const list = getProviders(features);
   const providerRunnerOps = {
     features,

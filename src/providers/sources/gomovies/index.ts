@@ -13,7 +13,7 @@ export const goMoviesScraper = makeSourcerer({
   id: 'gomovies',
   name: 'GOmovies',
   rank: 110,
-  flags: [flags.NO_CORS],
+  flags: [flags.CORS_ALLOWED],
   async scrapeShow(ctx) {
     const search = await ctx.proxiedFetcher<string>(`/ajax/search`, {
       method: 'POST',

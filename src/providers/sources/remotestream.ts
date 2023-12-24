@@ -8,7 +8,7 @@ export const remotestreamScraper = makeSourcerer({
   id: 'remotestream',
   name: 'Remote Stream',
   rank: 55,
-  flags: [flags.NO_CORS],
+  flags: [flags.CORS_ALLOWED],
   async scrapeShow(ctx) {
     const seasonNumber = ctx.media.season.number;
     const episodeNumber = ctx.media.episode.number;
@@ -26,7 +26,7 @@ export const remotestreamScraper = makeSourcerer({
         captions: [],
         playlist: playlistLink,
         type: 'hls',
-        flags: [flags.NO_CORS],
+        flags: [flags.CORS_ALLOWED],
       },
     };
   },
@@ -44,7 +44,7 @@ export const remotestreamScraper = makeSourcerer({
         captions: [],
         playlist: playlistLink,
         type: 'hls',
-        flags: [flags.NO_CORS],
+        flags: [flags.CORS_ALLOWED],
       },
     };
   },

@@ -15,40 +15,52 @@ export function makeProviderMocks() {
 
 const sourceA = {
   id: 'a',
+  name: 'A',
   rank: 1,
   disabled: false,
+  flags: [],
 } as Sourcerer;
 const sourceB = {
   id: 'b',
+  name: 'B',
   rank: 2,
   disabled: false,
+  flags: [],
 } as Sourcerer;
 const sourceCDisabled = {
   id: 'c',
+  name: 'C',
   rank: 3,
   disabled: true,
+  flags: [],
 } as Sourcerer;
 const sourceAHigherRank = {
   id: 'a',
+  name: 'A',
   rank: 100,
   disabled: false,
+  flags: [],
 } as Sourcerer;
 const sourceGSameRankAsA = {
   id: 'g',
+  name: 'G',
   rank: 1,
   disabled: false,
+  flags: [],
 } as Sourcerer;
 const fullSourceYMovie = {
   id: 'y',
   name: 'Y',
   rank: 105,
   scrapeMovie: vi.fn(),
+  flags: [],
 } as Sourcerer;
 const fullSourceYShow = {
   id: 'y',
   name: 'Y',
   rank: 105,
   scrapeShow: vi.fn(),
+  flags: [],
 } as Sourcerer;
 const fullSourceZBoth = {
   id: 'z',
@@ -56,6 +68,7 @@ const fullSourceZBoth = {
   rank: 106,
   scrapeMovie: vi.fn(),
   scrapeShow: vi.fn(),
+  flags: [],
 } as Sourcerer;
 
 const embedD = {

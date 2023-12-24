@@ -17,7 +17,7 @@ export const mp4uploadScraper = makeEmbed({
     return {
       stream: {
         type: 'file',
-        flags: [flags.NO_CORS],
+        flags: [flags.CORS_ALLOWED],
         captions: [],
         qualities: {
           '1080': {

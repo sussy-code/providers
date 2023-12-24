@@ -1,31 +1,51 @@
 export const flags = {
-  NO_CORS: 'no-cors',
+  // CORS are set to allow any origin
+  CORS_ALLOWED: 'cors-allowed',
+
+  // the stream is locked on IP, so only works if
+  // request maker is same as player (not compatible with proxies)
   IP_LOCKED: 'ip-locked',
 } as const;
 
 export type Flags = (typeof flags)[keyof typeof flags];
 
 export const targets = {
+  // browser with CORS restrictions
   BROWSER: 'browser',
+
+  // browser, but no CORS restrictions through a browser extension
+  BROWSER_EXTENSION: 'browser-extension',
+
+  // native app, so no restrictions in what can be played
   NATIVE: 'native',
-  ALL: 'all',
+
+  // any target, no target restrictions
+  ANY: 'any',
 } as const;
 
 export type Targets = (typeof targets)[keyof typeof targets];
 
 export type FeatureMap = {
-  requires: readonly Flags[];
+  requires: Flags[];
+  disallowed: Flags[];
 };
 
 export const targetToFeatures: Record<Targets, FeatureMap> = {
   browser: {
-    requires: [flags.NO_CORS],
+    requires: [flags.CORS_ALLOWED],
+    disallowed: [],
+  },
+  'browser-extension': {
+    requires: [],
+    disallowed: [],
   },
   native: {
     requires: [],
+    disallowed: [],
   },
-  all: {
+  any: {
     requires: [],
+    disallowed: [],
   },
 } as const;
 
@@ -36,5 +56,7 @@ export function getTargetFeatures(target: Targets): FeatureMap {
 export function flagsAllowedInFeatures(features: FeatureMap, inputFlags: Flags[]): boolean {
   const hasAllFlags = features.requires.every((v) => inputFlags.includes(v));
   if (!hasAllFlags) return false;
+  const hasDisallowedFlag = features.disallowed.some((v) => inputFlags.includes(v));
+  if (hasDisallowedFlag) return false;
   return true;
 }

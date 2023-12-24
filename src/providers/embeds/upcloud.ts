@@ -121,7 +121,7 @@ export const upcloudScraper = makeEmbed({
       stream: {
         type: 'hls',
         playlist: sources.file,
-        flags: [flags.NO_CORS],
+        flags: [flags.CORS_ALLOWED],
         captions,
       },
     };

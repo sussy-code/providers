@@ -24,7 +24,7 @@ export const upstreamScraper = makeEmbed({
           stream: {
             type: 'hls',
             playlist: link[1],
-            flags: [flags.NO_CORS],
+            flags: [flags.CORS_ALLOWED],
             captions: [],
           },
         };

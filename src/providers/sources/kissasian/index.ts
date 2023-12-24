@@ -13,7 +13,7 @@ export const kissAsianScraper = makeSourcerer({
   id: 'kissasian',
   name: 'KissAsian',
   rank: 130,
-  flags: [flags.NO_CORS],
+  flags: [flags.CORS_ALLOWED],
   disabled: true,
 
   async scrapeShow(ctx) {
