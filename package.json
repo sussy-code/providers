@@ -34,7 +34,7 @@
   },
   "homepage": "https://providers.docs.movie-web.app/",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && tsc --noEmit",
     "test": "vitest run",
     "test:dev": "ts-node ./src/dev-cli.ts",
     "test:watch": "vitest",
