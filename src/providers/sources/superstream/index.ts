@@ -1,12 +1,11 @@
 import { flags } from '@/main/targets';
 import { makeSourcerer } from '@/providers/base';
+import { getSubtitles } from '@/providers/sources/superstream/subtitles';
 import { compareTitle } from '@/utils/compare';
 import { NotFoundError } from '@/utils/errors';
 
 import { getStreamQualities } from './getStreamQualities';
 import { sendRequest } from './sendRequest';
-
-export const allowedQualities = ['360', '480', '720', '1080'];
 
 export const superStreamScraper = makeSourcerer({
   id: 'superstream',
@@ -15,14 +14,14 @@ export const superStreamScraper = makeSourcerer({
   flags: [flags.NO_CORS],
   async scrapeShow(ctx) {
     const searchQuery = {
-      module: 'Search3',
+      module: 'Search4',
       page: '1',
       type: 'all',
       keyword: ctx.media.title,
       pagelimit: '20',
     };
 
-    const searchRes = (await sendRequest(ctx, searchQuery, true)).data;
+    const searchRes = (await sendRequest(ctx, searchQuery, true)).data.list;
     ctx.progress(33);
 
     const superstreamEntry = searchRes.find(
@@ -43,11 +42,20 @@ export const superStreamScraper = makeSourcerer({
       group: '',
     };
 
-    const qualities = await getStreamQualities(ctx, apiQuery);
+    const { qualities, fid } = await getStreamQualities(ctx, apiQuery);
+    if (fid === undefined) throw new NotFoundError('No streamable file found');
 
     return {
       embeds: [],
       stream: {
+        captions: await getSubtitles(
+          ctx,
+          superstreamId,
+          fid,
+          'show',
+          ctx.media.episode.number,
+          ctx.media.season.number,
+        ),
         qualities,
         type: 'file',
         flags: [flags.NO_CORS],
@@ -56,14 +64,14 @@ export const superStreamScraper = makeSourcerer({
   },
   async scrapeMovie(ctx) {
     const searchQuery = {
-      module: 'Search3',
+      module: 'Search4',
       page: '1',
       type: 'all',
       keyword: ctx.media.title,
       pagelimit: '20',
     };
 
-    const searchRes = (await sendRequest(ctx, searchQuery, true)).data;
+    const searchRes = (await sendRequest(ctx, searchQuery, true)).data.list;
     ctx.progress(33);
 
     const superstreamEntry = searchRes.find(
@@ -82,11 +90,13 @@ export const superStreamScraper = makeSourcerer({
       group: '',
     };
 
-    const qualities = await getStreamQualities(ctx, apiQuery);
+    const { qualities, fid } = await getStreamQualities(ctx, apiQuery);
+    if (fid === undefined) throw new NotFoundError('No streamable file found');
 
     return {
       embeds: [],
       stream: {
+        captions: await getSubtitles(ctx, superstreamId, fid, 'movie'),
         qualities,
         type: 'file',
         flags: [flags.NO_CORS],

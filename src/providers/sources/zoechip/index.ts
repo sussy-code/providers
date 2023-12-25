@@ -6,7 +6,7 @@ import { scrapeShow } from '@/providers/sources/zoechip/scrape-show';
 export const zoechipScraper = makeSourcerer({
   id: 'zoechip',
   name: 'ZoeChip',
-  rank: 110,
+  rank: 200,
   flags: [flags.NO_CORS],
   scrapeMovie,
   scrapeShow,

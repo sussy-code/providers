@@ -1,14 +1,15 @@
-import { MovieMedia, ShowMedia } from '@/main/media';
 import { Flags } from '@/main/targets';
 import { Stream } from '@/providers/streams';
-import { EmbedScrapeContext, ScrapeContext } from '@/utils/context';
+import { EmbedScrapeContext, MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
+
+export type SourcererEmbed = {
+  embedId: string;
+  url: string;
+  headers?: Record<string, string>;
+};
 
 export type SourcererOutput = {
-  embeds: {
-    embedId: string;
-    url: string;
-    headers?: Record<string, string>;
-  }[];
+  embeds: SourcererEmbed[];
   stream?: Stream;
 };
 
@@ -18,8 +19,8 @@ export type Sourcerer = {
   rank: number; // the higher the number, the earlier it gets put on the queue
   disabled?: boolean;
   flags: Flags[];
-  scrapeMovie?: (input: ScrapeContext & { media: MovieMedia }) => Promise<SourcererOutput>;
-  scrapeShow?: (input: ScrapeContext & { media: ShowMedia }) => Promise<SourcererOutput>;
+  scrapeMovie?: (input: MovieScrapeContext) => Promise<SourcererOutput>;
+  scrapeShow?: (input: ShowScrapeContext) => Promise<SourcererOutput>;
 };
 
 export function makeSourcerer(state: Sourcerer): Sourcerer {

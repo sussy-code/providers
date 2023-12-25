@@ -1,5 +1,6 @@
 export const flags = {
   NO_CORS: 'no-cors',
+  IP_LOCKED: 'ip-locked',
 } as const;
 
 export type Flags = (typeof flags)[keyof typeof flags];
