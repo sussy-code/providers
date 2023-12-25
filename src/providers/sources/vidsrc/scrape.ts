@@ -1,9 +1,11 @@
 import { load } from 'cheerio';
 
 import { FetchReply } from '@/fetchers/fetch';
+import { SourcererEmbed } from '@/providers/base';
 import { streambucketScraper } from '@/providers/embeds/streambucket';
 import { vidsrcembedScraper } from '@/providers/embeds/vidsrc';
-import { MovieContext, ShowContext, vidsrcBase, vidsrcRCPBase } from '@/providers/sources/vidsrc/common';
+import { vidsrcBase, vidsrcRCPBase } from '@/providers/sources/vidsrc/common';
+import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
 function decodeSrc(encoded: string, seed: string) {
   const encodedBuffer = Buffer.from(encoded, 'hex');
@@ -16,7 +18,7 @@ function decodeSrc(encoded: string, seed: string) {
   return decoded;
 }
 
-async function getVidSrcEmbeds(ctx: MovieContext | ShowContext, startingURL: string) {
+async function getVidSrcEmbeds(ctx: MovieScrapeContext | ShowScrapeContext, startingURL: string) {
   // VidSrc works by using hashes and a redirect system.
   // The hashes are stored in the html, and VidSrc will
   // make requests to their servers with the hash. This
@@ -25,11 +27,7 @@ async function getVidSrcEmbeds(ctx: MovieContext | ShowContext, startingURL: str
   // real embed links, we must do the same. Slow, but
   // required
 
-  const embeds: {
-    embedId: string;
-    url: string;
-    headers?: Record<string, string>;
-  }[] = [];
+  const embeds: SourcererEmbed[] = [];
 
   let html = await ctx.proxiedFetcher<string>(startingURL, {
     baseUrl: vidsrcBase,
@@ -37,7 +35,7 @@ async function getVidSrcEmbeds(ctx: MovieContext | ShowContext, startingURL: str
 
   let $ = load(html);
 
-  const sourceHashes = $('.source[data-hash]')
+  const sourceHashes = $('.server[data-hash]')
     .toArray()
     .map((el) => $(el).attr('data-hash'))
     .filter((hash) => hash !== undefined);
@@ -76,11 +74,7 @@ async function getVidSrcEmbeds(ctx: MovieContext | ShowContext, startingURL: str
       },
     });
 
-    const embed: {
-      embedId: string;
-      url: string;
-      headers?: Record<string, string>;
-    } = {
+    const embed: SourcererEmbed = {
       embedId: '',
       url: embedURL,
     };
@@ -117,11 +111,11 @@ async function getVidSrcEmbeds(ctx: MovieContext | ShowContext, startingURL: str
   return embeds;
 }
 
-export async function getVidSrcMovieSources(ctx: MovieContext) {
+export async function getVidSrcMovieSources(ctx: MovieScrapeContext) {
   return getVidSrcEmbeds(ctx, `/embed/${ctx.media.tmdbId}`);
 }
 
-export async function getVidSrcShowSources(ctx: ShowContext) {
+export async function getVidSrcShowSources(ctx: ShowScrapeContext) {
   // VidSrc will always default to season 1 episode 1
   // no matter what embed URL is used. It sends back
   // a list of ALL the shows episodes, in order, for

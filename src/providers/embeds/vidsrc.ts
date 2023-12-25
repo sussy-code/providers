@@ -1,8 +1,6 @@
-import { flags } from '@/main/targets';
 import { makeEmbed } from '@/providers/base';
 
-const hlsURLRegex = /var hls_url = "(.*?)";/;
-const setPassRegex = /var path = "(.*set_pass\.php.*)";/;
+const hlsURLRegex = /file:"(.*?)"/;
 
 export const vidsrcembedScraper = makeEmbed({
   id: 'vidsrcembed', // VidSrc is both a source and an embed host
@@ -16,34 +14,21 @@ export const vidsrcembedScraper = makeEmbed({
       headers: ctx.headers,
     });
 
-    let regexResult = html.match(setPassRegex);
-    if (!regexResult) {
-      throw new Error('Unable to find VidSrc set_pass.php link');
-    }
+    const match = html
+      .match(hlsURLRegex)?.[1]
+      ?.replace(/(\/\/\S+?=)/g, '')
+      .replace('#2', '');
+    if (!match) throw new Error('Unable to find HLS playlist');
+    const finalUrl = atob(match);
 
-    let setPassLink = regexResult[1];
-
-    if (setPassLink.startsWith('//')) {
-      setPassLink = `https:${setPassLink}`;
-    }
-
-    regexResult = html.match(hlsURLRegex);
-    if (!regexResult) {
-      throw new Error('Unable to find VidSrc HLS stream');
-    }
-
-    // Must call set_pass.php BEFORE using the stream
-    await fetch(setPassLink, {
-      headers: {
-        referer: ctx.url,
-      },
-    });
+    if (!finalUrl.includes('.m3u8')) throw new Error('Unable to find HLS playlist');
 
     return {
       stream: {
         type: 'hls',
-        playlist: regexResult[1],
-        flags: [flags.NO_CORS],
+        playlist: finalUrl,
+        flags: [],
+        captions: [],
       },
     };
   },

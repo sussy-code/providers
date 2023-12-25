@@ -15,7 +15,7 @@ export type DefaultedFetcherOptions = {
   headers: Record<string, string>;
   query: Record<string, string>;
   method: 'HEAD' | 'GET' | 'POST';
-  returnRaw?: boolean;
+  returnRaw: boolean;
 };
 
 export type Fetcher<T = any> = {

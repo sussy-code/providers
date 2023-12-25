@@ -91,6 +91,7 @@ export const streambucketScraper = makeEmbed({
         type: 'hls',
         playlist: regexResult[1],
         flags: [flags.NO_CORS],
+        captions: [],
       },
     };
   },
