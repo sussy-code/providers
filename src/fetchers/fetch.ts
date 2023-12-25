@@ -17,6 +17,7 @@ export type FetchReply = {
   text(): Promise<string>;
   json(): Promise<any>;
   headers: FetchHeaders;
+  url: string;
 };
 
 export type FetchLike = (url: string, ops?: FetchOps | undefined) => Promise<FetchReply>;

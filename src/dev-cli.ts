@@ -39,6 +39,7 @@ type CommandLineArguments = {
   season: string;
   episode: string;
   url: string;
+  headers?: Record<string, string>;
 };
 
 const TMDB_API_KEY = process.env.MOVIE_WEB_TMDB_API_KEY ?? '';
@@ -185,6 +186,7 @@ async function runScraper(providers: ProviderControls, source: MetaOutput, optio
       const result = await providers.runEmbedScraper({
         url: options.url,
         id: source.id,
+        headers: options.headers,
       });
       spinnies.succeed('scrape', { text: 'Done!' });
       logDeepObject(result);
@@ -277,6 +279,10 @@ async function processOptions(options: CommandLineArguments) {
         throw new Error('Episode number must be a number greater than 0');
       }
     }
+  }
+
+  if (typeof options.headers === 'string') {
+    options.headers = JSON.parse(options.headers);
   }
 
   let fetcher;
@@ -409,7 +415,8 @@ async function runCommandLine() {
     .option('-t, --type <type>', "Media type. Either 'movie' or 'show'. Only used if source is a provider", 'movie')
     .option('-s, --season <number>', "Season number. Only used if type is 'show'", '0')
     .option('-e, --episode <number>', "Episode number. Only used if type is 'show'", '0')
-    .option('-u, --url <embed URL>', 'URL to a video embed. Only used if source is an embed', '');
+    .option('-u, --url <embed URL>', 'URL to a video embed. Only used if source is an embed', '')
+    .option('-h, --headers <JSON>', 'Optional headers to pass to scrapers. JSON encoded');
 
   program.parse();
 

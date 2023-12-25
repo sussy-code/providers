@@ -9,6 +9,7 @@ export type ScrapeContext = {
 
 export type EmbedInput = {
   url: string;
+  headers?: Record<string, string>;
 };
 
 export type EmbedScrapeContext = EmbedInput & ScrapeContext;

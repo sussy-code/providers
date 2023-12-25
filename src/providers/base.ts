@@ -5,6 +5,7 @@ import { EmbedScrapeContext, MovieScrapeContext, ShowScrapeContext } from '@/uti
 export type SourcererEmbed = {
   embedId: string;
   url: string;
+  headers?: Record<string, string>;
 };
 
 export type SourcererOutput = {

@@ -66,6 +66,7 @@ export type IndividualEmbedRunnerOptions = {
   url: string;
   id: string;
   events?: IndividualScraperEvents;
+  headers?: Record<string, string>;
 };
 
 export async function scrapeIndividualEmbed(
@@ -79,6 +80,7 @@ export async function scrapeIndividualEmbed(
     fetcher: ops.fetcher,
     proxiedFetcher: ops.proxiedFetcher,
     url: ops.url,
+    headers: ops.headers,
     progress(val) {
       ops.events?.update?.({
         id: embedScraper.id,
