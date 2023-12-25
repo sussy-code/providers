@@ -1,8 +1,7 @@
 import { Caption, getCaptionTypeFromUrl, isValidLanguageCode } from '@/providers/captions';
-import { sendRequest } from '@/providers/sources/superstream/sendRequest';
+import { captionsDomains } from '@/providers/sources/showbox/common';
+import { sendRequest } from '@/providers/sources/showbox/sendRequest';
 import { ScrapeContext } from '@/utils/context';
-
-import { captionsDomains } from './common';
 
 interface CaptionApiResponse {
   data: {
