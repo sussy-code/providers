@@ -1,4 +1,4 @@
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeSourcerer } from '@/providers/base';
 import { scrapeMovie } from '@/providers/sources/zoechip/scrape-movie';
 import { scrapeShow } from '@/providers/sources/zoechip/scrape-show';

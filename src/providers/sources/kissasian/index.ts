@@ -1,6 +1,6 @@
 import { load } from 'cheerio';
 
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeSourcerer } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
 

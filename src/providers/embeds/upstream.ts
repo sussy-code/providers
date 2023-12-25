@@ -1,6 +1,6 @@
 import * as unpacker from 'unpacker';
 
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 
 const packedRegex = /(eval\(function\(p,a,c,k,e,d\).*\)\)\))/;

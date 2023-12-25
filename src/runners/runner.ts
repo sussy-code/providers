@@ -1,7 +1,7 @@
+import { FullScraperEvents } from '@/entrypoint/utils/events';
+import { ScrapeMedia } from '@/entrypoint/utils/media';
+import { FeatureMap, flagsAllowedInFeatures } from '@/entrypoint/utils/targets';
 import { UseableFetcher } from '@/fetchers/types';
-import { FullScraperEvents } from '@/main/events';
-import { ScrapeMedia } from '@/main/media';
-import { FeatureMap, flagsAllowedInFeatures } from '@/main/targets';
 import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { ProviderList } from '@/providers/get';
 import { Stream } from '@/providers/streams';

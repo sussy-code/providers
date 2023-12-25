@@ -1,4 +1,4 @@
-import { MovieMedia, ShowMedia } from '@/main/media';
+import { MovieMedia, ShowMedia } from '@/entrypoint/utils/media';
 import { ScrapeContext } from '@/utils/context';
 
 import { StreamsDataResult } from './type';

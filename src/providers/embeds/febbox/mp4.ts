@@ -1,4 +1,4 @@
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { parseInputUrl } from '@/providers/embeds/febbox/common';
 import { getStreamQualities } from '@/providers/embeds/febbox/qualities';

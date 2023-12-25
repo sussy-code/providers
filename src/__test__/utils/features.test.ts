@@ -1,4 +1,4 @@
-import { FeatureMap, Flags, flags, flagsAllowedInFeatures } from "@/main/targets";
+import { FeatureMap, Flags, flags, flagsAllowedInFeatures } from "@/entrypoint/utils/targets";
 import { describe, it, expect } from "vitest";
 
 describe('flagsAllowedInFeatures()', () => {

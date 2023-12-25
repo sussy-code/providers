@@ -1,4 +1,4 @@
-import { Flags } from '@/main/targets';
+import { Flags } from '@/entrypoint/utils/targets';
 import { Stream } from '@/providers/streams';
 import { EmbedScrapeContext, MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 

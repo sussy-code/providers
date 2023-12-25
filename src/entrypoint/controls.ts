@@ -1,28 +1,19 @@
+import { FullScraperEvents, IndividualScraperEvents } from '@/entrypoint/utils/events';
+import { ScrapeMedia } from '@/entrypoint/utils/media';
+import { MetaOutput, getAllEmbedMetaSorted, getAllSourceMetaSorted, getSpecificId } from '@/entrypoint/utils/meta';
+import { FeatureMap } from '@/entrypoint/utils/targets';
 import { makeFullFetcher } from '@/fetchers/common';
 import { Fetcher } from '@/fetchers/types';
-import { FullScraperEvents, IndividualScraperEvents } from '@/main/events';
-import { scrapeIndividualEmbed, scrapeInvidualSource } from '@/main/individualRunner';
-import { ScrapeMedia } from '@/main/media';
-import { MetaOutput, getAllEmbedMetaSorted, getAllSourceMetaSorted, getSpecificId } from '@/main/meta';
-import { RunOutput, runAllProviders } from '@/main/runner';
-import { Targets, flags, getTargetFeatures } from '@/main/targets';
-import { EmbedOutput, SourcererOutput } from '@/providers/base';
-import { getProviders } from '@/providers/get';
+import { Embed, EmbedOutput, Sourcerer, SourcererOutput } from '@/providers/base';
+import { scrapeIndividualEmbed, scrapeInvidualSource } from '@/runners/individualRunner';
+import { RunOutput, runAllProviders } from '@/runners/runner';
 
-export interface ProviderBuilderOptions {
-  // fetcher, every web request gets called through here
+export interface ProviderControlsInput {
   fetcher: Fetcher;
-
-  // proxied fetcher, if the scraper needs to access a CORS proxy. this fetcher will be called instead
-  // of the normal fetcher. Defaults to the normal fetcher.
   proxiedFetcher?: Fetcher;
-
-  // target of where the streams will be used
-  target: Targets;
-
-  // Set this to true, if the requests will have the same IP as
-  // the device that the stream will be played on
-  consistentIpForRequests?: boolean;
+  features: FeatureMap;
+  sources: Sourcerer[];
+  embeds: Embed[];
 }
 
 export interface RunnerOptions {
@@ -84,12 +75,14 @@ export interface ProviderControls {
   listEmbeds(): MetaOutput[];
 }
 
-export function makeProviders(ops: ProviderBuilderOptions): ProviderControls {
-  const features = getTargetFeatures(ops.target);
-  if (!ops.consistentIpForRequests) features.disallowed.push(flags.IP_LOCKED);
-  const list = getProviders(features);
+export function makeControls(ops: ProviderControlsInput): ProviderControls {
+  const list = {
+    embeds: ops.embeds,
+    sources: ops.sources,
+  };
+
   const providerRunnerOps = {
-    features,
+    features: ops.features,
     fetcher: makeFullFetcher(ops.fetcher),
     proxiedFetcher: makeFullFetcher(ops.proxiedFetcher ?? ops.fetcher),
   };

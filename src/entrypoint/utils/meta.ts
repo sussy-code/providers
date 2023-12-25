@@ -1,4 +1,4 @@
-import { MediaTypes } from '@/main/media';
+import { MediaTypes } from '@/entrypoint/utils/media';
 import { Embed, Sourcerer } from '@/providers/base';
 import { ProviderList } from '@/providers/get';
 

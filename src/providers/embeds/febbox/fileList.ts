@@ -1,4 +1,4 @@
-import { MediaTypes } from '@/main/media';
+import { MediaTypes } from '@/entrypoint/utils/media';
 import { FebboxFileList, febBoxBase } from '@/providers/embeds/febbox/common';
 import { EmbedScrapeContext } from '@/utils/context';
 

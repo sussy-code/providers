@@ -49,8 +49,10 @@ export const targetToFeatures: Record<Targets, FeatureMap> = {
   },
 };
 
-export function getTargetFeatures(target: Targets): FeatureMap {
-  return targetToFeatures[target];
+export function getTargetFeatures(target: Targets, consistentIpForRequests: boolean): FeatureMap {
+  const features = targetToFeatures[target];
+  if (!consistentIpForRequests) features.disallowed.push(flags.IP_LOCKED);
+  return features;
 }
 
 export function flagsAllowedInFeatures(features: FeatureMap, inputFlags: Flags[]): boolean {
