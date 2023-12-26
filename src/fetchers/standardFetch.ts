@@ -32,7 +32,7 @@ export function makeStandardFetcher(f: FetchLike): Fetcher {
     let body: any;
     const isJson = res.headers.get('content-type')?.includes('application/json');
     if (isJson) body = await res.json();
-    else body = res.text();
+    else body = await res.text();
 
     return {
       body,
