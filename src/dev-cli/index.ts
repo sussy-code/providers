@@ -3,13 +3,11 @@
 import { program } from 'commander';
 import dotenv from 'dotenv';
 import { prompt } from 'enquirer';
-import Spinnies from 'spinnies';
 
-import { logDeepObject } from '@/dev-cli/logging';
-import { getMovieMediaDetails, getShowMediaDetails } from '@/dev-cli/tmdb';
-import { CommandLineArguments, processOptions } from '@/dev-cli/validate';
+import { runScraper } from '@/dev-cli/scraper';
+import { processOptions } from '@/dev-cli/validate';
 
-import { MetaOutput, ProviderMakerOptions, getBuiltinEmbeds, getBuiltinSources, makeProviders } from '..';
+import { getBuiltinEmbeds, getBuiltinSources } from '..';
 
 dotenv.config();
 
@@ -47,55 +45,6 @@ function joinMediaTypes(mediaTypes: string[] | undefined) {
     return `(${formatted})`;
   }
   return ''; // * Embed sources pass through here too
-}
-
-async function runScraper(providerOptions: ProviderMakerOptions, source: MetaOutput, options: CommandLineArguments) {
-  const spinnies = new Spinnies();
-  const providers = makeProviders(providerOptions);
-
-  if (source.type === 'embed') {
-    spinnies.add('scrape', { text: `Running ${source.name} scraper on ${options.url}` });
-    try {
-      const result = await providers.runEmbedScraper({
-        url: options.url,
-        id: source.id,
-      });
-      spinnies.succeed('scrape', { text: 'Done!' });
-      logDeepObject(result);
-    } catch (error) {
-      let message = 'Unknown error';
-      if (error instanceof Error) {
-        message = error.message;
-      }
-
-      spinnies.fail('scrape', { text: `ERROR: ${message}` });
-    }
-  } else {
-    let media;
-
-    if (options.type === 'movie') {
-      media = await getMovieMediaDetails(options.tmdbId);
-    } else {
-      media = await getShowMediaDetails(options.tmdbId, options.season, options.episode);
-    }
-
-    spinnies.add('scrape', { text: `Running ${source.name} scraper on ${media.title}` });
-    try {
-      const result = await providers.runSourceScraper({
-        media,
-        id: source.id,
-      });
-      spinnies.succeed('scrape', { text: 'Done!' });
-      logDeepObject(result);
-    } catch (error) {
-      let message = 'Unknown error';
-      if (error instanceof Error) {
-        message = error.message;
-      }
-
-      spinnies.fail('scrape', { text: `ERROR: ${message}` });
-    }
-  }
 }
 
 async function runQuestions() {
