@@ -1,4 +1,4 @@
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { parseInputUrl } from '@/providers/embeds/febbox/common';
 import { getStreamQualities } from '@/providers/embeds/febbox/qualities';
@@ -39,12 +39,15 @@ export const febboxMp4Scraper = makeEmbed({
     ctx.progress(70);
 
     return {
-      stream: {
-        captions: await getSubtitles(ctx, id, fid, type, episode, season),
-        qualities,
-        type: 'file',
-        flags: [flags.NO_CORS],
-      },
+      stream: [
+        {
+          id: 'primary',
+          captions: await getSubtitles(ctx, id, fid, type, episode, season),
+          qualities,
+          type: 'file',
+          flags: [flags.CORS_ALLOWED],
+        },
+      ],
     };
   },
 });

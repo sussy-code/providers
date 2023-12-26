@@ -1,7 +1,7 @@
+import { IndividualScraperEvents } from '@/entrypoint/utils/events';
+import { ScrapeMedia } from '@/entrypoint/utils/media';
+import { FeatureMap, flagsAllowedInFeatures } from '@/entrypoint/utils/targets';
 import { UseableFetcher } from '@/fetchers/types';
-import { IndividualScraperEvents } from '@/main/events';
-import { ScrapeMedia } from '@/main/media';
-import { FeatureMap, flagsAllowedInFeatures } from '@/main/targets';
 import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { ProviderList } from '@/providers/get';
 import { ScrapeContext } from '@/utils/context';
@@ -50,12 +50,16 @@ export async function scrapeInvidualSource(
       media: ops.media,
     });
 
-  // stream doesn't satisfy the feature flags, so gets removed in output
-  if (output?.stream && (!isValidStream(output.stream) || !flagsAllowedInFeatures(ops.features, output.stream.flags))) {
-    output.stream = undefined;
+  // filter output with only valid streams
+  if (output?.stream) {
+    output.stream = output.stream
+      .filter((stream) => isValidStream(stream))
+      .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
   }
 
   if (!output) throw new Error('output is null');
+  if ((!output.stream || output.stream.length === 0) && output.embeds.length === 0)
+    throw new NotFoundError('No streams found');
   return output;
 }
 
@@ -88,9 +92,10 @@ export async function scrapeIndividualEmbed(
     },
   });
 
-  if (!isValidStream(output.stream)) throw new NotFoundError('stream is incomplete');
-  if (!flagsAllowedInFeatures(ops.features, output.stream.flags))
-    throw new NotFoundError("stream doesn't satisfy target feature flags");
+  output.stream = output.stream
+    .filter((stream) => isValidStream(stream))
+    .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
+  if (output.stream.length === 0) throw new NotFoundError('No streams found');
 
   return output;
 }

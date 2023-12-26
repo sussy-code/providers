@@ -10,7 +10,7 @@ features:
 Visit documentation here: https://providers.docs.movie-web.app/
 
 ## Development
-To make testing scrapers easier during development a CLI tool is available to run specific sources. To run the CLI testing tool, use `npm run test:dev`. The script supports 2 execution modes
+To make testing scrapers easier during development a CLI tool is available to run specific sources. To run the CLI testing tool, use `npm run cli`. The script supports 2 execution modes
 
 - CLI Mode, for passing in arguments directly to the script
 - Question Mode, where the script asks you questions about which source you wish to test
@@ -31,5 +31,5 @@ The following CLI Mode arguments are available
 Example testing the FlixHQ source on the movie "Spirited Away"
 
 ```bash
-npm run test:dev -- -sid flixhq -tid 129 -t movie
+npm run cli -- -sid flixhq -tid 129 -t movie
 ```

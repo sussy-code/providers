@@ -1,4 +1,4 @@
-import { MediaTypes } from '@/main/media';
+import { MediaTypes } from '@/entrypoint/utils/media';
 
 export const febBoxBase = `https://www.febbox.com`;
 

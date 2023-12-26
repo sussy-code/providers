@@ -1,4 +1,4 @@
-import { CommonMedia } from '@/main/media';
+import { CommonMedia } from '@/entrypoint/utils/media';
 
 export function normalizeTitle(title: string): string {
   return title

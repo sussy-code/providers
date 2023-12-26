@@ -1,4 +1,4 @@
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
@@ -17,12 +17,15 @@ async function universalScraper(ctx: MovieScrapeContext | ShowScrapeContext): Pr
 
   return {
     embeds: [],
-    stream: {
-      playlist: videoUrl,
-      type: 'hls',
-      flags: [flags.IP_LOCKED],
-      captions: [],
-    },
+    stream: [
+      {
+        id: 'primary',
+        playlist: videoUrl,
+        type: 'hls',
+        flags: [flags.IP_LOCKED],
+        captions: [],
+      },
+    ],
   };
 }
 

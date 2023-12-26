@@ -17,7 +17,7 @@
     }
   },
   "include": ["src"],
-  "exclude": ["node_modules", "**/__tests__/*"],
+  "exclude": ["node_modules", "**/__test__"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   }

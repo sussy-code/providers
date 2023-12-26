@@ -1,6 +1,6 @@
 import { load } from 'cheerio';
 
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeSourcerer } from '@/providers/base';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { NotFoundError } from '@/utils/errors';
@@ -13,7 +13,7 @@ export const goMoviesScraper = makeSourcerer({
   id: 'gomovies',
   name: 'GOmovies',
   rank: 110,
-  flags: [flags.NO_CORS],
+  flags: [flags.CORS_ALLOWED],
   async scrapeShow(ctx) {
     const search = await ctx.proxiedFetcher<string>(`/ajax/search`, {
       method: 'POST',

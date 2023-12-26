@@ -1,6 +1,6 @@
 import { load } from 'cheerio';
 
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 
 type DPlayerSourcesResponse = {
@@ -57,12 +57,15 @@ export const smashyStreamDScraper = makeEmbed({
     );
 
     return {
-      stream: {
-        playlist: playlistRes,
-        type: 'hls',
-        flags: [flags.NO_CORS],
-        captions: [],
-      },
+      stream: [
+        {
+          id: 'primary',
+          playlist: playlistRes,
+          type: 'hls',
+          flags: [flags.CORS_ALLOWED],
+          captions: [],
+        },
+      ],
     };
   },
 });
