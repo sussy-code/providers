@@ -62,7 +62,7 @@ async function runQuestions() {
     {
       type: 'select',
       name: 'fetcher',
-      message: 'Select a fetcher',
+      message: 'Select a fetcher mode',
       choices: [
         {
           message: 'Native',
@@ -71,6 +71,10 @@ async function runQuestions() {
         {
           message: 'Node fetch',
           name: 'node-fetch',
+        },
+        {
+          message: 'Browser',
+          name: 'browser',
         },
       ],
     },
