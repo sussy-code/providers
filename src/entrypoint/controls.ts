@@ -2,7 +2,7 @@ import { FullScraperEvents, IndividualScraperEvents } from '@/entrypoint/utils/e
 import { ScrapeMedia } from '@/entrypoint/utils/media';
 import { MetaOutput, getAllEmbedMetaSorted, getAllSourceMetaSorted, getSpecificId } from '@/entrypoint/utils/meta';
 import { FeatureMap } from '@/entrypoint/utils/targets';
-import { makeFullFetcher } from '@/fetchers/common';
+import { makeFetcher } from '@/fetchers/common';
 import { Fetcher } from '@/fetchers/types';
 import { Embed, EmbedOutput, Sourcerer, SourcererOutput } from '@/providers/base';
 import { scrapeIndividualEmbed, scrapeInvidualSource } from '@/runners/individualRunner';
@@ -83,8 +83,8 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
 
   const providerRunnerOps = {
     features: ops.features,
-    fetcher: makeFullFetcher(ops.fetcher),
-    proxiedFetcher: makeFullFetcher(ops.proxiedFetcher ?? ops.fetcher),
+    fetcher: makeFetcher(ops.fetcher),
+    proxiedFetcher: makeFetcher(ops.proxiedFetcher ?? ops.fetcher),
   };
 
   return {

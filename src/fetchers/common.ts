@@ -26,14 +26,18 @@ export function makeFullUrl(url: string, ops?: FullUrlOptions): string {
   return parsedUrl.toString();
 }
 
-export function makeFullFetcher(fetcher: Fetcher): UseableFetcher {
-  return (url, ops) => {
+export function makeFetcher(fetcher: Fetcher): UseableFetcher {
+  const newFetcher = (url: string, ops?: FetcherOptions) => {
     return fetcher(url, {
       headers: ops?.headers ?? {},
       method: ops?.method ?? 'GET',
       query: ops?.query ?? {},
       baseUrl: ops?.baseUrl ?? '',
+      readHeaders: ops?.readHeaders ?? [],
       body: ops?.body,
     });
   };
+  const output: UseableFetcher = async (url, ops) => (await newFetcher(url, ops)).body;
+  output.full = newFetcher;
+  return output;
 }
