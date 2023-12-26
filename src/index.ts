@@ -1,6 +1,6 @@
 export type { EmbedOutput, SourcererOutput } from '@/providers/base';
 export type { Stream, StreamFile, FileBasedStream, HlsBasedStream, Qualities } from '@/providers/streams';
-export type { Fetcher, FetcherOptions, FetcherResponse } from '@/fetchers/types';
+export type { Fetcher, DefaultedFetcherOptions, FetcherResponse } from '@/fetchers/types';
 export type { RunOutput } from '@/runners/runner';
 export type { MetaOutput } from '@/entrypoint/utils/meta';
 export type { FullScraperEvents } from '@/entrypoint/utils/events';
