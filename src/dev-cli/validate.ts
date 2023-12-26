@@ -2,7 +2,7 @@ import nodeFetch from 'node-fetch';
 
 import { Embed, Sourcerer } from '@/providers/base';
 
-import { makeProviders, makeStandardFetcher, targets } from '..';
+import { ProviderMakerOptions, makeStandardFetcher, targets } from '..';
 
 export type CommandLineArguments = {
   fetcher: string;
@@ -15,8 +15,9 @@ export type CommandLineArguments = {
 };
 
 export async function processOptions(sources: Array<Embed | Sourcerer>, options: CommandLineArguments) {
-  if (options.fetcher !== 'node-fetch' && options.fetcher !== 'native') {
-    throw new Error("Fetcher must be either 'native' or 'node-fetch'");
+  const fetcherOptions = ['node-fetch', 'native', 'browser'];
+  if (!fetcherOptions.includes(options.fetcher)) {
+    throw new Error(`Fetcher must be any of: ${fetcherOptions.join()}`);
   }
 
   if (!options.sourceId.trim()) {
@@ -77,13 +78,13 @@ export async function processOptions(sources: Array<Embed | Sourcerer>, options:
     fetcher = makeStandardFetcher(nodeFetch);
   }
 
-  const providers = makeProviders({
+  const providerOptions: ProviderMakerOptions = {
     fetcher,
-    target: targets.NATIVE,
-  });
+    target: targets.ANY,
+  };
 
   return {
-    providers,
+    providerOptions,
     options,
     source,
   };

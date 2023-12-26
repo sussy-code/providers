@@ -9,7 +9,7 @@ import { logDeepObject } from '@/dev-cli/logging';
 import { getMovieMediaDetails, getShowMediaDetails } from '@/dev-cli/tmdb';
 import { CommandLineArguments, processOptions } from '@/dev-cli/validate';
 
-import { MetaOutput, ProviderControls, getBuiltinEmbeds, getBuiltinSources } from '..';
+import { MetaOutput, ProviderMakerOptions, getBuiltinEmbeds, getBuiltinSources, makeProviders } from '..';
 
 dotenv.config();
 
@@ -49,8 +49,9 @@ function joinMediaTypes(mediaTypes: string[] | undefined) {
   return ''; // * Embed sources pass through here too
 }
 
-async function runScraper(providers: ProviderControls, source: MetaOutput, options: CommandLineArguments) {
+async function runScraper(providerOptions: ProviderMakerOptions, source: MetaOutput, options: CommandLineArguments) {
   const spinnies = new Spinnies();
+  const providers = makeProviders(providerOptions);
 
   if (source.type === 'embed') {
     spinnies.add('scrape', { text: `Running ${source.name} scraper on ${options.url}` });
@@ -200,8 +201,8 @@ async function runQuestions() {
     }
   }
 
-  const { providers, source: validatedSource, options: validatedOps } = await processOptions(sources, options);
-  await runScraper(providers, validatedSource, validatedOps);
+  const { providerOptions, source: validatedSource, options: validatedOps } = await processOptions(sources, options);
+  await runScraper(providerOptions, validatedSource, validatedOps);
 }
 
 async function runCommandLine() {
@@ -216,8 +217,12 @@ async function runCommandLine() {
 
   program.parse();
 
-  const { providers, source: validatedSource, options: validatedOps } = await processOptions(sources, program.opts());
-  await runScraper(providers, validatedSource, validatedOps);
+  const {
+    providerOptions,
+    source: validatedSource,
+    options: validatedOps,
+  } = await processOptions(sources, program.opts());
+  await runScraper(providerOptions, validatedSource, validatedOps);
 }
 
 if (process.argv.length === 2) {
