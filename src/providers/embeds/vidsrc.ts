@@ -1,4 +1,4 @@
-import { flags } from '@/../lib';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 
 const hlsURLRegex = /file:"(.*?)"/;
