@@ -26,7 +26,6 @@ The following CLI Mode arguments are available
 | `--season`    | `-s`   | Season number. Only used if type is `show`                              | `0`          |
 | `--episode`   | `-e`   | Episode number. Only used if type is `show`                             | `0`          |
 | `--url`       | `-u`   | URL to a video embed. Only used if source is an embed                   |              |
-| `--headers`   | `-h`   | Optional headers to send while scraping                                 |              |
 | `--help`      | `-h`   | Shows help for the command arguments                                    |              |
 
 Example testing the FlixHQ source on the movie "Spirited Away"

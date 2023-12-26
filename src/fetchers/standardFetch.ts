@@ -29,10 +29,6 @@ export function makeStandardFetcher(f: FetchLike): Fetcher {
       body: seralizedBody.body,
     });
 
-    if (ops.returnRaw) {
-      return res;
-    }
-
     let body: any;
     const isJson = res.headers.get('content-type')?.includes('application/json');
     if (isJson) body = await res.json();

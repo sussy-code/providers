@@ -1,6 +1,5 @@
 import { load } from 'cheerio';
 
-import { FetchReply } from '@/fetchers/fetch';
 import { SourcererEmbed } from '@/providers/base';
 import { streambucketScraper } from '@/providers/embeds/streambucket';
 import { vidsrcembedScraper } from '@/providers/embeds/vidsrc';
@@ -44,7 +43,7 @@ async function getVidSrcEmbeds(ctx: MovieScrapeContext | ShowScrapeContext, star
     html = await ctx.proxiedFetcher<string>(`/rcp/${hash}`, {
       baseUrl: vidsrcRCPBase,
       headers: {
-        referer: `${vidsrcBase}${startingURL}`,
+        referer: vidsrcBase,
       },
     });
 
@@ -61,32 +60,23 @@ async function getVidSrcEmbeds(ctx: MovieScrapeContext | ShowScrapeContext, star
       redirectURL = `https:${redirectURL}`;
     }
 
-    // Return the raw fetch response here.
-    // When a Location header is sent, fetch
-    // will silently follow it. The "url" inside
-    // the Response is the final requested URL,
-    // which is the real embeds URL
-    const { url: embedURL } = await ctx.proxiedFetcher<FetchReply>(redirectURL, {
-      returnRaw: true,
-      method: 'HEAD', // We don't care about the actual response body here
+    const { finalUrl } = await ctx.proxiedFetcher.full(redirectURL, {
+      method: 'HEAD',
       headers: {
-        referer: `${vidsrcRCPBase}/rcp/${hash}`,
+        referer: vidsrcBase,
       },
     });
 
     const embed: SourcererEmbed = {
       embedId: '',
-      url: embedURL,
+      url: finalUrl,
     };
 
-    const parsedUrl = new URL(embedURL);
+    const parsedUrl = new URL(finalUrl);
 
     switch (parsedUrl.host) {
       case 'vidsrc.stream':
         embed.embedId = vidsrcembedScraper.id;
-        embed.headers = {
-          referer: `${vidsrcRCPBase}/rcp/${hash}`,
-        };
         break;
       case 'streambucket.net':
         embed.embedId = streambucketScraper.id;
@@ -99,7 +89,7 @@ async function getVidSrcEmbeds(ctx: MovieScrapeContext | ShowScrapeContext, star
         // Just ignore this. This embed streams video over a custom WebSocket connection
         break;
       default:
-        throw new Error(`Failed to find VidSrc embed source for ${embedURL}`);
+        throw new Error(`Failed to find VidSrc embed source for ${finalUrl}`);
     }
 
     // Since some embeds are ignored on purpose, check if a valid one was found

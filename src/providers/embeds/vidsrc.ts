@@ -1,3 +1,4 @@
+import { flags } from '@/../lib';
 import { makeEmbed } from '@/providers/base';
 
 const hlsURLRegex = /file:"(.*?)"/;
@@ -7,11 +8,10 @@ export const vidsrcembedScraper = makeEmbed({
   name: 'VidSrc',
   rank: 197,
   async scrape(ctx) {
-    if (!ctx.headers || (!ctx.headers.referer && !ctx.headers.Referer)) {
-      throw new Error('VidSrc embeds require the referer header to be set');
-    }
     const html = await ctx.proxiedFetcher<string>(ctx.url, {
-      headers: ctx.headers,
+      headers: {
+        referer: ctx.url,
+      },
     });
 
     const match = html
@@ -24,12 +24,15 @@ export const vidsrcembedScraper = makeEmbed({
     if (!finalUrl.includes('.m3u8')) throw new Error('Unable to find HLS playlist');
 
     return {
-      stream: {
-        type: 'hls',
-        playlist: finalUrl,
-        flags: [],
-        captions: [],
-      },
+      stream: [
+        {
+          id: 'primary',
+          type: 'hls',
+          playlist: finalUrl,
+          flags: [flags.CORS_ALLOWED],
+          captions: [],
+        },
+      ],
     };
   },
 });

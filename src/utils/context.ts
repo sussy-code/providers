@@ -2,8 +2,14 @@ import { MovieMedia, ShowMedia } from '@/entrypoint/utils/media';
 import { UseableFetcher } from '@/fetchers/types';
 
 export type ScrapeContext = {
-  proxiedFetcher: <T>(...params: Parameters<UseableFetcher<T>>) => ReturnType<UseableFetcher<T>>;
-  fetcher: <T>(...params: Parameters<UseableFetcher<T>>) => ReturnType<UseableFetcher<T>>;
+  proxiedFetcher: {
+    <T>(...params: Parameters<UseableFetcher<T>>): ReturnType<UseableFetcher<T>>;
+    full<T>(...params: Parameters<UseableFetcher<T>['full']>): ReturnType<UseableFetcher<T>['full']>;
+  };
+  fetcher: {
+    <T>(...params: Parameters<UseableFetcher<T>>): ReturnType<UseableFetcher<T>>;
+    full<T>(...params: Parameters<UseableFetcher<T>['full']>): ReturnType<UseableFetcher<T>['full']>;
+  };
   progress(val: number): void;
 };
 

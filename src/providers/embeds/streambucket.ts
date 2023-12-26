@@ -1,4 +1,4 @@
-import { flags } from '@/main/targets';
+import { flags } from '@/index';
 import { makeEmbed } from '@/providers/base';
 
 // StreamBucket makes use of https://github.com/nicxlau/hunter-php-javascript-obfuscator
@@ -87,12 +87,15 @@ export const streambucketScraper = makeEmbed({
     }
 
     return {
-      stream: {
-        type: 'hls',
-        playlist: regexResult[1],
-        flags: [flags.NO_CORS],
-        captions: [],
-      },
+      stream: [
+        {
+          id: 'primary',
+          type: 'hls',
+          playlist: regexResult[1],
+          flags: [flags.CORS_ALLOWED],
+          captions: [],
+        },
+      ],
     };
   },
 });

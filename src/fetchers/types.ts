@@ -7,7 +7,6 @@ export type FetcherOptions = {
   method?: 'HEAD' | 'GET' | 'POST';
   readHeaders?: string[];
   body?: Record<string, any> | string | FormData | URLSearchParams;
-  returnRaw?: boolean;
 };
 
 // Version of the options that always has the defaults set
@@ -18,7 +17,6 @@ export type DefaultedFetcherOptions = {
   headers: Record<string, string>;
   query: Record<string, string>;
   method: 'HEAD' | 'GET' | 'POST';
-  returnRaw: boolean;
   readHeaders: string[];
 };
 
