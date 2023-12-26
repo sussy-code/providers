@@ -16,8 +16,8 @@ export type DefaultedFetcherOptions = {
   body?: Record<string, any> | string | FormData;
   headers: Record<string, string>;
   query: Record<string, string>;
-  method: 'HEAD' | 'GET' | 'POST';
   readHeaders: string[];
+  method: 'HEAD' | 'GET' | 'POST';
 };
 
 export type FetcherResponse<T = any> = {

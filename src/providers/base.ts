@@ -7,7 +7,6 @@ export type MediaScraperTypes = 'show' | 'movie';
 export type SourcererEmbed = {
   embedId: string;
   url: string;
-  headers?: Record<string, string>;
 };
 
 export type SourcererOutput = {

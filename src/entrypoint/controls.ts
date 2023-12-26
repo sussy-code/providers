@@ -52,9 +52,6 @@ export interface EmbedRunnerOptions {
 
   // id of the embed scraper you want to scrape from
   id: string;
-
-  // optional headers for the embed scraper to use
-  headers?: Record<string, string>;
 }
 
 export interface ProviderControls {
