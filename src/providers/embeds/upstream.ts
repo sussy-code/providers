@@ -1,6 +1,6 @@
 import * as unpacker from 'unpacker';
 
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 
 const packedRegex = /(eval\(function\(p,a,c,k,e,d\).*\)\)\))/;
@@ -21,12 +21,15 @@ export const upstreamScraper = makeEmbed({
 
       if (link) {
         return {
-          stream: {
-            type: 'hls',
-            playlist: link[1],
-            flags: [flags.NO_CORS],
-            captions: [],
-          },
+          stream: [
+            {
+              id: 'primary',
+              type: 'hls',
+              playlist: link[1],
+              flags: [flags.CORS_ALLOWED],
+              captions: [],
+            },
+          ],
         };
       }
     }

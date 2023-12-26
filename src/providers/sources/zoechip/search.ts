@@ -1,6 +1,6 @@
 import { load } from 'cheerio';
 
-import { MovieMedia, ShowMedia } from '@/main/media';
+import { MovieMedia, ShowMedia } from '@/entrypoint/utils/media';
 import { zoeBase } from '@/providers/sources/zoechip/common';
 import { compareMedia } from '@/utils/compare';
 import { ScrapeContext } from '@/utils/context';

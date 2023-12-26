@@ -1,4 +1,4 @@
-import { MovieMedia } from '@/main/media';
+import { MovieMedia } from '@/entrypoint/utils/media';
 
 // ! Types
 interface BaseConfig {

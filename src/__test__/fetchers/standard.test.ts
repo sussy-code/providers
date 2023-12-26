@@ -16,6 +16,8 @@ describe("makeStandardFetcher()", () => {
       headers: new Headers({
         "content-type": "text/plain",
       }),
+      status: 204,
+      url: "test123",
       text() { 
         return Promise.resolve(value);
       },
@@ -24,6 +26,8 @@ describe("makeStandardFetcher()", () => {
       headers: new Headers({
         "content-type": "application/json",
       }),
+      status: 204,
+      url: "test123",
       json() {
         return Promise.resolve(value);
       },
@@ -31,7 +35,11 @@ describe("makeStandardFetcher()", () => {
   }
 
   function expectFetchCall(ops: { inputUrl: string, input: DefaultedFetcherOptions, outputUrl?: string, output: any, outputBody: any }) {
-    expect(fetcher(ops.inputUrl, ops.input)).resolves.toEqual(ops.outputBody);
+    const prom = fetcher(ops.inputUrl, ops.input);
+    expect((async () => (await prom).body)()).resolves.toEqual(ops.outputBody);
+    expect((async () => (await prom).headers.entries())()).resolves.toEqual((new Headers()).entries());
+    expect((async () => (await prom).statusCode)()).resolves.toEqual(204);
+    expect((async () => (await prom).finalUrl)()).resolves.toEqual("test123");
     expect(fetch).toBeCalledWith(ops.outputUrl ?? ops.inputUrl, ops.output);
     vi.clearAllMocks();
   }
@@ -43,6 +51,7 @@ describe("makeStandardFetcher()", () => {
       input: {
         method: "GET",
         query: {},
+        readHeaders: [],
         headers: {
           "X-Hello": "world",
         },
@@ -53,6 +62,7 @@ describe("makeStandardFetcher()", () => {
         headers: {
           "X-Hello": "world",
         },
+        body: undefined,
       },
       outputBody: "hello world"
     })
@@ -62,6 +72,7 @@ describe("makeStandardFetcher()", () => {
       input: {
         method: "GET",
         headers: {},
+        readHeaders: [],
         query: {
           "a": 'b',
         }
@@ -79,6 +90,7 @@ describe("makeStandardFetcher()", () => {
       input: {
         query: {},
         headers: {},
+        readHeaders: [],
         method: "GET"
       },
       outputUrl: "https://google.com/",
@@ -97,6 +109,7 @@ describe("makeStandardFetcher()", () => {
       input: {
         query: {},
         headers: {},
+        readHeaders: [],
         method: "POST"
       },
       outputUrl: "https://google.com/",
@@ -112,6 +125,7 @@ describe("makeStandardFetcher()", () => {
       input: {
         query: {},
         headers: {},
+        readHeaders: [],
         method: "POST"
       },
       outputUrl: "https://google.com/",

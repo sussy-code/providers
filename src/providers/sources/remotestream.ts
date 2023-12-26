@@ -1,4 +1,4 @@
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeSourcerer } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
 
@@ -8,7 +8,7 @@ export const remotestreamScraper = makeSourcerer({
   id: 'remotestream',
   name: 'Remote Stream',
   rank: 55,
-  flags: [flags.NO_CORS],
+  flags: [flags.CORS_ALLOWED],
   async scrapeShow(ctx) {
     const seasonNumber = ctx.media.season.number;
     const episodeNumber = ctx.media.episode.number;
@@ -22,12 +22,15 @@ export const remotestreamScraper = makeSourcerer({
 
     return {
       embeds: [],
-      stream: {
-        captions: [],
-        playlist: playlistLink,
-        type: 'hls',
-        flags: [flags.NO_CORS],
-      },
+      stream: [
+        {
+          id: 'primary',
+          captions: [],
+          playlist: playlistLink,
+          type: 'hls',
+          flags: [flags.CORS_ALLOWED],
+        },
+      ],
     };
   },
   async scrapeMovie(ctx) {
@@ -40,12 +43,15 @@ export const remotestreamScraper = makeSourcerer({
 
     return {
       embeds: [],
-      stream: {
-        captions: [],
-        playlist: playlistLink,
-        type: 'hls',
-        flags: [flags.NO_CORS],
-      },
+      stream: [
+        {
+          id: 'primary',
+          captions: [],
+          playlist: playlistLink,
+          type: 'hls',
+          flags: [flags.CORS_ALLOWED],
+        },
+      ],
     };
   },
 });

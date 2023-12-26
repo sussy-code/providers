@@ -1,6 +1,6 @@
 import { load } from 'cheerio';
 
-import { MovieMedia, ShowMedia } from '@/main/media';
+import { MovieMedia, ShowMedia } from '@/entrypoint/utils/media';
 import { flixHqBase } from '@/providers/sources/flixhq/common';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';

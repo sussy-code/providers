@@ -3,7 +3,7 @@ import Base64 from 'crypto-js/enc-base64';
 import Utf8 from 'crypto-js/enc-utf8';
 import FormData from 'form-data';
 
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { StreamFile } from '@/providers/streams';
 import { EmbedScrapeContext } from '@/utils/context';
@@ -155,12 +155,15 @@ export const streamsbScraper = makeEmbed({
     }, {} as Record<string, StreamFile>);
 
     return {
-      stream: {
-        type: 'file',
-        flags: [flags.NO_CORS],
-        qualities,
-        captions: [],
-      },
+      stream: [
+        {
+          id: 'primary',
+          type: 'file',
+          flags: [flags.CORS_ALLOWED],
+          qualities,
+          captions: [],
+        },
+      ],
     };
   },
 });

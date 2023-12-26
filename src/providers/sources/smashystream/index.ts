@@ -1,6 +1,6 @@
 import { load } from 'cheerio';
 
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { SourcererEmbed, SourcererOutput, makeSourcerer } from '@/providers/base';
 import { smashyStreamDScraper } from '@/providers/embeds/smashystream/dued';
 import { smashyStreamFScraper } from '@/providers/embeds/smashystream/video1';
@@ -58,7 +58,7 @@ export const smashyStreamScraper = makeSourcerer({
   id: 'smashystream',
   name: 'SmashyStream',
   rank: 70,
-  flags: [flags.NO_CORS],
+  flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
 });

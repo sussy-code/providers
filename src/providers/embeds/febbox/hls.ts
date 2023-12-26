@@ -1,5 +1,5 @@
-import { MediaTypes } from '@/main/media';
-import { flags } from '@/main/targets';
+import { MediaTypes } from '@/entrypoint/utils/media';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { parseInputUrl } from '@/providers/embeds/febbox/common';
 import { getStreams } from '@/providers/embeds/febbox/fileList';
@@ -36,12 +36,15 @@ export const febboxHlsScraper = makeEmbed({
     ctx.progress(70);
 
     return {
-      stream: {
-        type: 'hls',
-        flags: [flags.NO_CORS],
-        captions: await getSubtitles(ctx, id, firstStream.fid, type as MediaTypes, season, episode),
-        playlist: `https://www.febbox.com/hls/main/${firstStream.oss_fid}.m3u8`,
-      },
+      stream: [
+        {
+          id: 'primary',
+          type: 'hls',
+          flags: [flags.CORS_ALLOWED],
+          captions: await getSubtitles(ctx, id, firstStream.fid, type as MediaTypes, season, episode),
+          playlist: `https://www.febbox.com/hls/main/${firstStream.oss_fid}.m3u8`,
+        },
+      ],
     };
   },
 });

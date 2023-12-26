@@ -1,4 +1,4 @@
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { febboxHlsScraper } from '@/providers/embeds/febbox/hls';
 import { febboxMp4Scraper } from '@/providers/embeds/febbox/mp4';
@@ -47,7 +47,7 @@ export const showboxScraper = makeSourcerer({
   id: 'showbox',
   name: 'Showbox',
   rank: 300,
-  flags: [flags.NO_CORS],
+  flags: [flags.CORS_ALLOWED],
   scrapeShow: comboScraper,
   scrapeMovie: comboScraper,
 });

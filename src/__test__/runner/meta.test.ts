@@ -1,6 +1,6 @@
 import { mockEmbeds, mockSources } from '@/__test__/providerTests';
-import { makeProviders } from '@/main/builder';
-import { targets } from '@/main/targets.ts';
+import { makeProviders } from '@/entrypoint/declare';
+import { targets } from '@/entrypoint/utils/targets';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = await vi.hoisted(async () => (await import('../providerTests.ts')).makeProviderMocks());

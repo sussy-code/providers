@@ -1,7 +1,7 @@
+import { FullScraperEvents } from '@/entrypoint/utils/events';
+import { ScrapeMedia } from '@/entrypoint/utils/media';
+import { FeatureMap, flagsAllowedInFeatures } from '@/entrypoint/utils/targets';
 import { UseableFetcher } from '@/fetchers/types';
-import { FullScraperEvents } from '@/main/events';
-import { ScrapeMedia } from '@/main/media';
-import { FeatureMap, flagsAllowedInFeatures } from '@/main/targets';
 import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { ProviderList } from '@/providers/get';
 import { Stream } from '@/providers/streams';
@@ -18,13 +18,13 @@ export type RunOutput = {
 
 export type SourceRunOutput = {
   sourceId: string;
-  stream?: Stream;
+  stream: Stream[];
   embeds: [];
 };
 
 export type EmbedRunOutput = {
   embedId: string;
-  stream?: Stream;
+  stream: Stream[];
 };
 
 export type ProviderRunnerOptions = {
@@ -80,12 +80,14 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
           ...contextBase,
           media: ops.media,
         });
-      if (output?.stream && !isValidStream(output?.stream)) {
-        throw new NotFoundError('stream is incomplete');
+      if (output) {
+        output.stream = (output.stream ?? [])
+          .filter((stream) => isValidStream(stream))
+          .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
       }
-      if (output?.stream && !flagsAllowedInFeatures(ops.features, output.stream.flags)) {
-        throw new NotFoundError("stream doesn't satisfy target feature flags");
-      }
+      if (!output) throw Error('No output');
+      if ((!output.stream || output.stream.length === 0) && output.embeds.length === 0)
+        throw new NotFoundError('No streams found');
     } catch (err) {
       if (err instanceof NotFoundError) {
         ops.events?.update?.({
@@ -107,10 +109,10 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
     if (!output) throw new Error('Invalid media type');
 
     // return stream is there are any
-    if (output.stream) {
+    if (output.stream?.[0]) {
       return {
         sourceId: s.id,
-        stream: output.stream,
+        stream: output.stream[0],
       };
     }
 
@@ -144,9 +146,10 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
           ...contextBase,
           url: e.url,
         });
-        if (!flagsAllowedInFeatures(ops.features, embedOutput.stream.flags)) {
-          throw new NotFoundError("stream doesn't satisfy target feature flags");
-        }
+        embedOutput.stream = embedOutput.stream
+          .filter((stream) => isValidStream(stream))
+          .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
+        if (embedOutput.stream.length === 0) throw new NotFoundError('No streams found');
       } catch (err) {
         if (err instanceof NotFoundError) {
           ops.events?.update?.({
@@ -169,7 +172,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       return {
         sourceId: s.id,
         embedId: scraper.id,
-        stream: embedOutput.stream,
+        stream: embedOutput.stream[0],
       };
     }
   }
