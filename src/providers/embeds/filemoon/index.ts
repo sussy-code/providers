@@ -1,22 +1,25 @@
-import { makeEmbed } from '@/providers/base';
-import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '@/providers/captions';
+import { unpack } from 'unpacker';
 
-import { getFileUrl } from './common';
-import { SubtitleResult, VidplaySourceResponse } from './types';
+import { flags } from '@/entrypoint/utils/targets';
 
-export const vidplayScraper = makeEmbed({
-  id: 'vidplay',
-  name: 'VidPlay',
-  rank: 499,
+import { SubtitleResult } from './types';
+import { makeEmbed } from '../../base';
+import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '../../captions';
+
+const evalCodeRegex = /eval\((.*)\)/g;
+const fileRegex = /file:"(.*?)"/g;
+
+export const fileMoonScraper = makeEmbed({
+  id: 'filemoon',
+  name: 'Filemoon',
+  rank: 501,
   scrape: async (ctx) => {
-    const fileUrl = await getFileUrl(ctx);
-    const fileUrlRes = await ctx.proxiedFetcher<VidplaySourceResponse>(fileUrl, {
-      headers: {
-        referer: ctx.url,
-      },
-    });
-    if (typeof fileUrlRes.result === 'number') throw new Error('File not found');
-    const source = fileUrlRes.result.sources[0].file;
+    const embedRes = await ctx.fetcher<string>(ctx.url);
+    const evalCode = evalCodeRegex.exec(embedRes);
+    if (!evalCode) throw new Error('Failed to find eval code');
+    const unpacked = unpack(evalCode[1]);
+    const file = fileRegex.exec(unpacked);
+    if (!file?.[1]) throw new Error('Failed to find file');
 
     const url = new URL(ctx.url);
     const subtitlesLink = url.searchParams.get('sub.info');
@@ -43,8 +46,8 @@ export const vidplayScraper = makeEmbed({
         {
           id: 'primary',
           type: 'hls',
-          playlist: source,
-          flags: [],
+          playlist: file[1],
+          flags: [flags.CORS_ALLOWED],
           captions,
         },
       ],

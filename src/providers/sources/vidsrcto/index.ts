@@ -25,24 +25,39 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
   if (sources.status !== 200) throw new Error('No sources found');
 
   const embeds: SourcererEmbed[] = [];
+  const embedUrls = [];
   for (const source of sources.result) {
     const sourceRes = await ctx.fetcher<SourceResult>(`/ajax/embed/source/${source.id}`, {
       baseUrl: vidSrcToBase,
     });
     const decryptedUrl = decryptSourceUrl(sourceRes.result.url);
-    if (source.title === 'Filemoon') {
-      embeds.push({
-        embedId: 'filemoon',
-        url: decryptedUrl,
-      });
-    }
+    embedUrls.push(decryptedUrl);
+  }
+
+  // Originally Filemoon does not have subtitles. But we can use the ones from Vidplay.
+  const subtitleUrl = new URL(embedUrls.find((v) => v.includes('sub.info')) ?? '').searchParams.get('sub.info');
+  for (const source of sources.result) {
     if (source.title === 'Vidplay') {
+      const embedUrl = embedUrls.find((v) => v.includes('vidplay'));
+      if (!embedUrl) continue;
       embeds.push({
         embedId: 'vidplay',
-        url: decryptedUrl,
+        url: embedUrl,
+      });
+    }
+
+    if (source.title === 'Filemoon') {
+      const embedUrl = embedUrls.find((v) => v.includes('filemoon'));
+      if (!embedUrl) continue;
+      const fullUrl = new URL(embedUrl);
+      if (subtitleUrl) fullUrl.searchParams.set('sub.info', subtitleUrl);
+      embeds.push({
+        embedId: 'filemoon',
+        url: fullUrl.toString(),
       });
     }
   }
+
   return {
     embeds,
   };
