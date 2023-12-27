@@ -45,6 +45,7 @@ export async function getMovieMediaDetails(id: string): Promise<MovieMedia> {
     title: movie.title,
     releaseYear: Number(movie.release_date.split('-')[0]),
     tmdbId: id,
+    imdbId: movie.imdb_id,
   };
 }
 
@@ -91,5 +92,6 @@ export async function getShowMediaDetails(id: string, seasonNumber: string, epis
       number: season.season_number,
       tmdbId: season.id,
     },
+    imdbId: series.imdb_id,
   };
 }

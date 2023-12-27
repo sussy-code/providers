@@ -14,9 +14,12 @@ import { remotestreamScraper } from '@/providers/sources/remotestream';
 import { showboxScraper } from '@/providers/sources/showbox/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
+import { fileMoonScraper } from './embeds/filemoon';
 import { smashyStreamDScraper } from './embeds/smashystream/dued';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
+import { vidplayScraper } from './embeds/vidplay';
 import { smashyStreamScraper } from './sources/smashystream';
+import { vidSrcToScraper } from './sources/vidsrcto';
 
 export function gatherAllSources(): Array<Sourcerer> {
   // all sources are gathered here
@@ -29,6 +32,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     zoechipScraper,
     lookmovieScraper,
     smashyStreamScraper,
+    vidSrcToScraper,
   ];
 }
 
@@ -44,5 +48,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     mixdropScraper,
     smashyStreamFScraper,
     smashyStreamDScraper,
+    fileMoonScraper,
+    vidplayScraper,
   ];
 }
