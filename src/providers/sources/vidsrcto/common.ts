@@ -2,12 +2,11 @@ const DECRYPTION_KEY = '8z5Ag5wgagfsOuhz';
 
 export const decodeBase64UrlSafe = (str: string) => {
   const standardizedInput = str.replace(/_/g, '/').replace(/-/g, '+');
+  const decodedData = atob(standardizedInput);
 
-  const binaryData = Buffer.from(standardizedInput, 'base64').toString('binary');
-
-  const bytes = new Uint8Array(binaryData.length);
+  const bytes = new Uint8Array(decodedData.length);
   for (let i = 0; i < bytes.length; i += 1) {
-    bytes[i] = binaryData.charCodeAt(i);
+    bytes[i] = decodedData.charCodeAt(i);
   }
 
   return bytes;
