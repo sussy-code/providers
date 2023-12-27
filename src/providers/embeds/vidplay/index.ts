@@ -7,7 +7,7 @@ import { SubtitleResult, VidplaySourceResponse } from './types';
 export const vidplayScraper = makeEmbed({
   id: 'vidplay',
   name: 'VidPlay',
-  rank: 300,
+  rank: 401,
   scrape: async (ctx) => {
     const fileUrl = await getFileUrl(ctx);
     const fileUrlRes = await ctx.proxiedFetcher<VidplaySourceResponse>(fileUrl, {

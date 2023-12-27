@@ -12,7 +12,7 @@ const fileRegex = /file:"(.*?)"/g;
 export const fileMoonScraper = makeEmbed({
   id: 'filemoon',
   name: 'Filemoon',
-  rank: 301,
+  rank: 400,
   scrape: async (ctx) => {
     const embedRes = await ctx.fetcher<string>(ctx.url);
     const evalCode = evalCodeRegex.exec(embedRes);
