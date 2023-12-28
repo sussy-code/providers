@@ -1,3 +1,4 @@
+import { makeFullUrl } from '@/fetchers/common';
 import { EmbedScrapeContext } from '@/utils/context';
 
 export const vidplayBase = 'https://vidplay.site';
@@ -66,5 +67,11 @@ export const getFuTokenKey = async (ctx: EmbedScrapeContext) => {
 
 export const getFileUrl = async (ctx: EmbedScrapeContext) => {
   const fuToken = await getFuTokenKey(ctx);
-  return `${vidplayBase}/mediainfo/${fuToken}${new URL(ctx.url).search}&autostart=true`;
+  return makeFullUrl(`/mediainfo/${fuToken}`, {
+    baseUrl: vidplayBase,
+    query: {
+      ...Object.fromEntries(new URL(ctx.url).searchParams.entries()),
+      autostart: 'true',
+    },
+  });
 };

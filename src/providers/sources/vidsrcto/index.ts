@@ -1,5 +1,6 @@
 import { load } from 'cheerio';
 
+import { flags } from '@/entrypoint/utils/targets';
 import { SourcererEmbed, SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
@@ -12,10 +13,11 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
   const imdbId = ctx.media.imdbId;
   const url =
     ctx.media.type === 'movie'
-      ? `${vidSrcToBase}/embed/movie/${imdbId}`
-      : `${vidSrcToBase}}/embed/tv/${imdbId}/${ctx.media.season.number}/${ctx.media.episode.number}`;
-
-  const mainPage = await ctx.fetcher<string>(url);
+      ? `/embed/movie/${imdbId}`
+      : `/embed/tv/${imdbId}/${ctx.media.season.number}/${ctx.media.episode.number}`;
+  const mainPage = await ctx.fetcher<string>(url, {
+    baseUrl: vidSrcToBase,
+  });
   const mainPage$ = load(mainPage);
   const dataId = mainPage$('a[data-id]').attr('data-id');
   if (!dataId) throw new Error('No data-id found');
@@ -68,6 +70,6 @@ export const vidSrcToScraper = makeSourcerer({
   name: 'VidSrcTo',
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
-  flags: [],
+  flags: [flags.CORS_ALLOWED],
   rank: 400,
 });
