@@ -11,7 +11,6 @@ interface FebboxQuality {
 }
 
 function mapToQuality(quality: FebboxQuality): FebboxQuality | null {
-  console.log(quality);
   const q = quality.real_quality.replace('p', '').toLowerCase();
   if (!allowedQualities.includes(q)) return null;
   return {
@@ -29,8 +28,8 @@ export async function getStreamQualities(ctx: ScrapeContext, apiQuery: object) {
   const qualities: Record<string, StreamFile> = {};
 
   allowedQualities.forEach((quality) => {
-    const foundQuality = qualityMap.find((q) => q.real_quality === quality);
-    if (foundQuality && foundQuality.path) {
+    const foundQuality = qualityMap.find((q) => q.real_quality === quality && q.path);
+    if (foundQuality) {
       qualities[quality] = {
         type: 'mp4',
         url: foundQuality.path,
