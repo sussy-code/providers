@@ -4,7 +4,6 @@ import { Caption } from '@/providers/captions';
 export type StreamFile = {
   type: 'mp4';
   url: string;
-  headers?: Record<string, string>;
 };
 
 export type Qualities = 'unknown' | '360' | '480' | '720' | '1080' | '4k';
