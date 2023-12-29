@@ -1,5 +1,4 @@
-import { FeatureMap, flagsAllowedInFeatures } from '@/main/targets';
-import { gatherAllEmbeds, gatherAllSources } from '@/providers/all';
+import { FeatureMap, flagsAllowedInFeatures } from '@/entrypoint/utils/targets';
 import { Embed, Sourcerer } from '@/providers/base';
 import { hasDuplicates } from '@/utils/predicates';
 
@@ -8,9 +7,9 @@ export interface ProviderList {
   embeds: Embed[];
 }
 
-export function getProviders(features: FeatureMap): ProviderList {
-  const sources = gatherAllSources().filter((v) => !v?.disabled);
-  const embeds = gatherAllEmbeds().filter((v) => !v?.disabled);
+export function getProviders(features: FeatureMap, list: ProviderList): ProviderList {
+  const sources = list.sources.filter((v) => !v?.disabled);
+  const embeds = list.embeds.filter((v) => !v?.disabled);
   const combined = [...sources, ...embeds];
 
   const anyDuplicateId = hasDuplicates(combined.map((v) => v.id));

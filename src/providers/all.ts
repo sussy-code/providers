@@ -1,5 +1,6 @@
 import { Embed, Sourcerer } from '@/providers/base';
-import { febBoxScraper } from '@/providers/embeds/febBox';
+import { febboxHlsScraper } from '@/providers/embeds/febbox/hls';
+import { febboxMp4Scraper } from '@/providers/embeds/febbox/mp4';
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
 import { mp4uploadScraper } from '@/providers/embeds/mp4upload';
 import { streamsbScraper } from '@/providers/embeds/streamsb';
@@ -10,10 +11,12 @@ import { goMoviesScraper } from '@/providers/sources/gomovies/index';
 import { kissAsianScraper } from '@/providers/sources/kissasian/index';
 import { lookmovieScraper } from '@/providers/sources/lookmovie';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
-import { superStreamScraper } from '@/providers/sources/superstream/index';
+import { showboxScraper } from '@/providers/sources/showbox/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
-import { showBoxScraper } from './sources/showbox';
+import { smashyStreamDScraper } from './embeds/smashystream/dued';
+import { smashyStreamFScraper } from './embeds/smashystream/video1';
+import { smashyStreamScraper } from './sources/smashystream';
 
 export function gatherAllSources(): Array<Sourcerer> {
   // all sources are gathered here
@@ -21,15 +24,25 @@ export function gatherAllSources(): Array<Sourcerer> {
     flixhqScraper,
     remotestreamScraper,
     kissAsianScraper,
-    superStreamScraper,
+    showboxScraper,
     goMoviesScraper,
     zoechipScraper,
     lookmovieScraper,
-    showBoxScraper,
+    smashyStreamScraper,
   ];
 }
 
 export function gatherAllEmbeds(): Array<Embed> {
   // all embeds are gathered here
-  return [upcloudScraper, mp4uploadScraper, streamsbScraper, upstreamScraper, febBoxScraper, mixdropScraper];
+  return [
+    upcloudScraper,
+    mp4uploadScraper,
+    streamsbScraper,
+    upstreamScraper,
+    febboxMp4Scraper,
+    febboxHlsScraper,
+    mixdropScraper,
+    smashyStreamFScraper,
+    smashyStreamDScraper,
+  ];
 }

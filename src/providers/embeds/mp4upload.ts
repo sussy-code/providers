@@ -1,4 +1,4 @@
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 
 export const mp4uploadScraper = makeEmbed({
@@ -15,17 +15,20 @@ export const mp4uploadScraper = makeEmbed({
     if (!streamUrl) throw new Error('Stream url not found in embed code');
 
     return {
-      stream: {
-        type: 'file',
-        flags: [flags.NO_CORS],
-        captions: [],
-        qualities: {
-          '1080': {
-            type: 'mp4',
-            url: streamUrl,
+      stream: [
+        {
+          id: 'primary',
+          type: 'file',
+          flags: [flags.CORS_ALLOWED],
+          captions: [],
+          qualities: {
+            '1080': {
+              type: 'mp4',
+              url: streamUrl,
+            },
           },
         },
-      },
+      ],
     };
   },
 });

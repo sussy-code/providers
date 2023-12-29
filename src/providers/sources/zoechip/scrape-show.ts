@@ -1,9 +1,10 @@
-import { ShowContext, createZoeChipStreamData } from '@/providers/sources/zoechip/common';
+import { createZoeChipStreamData } from '@/providers/sources/zoechip/common';
 import { getZoeChipEpisodeID, getZoeChipSeasonID } from '@/providers/sources/zoechip/scrape';
 import { getZoeChipShowID } from '@/providers/sources/zoechip/search';
+import { ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-export async function scrapeShow(ctx: ShowContext) {
+export async function scrapeShow(ctx: ShowScrapeContext) {
   const showID = await getZoeChipShowID(ctx, ctx.media);
   if (!showID) {
     throw new NotFoundError('no search results match');

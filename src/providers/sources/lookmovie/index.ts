@@ -1,11 +1,11 @@
-import { flags } from '@/main/targets';
+import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
+import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 import { scrape, searchAndFindMedia } from './util';
-import { MovieContext, ShowContext } from '../zoechip/common';
 
-async function universalScraper(ctx: ShowContext | MovieContext): Promise<SourcererOutput> {
+async function universalScraper(ctx: MovieScrapeContext | ShowScrapeContext): Promise<SourcererOutput> {
   const lookmovieData = await searchAndFindMedia(ctx, ctx.media);
   if (!lookmovieData) throw new NotFoundError('Media not found');
 
@@ -17,12 +17,15 @@ async function universalScraper(ctx: ShowContext | MovieContext): Promise<Source
 
   return {
     embeds: [],
-    stream: {
-      playlist: videoUrl,
-      type: 'hls',
-      flags: [flags.IP_LOCKED],
-      captions: [],
-    },
+    stream: [
+      {
+        id: 'primary',
+        playlist: videoUrl,
+        type: 'hls',
+        flags: [flags.IP_LOCKED],
+        captions: [],
+      },
+    ],
   };
 }
 

@@ -33,21 +33,24 @@ export const mixdropScraper = makeEmbed({
     const url = link[1];
 
     return {
-      stream: {
-        type: 'file',
-        flags: [],
-        captions: [],
-        qualities: {
-          unknown: {
-            type: 'mp4',
-            url: url.startsWith('http') ? url : `https:${url}`, // URLs don't always start with the protocol
-            headers: {
-              // MixDrop requires this header on all streams
-              Referer: 'https://mixdrop.co/',
+      stream: [
+        {
+          id: 'primary',
+          type: 'file',
+          flags: [],
+          captions: [],
+          qualities: {
+            unknown: {
+              type: 'mp4',
+              url: url.startsWith('http') ? url : `https:${url}`, // URLs don't always start with the protocol
+              headers: {
+                // MixDrop requires this header on all streams
+                Referer: 'https://mixdrop.co/',
+              },
             },
           },
         },
-      },
+      ],
     };
   },
 });
