@@ -11,6 +11,7 @@ import { goMoviesScraper } from '@/providers/sources/gomovies/index';
 import { kissAsianScraper } from '@/providers/sources/kissasian/index';
 import { lookmovieScraper } from '@/providers/sources/lookmovie';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
+import { rezkaScraper } from '@/providers/sources/rezka';
 import { showboxScraper } from '@/providers/sources/showbox/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
@@ -24,6 +25,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     flixhqScraper,
     remotestreamScraper,
     kissAsianScraper,
+    rezkaScraper,
     showboxScraper,
     goMoviesScraper,
     zoechipScraper,
