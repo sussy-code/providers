@@ -117,8 +117,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
     }
 
     // run embed scrapers on listed embeds
-    const sortedEmbeds = output.embeds;
-    sortedEmbeds.sort((a, b) => embedIds.indexOf(a.embedId) - embedIds.indexOf(b.embedId));
+    const sortedEmbeds = output.embeds.sort((a, b) => embedIds.indexOf(a.embedId) - embedIds.indexOf(b.embedId));
 
     if (sortedEmbeds.length > 0) {
       ops.events?.discoverEmbeds?.({
