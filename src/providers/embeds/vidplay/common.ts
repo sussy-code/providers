@@ -3,6 +3,8 @@ import { EmbedScrapeContext } from '@/utils/context';
 
 export const vidplayBase = 'https://vidplay.site';
 
+// This file is based on https://github.com/Ciarands/vidsrc-to-resolver/blob/960afb11c30aa6497804b4691fb1c401e539cfe7/vidsrc.py#L10
+// Full credits to @Ciarands!
 export function keyPermutation(key: string, data: any) {
   const state = Array.from(Array(256).keys());
   let index1 = 0;
