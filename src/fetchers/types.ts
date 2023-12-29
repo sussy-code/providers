@@ -28,12 +28,12 @@ export type FetcherResponse<T = any> = {
 };
 
 // This is the version that will be inputted by library users
-export type Fetcher<T = any> = {
-  (url: string, ops: DefaultedFetcherOptions): Promise<FetcherResponse<T>>;
+export type Fetcher = {
+  <T = any>(url: string, ops: DefaultedFetcherOptions): Promise<FetcherResponse<T>>;
 };
 
 // This is the version that scrapers will be interacting with
-export type UseableFetcher<T = any> = {
-  (url: string, ops?: FetcherOptions): Promise<T>;
-  full: (url: string, ops?: FetcherOptions) => Promise<FetcherResponse<T>>;
+export type UseableFetcher = {
+  <T = any>(url: string, ops?: FetcherOptions): Promise<T>;
+  full: <T = any>(url: string, ops?: FetcherOptions) => Promise<FetcherResponse<T>>;
 };

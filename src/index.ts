@@ -1,6 +1,6 @@
 export type { EmbedOutput, SourcererOutput } from '@/providers/base';
 export type { Stream, StreamFile, FileBasedStream, HlsBasedStream, Qualities } from '@/providers/streams';
-export type { Fetcher, FetcherOptions, FetcherResponse } from '@/fetchers/types';
+export type { Fetcher, DefaultedFetcherOptions, FetcherOptions, FetcherResponse } from '@/fetchers/types';
 export type { RunOutput } from '@/runners/runner';
 export type { MetaOutput } from '@/entrypoint/utils/meta';
 export type { FullScraperEvents } from '@/entrypoint/utils/events';
@@ -9,6 +9,8 @@ export type { MediaTypes, ShowMedia, ScrapeMedia, MovieMedia } from '@/entrypoin
 export type { ProviderControls, RunnerOptions, EmbedRunnerOptions, SourceRunnerOptions } from '@/entrypoint/controls';
 export type { ProviderBuilder } from '@/entrypoint/builder';
 export type { ProviderMakerOptions } from '@/entrypoint/declare';
+export type { MovieScrapeContext, ShowScrapeContext, EmbedScrapeContext, ScrapeContext } from '@/utils/context';
+export type { SourcererOptions, EmbedOptions } from '@/providers/base';
 
 export { NotFoundError } from '@/utils/errors';
 export { makeProviders } from '@/entrypoint/declare';
