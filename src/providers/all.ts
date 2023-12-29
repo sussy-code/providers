@@ -14,8 +14,11 @@ import { remotestreamScraper } from '@/providers/sources/remotestream';
 import { showboxScraper } from '@/providers/sources/showbox/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
+import { closeLoadScraper } from './embeds/closeload';
+import { ridooScraper } from './embeds/ridoo';
 import { smashyStreamDScraper } from './embeds/smashystream/dued';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
+import { ridooMoviesScraper } from './sources/ridomovies';
 import { smashyStreamScraper } from './sources/smashystream';
 
 export function gatherAllSources(): Array<Sourcerer> {
@@ -29,6 +32,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     zoechipScraper,
     lookmovieScraper,
     smashyStreamScraper,
+    ridooMoviesScraper,
   ];
 }
 
@@ -44,5 +48,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     mixdropScraper,
     smashyStreamFScraper,
     smashyStreamDScraper,
+    ridooScraper,
+    closeLoadScraper,
   ];
 }
