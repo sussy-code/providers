@@ -204,7 +204,7 @@ export const rezkaScraper = makeSourcerer({
       ],
     };
   },
-  async scrapeMovie(ctx: any) {
+  async scrapeMovie(ctx) {
     const movieReturn = await getMovieReleaseDatesAndUrls({
       type: 'movie',
       title: ctx.media.title,
