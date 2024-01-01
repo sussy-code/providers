@@ -168,7 +168,7 @@ export const rezkaScraper = makeSourcerer({
   name: 'Rezka HD',
   rank: 90,
   flags: [flags.CORS_ALLOWED],
-  async scrapeShow(ctx: any) {
+  async scrapeShow(ctx) {
     const seasonNumber = ctx.media.season.number;
     const episodeNumber = ctx.media.episode.number;
 
