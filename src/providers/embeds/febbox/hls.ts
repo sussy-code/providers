@@ -1,5 +1,4 @@
 import { MediaTypes } from '@/entrypoint/utils/media';
-import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { parseInputUrl } from '@/providers/embeds/febbox/common';
 import { getStreams } from '@/providers/embeds/febbox/fileList';
@@ -40,7 +39,7 @@ export const febboxHlsScraper = makeEmbed({
         {
           id: 'primary',
           type: 'hls',
-          flags: [flags.CORS_ALLOWED],
+          flags: [],
           captions: await getSubtitles(ctx, id, firstStream.fid, type as MediaTypes, season, episode),
           playlist: `https://www.febbox.com/hls/main/${firstStream.oss_fid}.m3u8`,
         },
