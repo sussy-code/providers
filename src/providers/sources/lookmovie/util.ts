@@ -4,7 +4,9 @@ import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 import { Result, ResultItem, ShowDataResult, episodeObj } from './type';
-import { getVideoUrl } from './video';
+import { getVideo } from './video';
+
+export const baseUrl = 'https://lmscript.xyz';
 
 export async function searchAndFindMedia(
   ctx: ScrapeContext,
@@ -12,7 +14,7 @@ export async function searchAndFindMedia(
 ): Promise<ResultItem | undefined> {
   if (media.type === 'show') {
     const searchRes = await ctx.fetcher<Result>(`/v1/shows`, {
-      baseUrl: 'https://lmscript.xyz',
+      baseUrl,
       query: { 'filters[q]': media.title },
     });
 
@@ -23,7 +25,7 @@ export async function searchAndFindMedia(
   }
   if (media.type === 'movie') {
     const searchRes = await ctx.fetcher<Result>(`/v1/movies`, {
-      baseUrl: 'https://lmscript.xyz',
+      baseUrl,
       query: { 'filters[q]': media.title },
     });
 
@@ -40,7 +42,7 @@ export async function scrape(ctx: ScrapeContext, media: MovieMedia | ShowMedia, 
     id = result.id_movie;
   } else if (media.type === 'show') {
     const data = await ctx.fetcher<ShowDataResult>(`/v1/shows`, {
-      baseUrl: 'https://lmscript.xyz',
+      baseUrl,
       query: { expand: 'episodes', id: result.id_show },
     });
 
@@ -54,6 +56,6 @@ export async function scrape(ctx: ScrapeContext, media: MovieMedia | ShowMedia, 
   // Check ID
   if (id === null) throw new NotFoundError('Not found');
 
-  const videoUrl = await getVideoUrl(ctx, id, media);
-  return videoUrl;
+  const video = await getVideo(ctx, id, media);
+  return video;
 }
