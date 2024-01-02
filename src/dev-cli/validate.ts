@@ -81,6 +81,7 @@ export async function processOptions(sources: Array<Embed | Sourcerer>, options:
   const providerOptions: ProviderMakerOptions = {
     fetcher,
     target: targets.ANY,
+    consistentIpForRequests: true,
   };
 
   return {
