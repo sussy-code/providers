@@ -2,7 +2,7 @@ import { flags } from '@/entrypoint/utils/targets';
 import { makeSourcerer } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
 
-const remotestreamBase = `https://fsa.remotestre.am`;
+const remotestreamBase = atob('aHR0cHM6Ly9mc2IuOG1ldDNkdGpmcmNxY2hjb25xcGtsd3hzeGIyb2N1bWMuc3RyZWFt');
 
 export const remotestreamScraper = makeSourcerer({
   id: 'remotestream',
