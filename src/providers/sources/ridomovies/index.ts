@@ -13,7 +13,7 @@ const ridoMoviesBase = `https://ridomovies.tv`;
 const ridoMoviesApiBase = `${ridoMoviesBase}/core/api`;
 
 const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => {
-  const searchResult = await ctx.fetcher<SearchResult>('/search', {
+  const searchResult = await ctx.proxiedFetcher<SearchResult>('/search', {
     baseUrl: ridoMoviesApiBase,
     query: {
       q: encodeURIComponent(ctx.media.title),
@@ -24,7 +24,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
   let iframeSourceUrl = `/${show.fullSlug}/videos`;
 
   if (ctx.media.type === 'show') {
-    const showPageResult = await ctx.fetcher<string>(`/${show.fullSlug}`, {
+    const showPageResult = await ctx.proxiedFetcher<string>(`/${show.fullSlug}`, {
       baseUrl: ridoMoviesBase,
     });
     const fullEpisodeSlug = `${show.fullSlug}/season-${ctx.media.season.number}/episode-${ctx.media.episode.number}`;
@@ -39,7 +39,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
     iframeSourceUrl = `/episodes/${episodeId}/videos`;
   }
 
-  const iframeSource = await ctx.fetcher<IframeSourceResult>(iframeSourceUrl, {
+  const iframeSource = await ctx.proxiedFetcher<IframeSourceResult>(iframeSourceUrl, {
     baseUrl: ridoMoviesApiBase,
   });
   const iframeSource$ = load(iframeSource.data[0].url);

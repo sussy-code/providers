@@ -25,7 +25,7 @@ export const ridooScraper = makeEmbed({
         return (script.attr('type') === 'text/javascript' && script.html()?.includes('eval')) ?? false;
       })
       .html();
-    if (!evalCode) throw new Error(res);
+    if (!evalCode) throw new Error("Couldn't find eval code");
     const decoded = unpack(evalCode);
     const regexPattern = /file:"([^"]+)"/g;
     const url = regexPattern.exec(decoded)?.[1];
