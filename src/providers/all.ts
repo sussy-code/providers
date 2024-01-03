@@ -11,7 +11,7 @@ import { goMoviesScraper } from '@/providers/sources/gomovies/index';
 import { kissAsianScraper } from '@/providers/sources/kissasian/index';
 import { lookmovieScraper } from '@/providers/sources/lookmovie';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
-import { rezkaScraper } from '@/providers/sources/rezka';
+import { rezkaScraper } from '@/providers/sources/rezka/index';
 import { showboxScraper } from '@/providers/sources/showbox/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
