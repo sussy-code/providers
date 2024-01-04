@@ -8,6 +8,7 @@ const headerMap: Record<string, string> = {
   referer: 'X-Referer',
   origin: 'X-Origin',
   'user-agent': 'X-User-Agent',
+  'x-real-ip': 'X-X-Real-Ip',
 };
 
 const responseHeaderMap: Record<string, string> = {
