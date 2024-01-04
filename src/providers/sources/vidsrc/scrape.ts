@@ -7,11 +7,13 @@ import { vidsrcBase, vidsrcRCPBase } from '@/providers/sources/vidsrc/common';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
 function decodeSrc(encoded: string, seed: string) {
-  const encodedBuffer = Buffer.from(encoded, 'hex');
   let decoded = '';
+  const seedLength = seed.length;
 
-  for (let i = 0; i < encodedBuffer.length; i++) {
-    decoded += String.fromCharCode(encodedBuffer[i] ^ seed.charCodeAt(i % seed.length));
+  for (let i = 0; i < encoded.length; i += 2) {
+    const byte = parseInt(encoded.substr(i, 2), 16);
+    const seedChar = seed.charCodeAt((i / 2) % seedLength);
+    decoded += String.fromCharCode(byte ^ seedChar);
   }
 
   return decoded;
