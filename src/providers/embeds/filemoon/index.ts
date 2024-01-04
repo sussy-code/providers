@@ -14,7 +14,11 @@ export const fileMoonScraper = makeEmbed({
   name: 'Filemoon',
   rank: 400,
   scrape: async (ctx) => {
-    const embedRes = await ctx.fetcher<string>(ctx.url);
+    const embedRes = await ctx.proxiedFetcher<string>(ctx.url, {
+      headers: {
+        referer: ctx.url,
+      },
+    });
     const evalCode = evalCodeRegex.exec(embedRes);
     if (!evalCode) throw new Error('Failed to find eval code');
     const unpacked = unpack(evalCode[1]);
@@ -25,7 +29,7 @@ export const fileMoonScraper = makeEmbed({
     const subtitlesLink = url.searchParams.get('sub.info');
     const captions: Caption[] = [];
     if (subtitlesLink) {
-      const captionsResult = await ctx.fetcher<SubtitleResult>(subtitlesLink);
+      const captionsResult = await ctx.proxiedFetcher<SubtitleResult>(subtitlesLink);
 
       for (const caption of captionsResult) {
         const language = labelToLanguageCode(caption.label);

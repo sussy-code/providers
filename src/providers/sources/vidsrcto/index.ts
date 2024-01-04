@@ -8,6 +8,7 @@ import { decryptSourceUrl } from './common';
 import { SourceResult, SourcesResult } from './types';
 
 const vidSrcToBase = 'https://vidsrc.to';
+const referer = `${vidSrcToBase}/`;
 
 const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> => {
   const imdbId = ctx.media.imdbId;
@@ -15,22 +16,31 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
     ctx.media.type === 'movie'
       ? `/embed/movie/${imdbId}`
       : `/embed/tv/${imdbId}/${ctx.media.season.number}/${ctx.media.episode.number}`;
-  const mainPage = await ctx.fetcher<string>(url, {
+  const mainPage = await ctx.proxiedFetcher<string>(url, {
     baseUrl: vidSrcToBase,
+    headers: {
+      referer,
+    },
   });
   const mainPage$ = load(mainPage);
   const dataId = mainPage$('a[data-id]').attr('data-id');
   if (!dataId) throw new Error('No data-id found');
-  const sources = await ctx.fetcher<SourcesResult>(`/ajax/embed/episode/${dataId}/sources`, {
+  const sources = await ctx.proxiedFetcher<SourcesResult>(`/ajax/embed/episode/${dataId}/sources`, {
     baseUrl: vidSrcToBase,
+    headers: {
+      referer,
+    },
   });
   if (sources.status !== 200) throw new Error('No sources found');
 
   const embeds: SourcererEmbed[] = [];
   const embedUrls = [];
   for (const source of sources.result) {
-    const sourceRes = await ctx.fetcher<SourceResult>(`/ajax/embed/source/${source.id}`, {
+    const sourceRes = await ctx.proxiedFetcher<SourceResult>(`/ajax/embed/source/${source.id}`, {
       baseUrl: vidSrcToBase,
+      headers: {
+        referer,
+      },
     });
     const decryptedUrl = decryptSourceUrl(sourceRes.result.url);
     embedUrls.push(decryptedUrl);

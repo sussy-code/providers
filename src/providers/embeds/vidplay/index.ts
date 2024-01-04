@@ -22,7 +22,7 @@ export const vidplayScraper = makeEmbed({
     const subtitlesLink = url.searchParams.get('sub.info');
     const captions: Caption[] = [];
     if (subtitlesLink) {
-      const captionsResult = await ctx.fetcher<SubtitleResult>(subtitlesLink);
+      const captionsResult = await ctx.proxiedFetcher<SubtitleResult>(subtitlesLink);
 
       for (const caption of captionsResult) {
         const language = labelToLanguageCode(caption.label);
