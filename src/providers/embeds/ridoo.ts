@@ -38,7 +38,7 @@ export const ridooScraper = makeEmbed({
           type: 'hls',
           playlist: url,
           captions: [],
-          flags: [flags.CORS_ALLOWED, flags.IP_LOCKED],
+          flags: [flags.CORS_ALLOWED],
         },
       ],
     };
