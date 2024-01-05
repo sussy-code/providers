@@ -1,5 +1,5 @@
 import { MovieMedia, ShowMedia } from '@/entrypoint/utils/media';
-import { Caption } from '@/providers/captions';
+import { Caption, labelToLanguageCode, removeDuplicatedLanguages } from '@/providers/captions';
 import { ScrapeContext } from '@/utils/context';
 
 import { StreamsDataResult } from './type';
@@ -44,13 +44,21 @@ export async function getVideo(
     }
   }
 
-  const captions: Caption[] = data.subtitles.map((sub) => ({
-    id: sub.url,
-    type: 'vtt',
-    url: `${baseUrl}${sub.url}`,
-    hasCorsRestrictions: false,
-    language: sub.language,
-  }));
+  let captions: Caption[] = [];
+
+  for (const sub of data.subtitles) {
+    const language = labelToLanguageCode(sub.language);
+    if (!language) continue;
+    captions.push({
+      id: sub.url,
+      type: 'vtt',
+      url: `${baseUrl}${sub.url}`,
+      hasCorsRestrictions: false,
+      language,
+    });
+  }
+
+  captions = removeDuplicatedLanguages(captions);
 
   return {
     playlist: videoUrl,
