@@ -74,7 +74,7 @@ async function searchAndFindMedia({
 
 async function getStream(requestData: RequestData, ctx: ScrapeContext): Promise<any> {
   try {
-    const response = await ctx.proxiedFetcher<any>('/ajax/get_cdn_series/', {
+    const response = await ctx.proxiedFetcher<string>('/ajax/get_cdn_series/', {
       baseUrl: rezkaBase,
       method: 'POST',
       body: new URLSearchParams({
