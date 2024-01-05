@@ -16,10 +16,11 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
   const searchResult = await ctx.proxiedFetcher<SearchResult>('/search', {
     baseUrl: ridoMoviesApiBase,
     query: {
-      q: encodeURIComponent(ctx.media.title),
+      q: ctx.media.title,
     },
   });
   const show = searchResult.data.items[0];
+  if (!show) throw new NotFoundError('No watchable item found');
 
   let iframeSourceUrl = `/${show.fullSlug}/videos`;
 
@@ -67,7 +68,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
 export const ridooMoviesScraper = makeSourcerer({
   id: 'ridomovies',
   name: 'RidoMovies',
-  rank: 500,
+  rank: 105,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,

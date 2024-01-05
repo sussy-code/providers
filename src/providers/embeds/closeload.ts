@@ -12,7 +12,7 @@ const referer = 'https://ridomovies.tv/';
 export const closeLoadScraper = makeEmbed({
   id: 'closeload',
   name: 'CloseLoad',
-  rank: 501,
+  rank: 106,
   async scrape(ctx) {
     const baseUrl = new URL(ctx.url).origin;
 
