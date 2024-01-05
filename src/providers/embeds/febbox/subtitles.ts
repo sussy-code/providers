@@ -37,21 +37,27 @@ export async function getSubtitles(
   const subResult = (await sendRequest(ctx, subtitleApiQuery)) as CaptionApiResponse;
   const subtitleList = subResult.data.list;
   const output: Caption[] = [];
+  const languagesAdded: Record<string, true> = {};
 
   subtitleList.forEach((sub) => {
     const subtitle = sub.subtitles.sort((a, b) => b.order - a.order)[0];
     if (!subtitle) return;
+
     const subtitleFilePath = subtitle.file_path
       .replace(captionsDomains[0], captionsDomains[1])
       .replace(/\s/g, '+')
       .replace(/[()]/g, (c) => {
         return `%${c.charCodeAt(0).toString(16)}`;
       });
+
     const subtitleType = getCaptionTypeFromUrl(subtitleFilePath);
     if (!subtitleType) return;
 
     const validCode = isValidLanguageCode(subtitle.lang);
     if (!validCode) return;
+
+    if (languagesAdded[subtitle.lang]) return;
+    languagesAdded[subtitle.lang] = true;
 
     output.push({
       id: subtitleFilePath,

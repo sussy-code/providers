@@ -1,7 +1,9 @@
 import { MovieMedia, ShowMedia } from '@/entrypoint/utils/media';
+import { Caption } from '@/providers/captions';
 import { ScrapeContext } from '@/utils/context';
 
 import { StreamsDataResult } from './type';
+import { baseUrl } from './util';
 
 export async function getVideoSources(
   ctx: ScrapeContext,
@@ -17,17 +19,17 @@ export async function getVideoSources(
     path = `/v1/movies/view`;
   }
   const data = await ctx.fetcher<StreamsDataResult>(path, {
-    baseUrl: 'https://lmscript.xyz',
-    query: { expand: 'streams', id },
+    baseUrl,
+    query: { expand: 'streams,subtitles', id },
   });
   return data;
 }
 
-export async function getVideoUrl(
+export async function getVideo(
   ctx: ScrapeContext,
   id: string,
   media: MovieMedia | ShowMedia,
-): Promise<string | null> {
+): Promise<{ playlist: string | null; captions: Caption[] }> {
   // Get sources
   const data = await getVideoSources(ctx, id, media);
   const videoSources = data.streams;
@@ -42,5 +44,16 @@ export async function getVideoUrl(
     }
   }
 
-  return videoUrl;
+  const captions: Caption[] = data.subtitles.map((sub) => ({
+    id: sub.url,
+    type: 'vtt',
+    url: `${baseUrl}${sub.url}`,
+    hasCorsRestrictions: false,
+    language: sub.language,
+  }));
+
+  return {
+    playlist: videoUrl,
+    captions,
+  };
 }

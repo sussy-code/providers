@@ -116,19 +116,18 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       };
     }
 
-    if (output.embeds.length > 0) {
+    // run embed scrapers on listed embeds
+    const sortedEmbeds = output.embeds.sort((a, b) => embedIds.indexOf(a.embedId) - embedIds.indexOf(b.embedId));
+
+    if (sortedEmbeds.length > 0) {
       ops.events?.discoverEmbeds?.({
-        embeds: output.embeds.map((v, i) => ({
+        embeds: sortedEmbeds.map((v, i) => ({
           id: [s.id, i].join('-'),
           embedScraperId: v.embedId,
         })),
         sourceId: s.id,
       });
     }
-
-    // run embed scrapers on listed embeds
-    const sortedEmbeds = output.embeds;
-    sortedEmbeds.sort((a, b) => embedIds.indexOf(a.embedId) - embedIds.indexOf(b.embedId));
 
     for (const ind in sortedEmbeds) {
       if (!Object.prototype.hasOwnProperty.call(sortedEmbeds, ind)) continue;

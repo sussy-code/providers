@@ -39,8 +39,17 @@ interface VideoSources {
   [key: string]: string;
 }
 
+interface VideoSubtitles {
+  id?: number;
+  id_movie?: number;
+  url: string;
+  language: string;
+  shard?: string;
+}
+
 export interface StreamsDataResult {
   streams: VideoSources;
+  subtitles: VideoSubtitles[];
 }
 
 export interface ResultItem {
