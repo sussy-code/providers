@@ -1,36 +1,11 @@
 import { makeFullUrl } from '@/fetchers/common';
+import { decodeData } from '@/providers/sources/vidsrcto/common';
 import { EmbedScrapeContext } from '@/utils/context';
 
 export const vidplayBase = 'https://vidplay.site';
 
-// This file is based on https://github.com/Ciarands/vidsrc-to-resolver/blob/960afb11c30aa6497804b4691fb1c401e539cfe7/vidsrc.py#L10
+// This file is based on https://github.com/Ciarands/vidsrc-to-resolver/blob/dffa45e726a4b944cb9af0c9e7630476c93c0213/vidsrc.py#L16
 // Full credits to @Ciarands!
-export function keyPermutation(key: string, data: any) {
-  const state = Array.from(Array(256).keys());
-  let index1 = 0;
-  for (let i = 0; i < 256; i += 1) {
-    index1 = (index1 + state[i] + key.charCodeAt(i % key.length)) % 256;
-    const temp = state[i];
-    state[i] = state[index1];
-    state[index1] = temp;
-  }
-  index1 = 0;
-  let index2 = 0;
-  let finalKey = '';
-  for (let char = 0; char < data.length; char += 1) {
-    index1 = (index1 + 1) % 256;
-    index2 = (index2 + state[index1]) % 256;
-    const temp = state[index1];
-    state[index1] = state[index2];
-    state[index2] = temp;
-    if (typeof data[char] === 'string') {
-      finalKey += String.fromCharCode(data[char].charCodeAt(0) ^ state[(state[index1] + state[index2]) % 256]);
-    } else if (typeof data[char] === 'number') {
-      finalKey += String.fromCharCode(data[char] ^ state[(state[index1] + state[index2]) % 256]);
-    }
-  }
-  return finalKey;
-}
 
 export const getDecryptionKeys = async (ctx: EmbedScrapeContext): Promise<string[]> => {
   const res = await ctx.fetcher<string>(
@@ -44,10 +19,10 @@ export const getEncodedId = async (ctx: EmbedScrapeContext) => {
   const id = url.pathname.replace('/e/', '');
   const keyList = await getDecryptionKeys(ctx);
 
-  const decodedId = keyPermutation(keyList[0], id);
-  const encodedResult = keyPermutation(keyList[1], decodedId);
-  const base64 = btoa(encodedResult);
-  return base64.replace('/', '_');
+  const decodedId = decodeData(keyList[0], id);
+  const encodedResult = decodeData(keyList[1], decodedId);
+  const b64encoded = btoa(encodedResult);
+  return b64encoded.replace('/', '_');
 };
 
 export const getFuTokenKey = async (ctx: EmbedScrapeContext) => {

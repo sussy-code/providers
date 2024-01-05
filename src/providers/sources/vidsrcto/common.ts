@@ -1,3 +1,6 @@
+// This file is based on https://github.com/Ciarands/vidsrc-to-resolver/blob/dffa45e726a4b944cb9af0c9e7630476c93c0213/vidsrc.py#L16
+// Full credits to @Ciarands!
+
 const DECRYPTION_KEY = '8z5Ag5wgagfsOuhz';
 
 export const decodeBase64UrlSafe = (str: string) => {
@@ -12,39 +15,35 @@ export const decodeBase64UrlSafe = (str: string) => {
   return bytes;
 };
 
-export const decode = (str: Uint8Array) => {
-  const keyBytes = new TextEncoder().encode(DECRYPTION_KEY);
-
-  let j = 0;
-  const s = new Uint8Array(256);
+export const decodeData = (key: string, data: any) => {
+  const state = Array.from(Array(256).keys());
+  let index1 = 0;
   for (let i = 0; i < 256; i += 1) {
-    s[i] = i;
+    index1 = (index1 + state[i] + key.charCodeAt(i % key.length)) % 256;
+    const temp = state[i];
+    state[i] = state[index1];
+    state[index1] = temp;
   }
-
-  for (let i = 0, k = 0; i < 256; i += 1) {
-    j = (j + s[i] + keyBytes[k % keyBytes.length]) & 0xff;
-    [s[i], s[j]] = [s[j], s[i]];
-    k += 1;
+  index1 = 0;
+  let index2 = 0;
+  let finalKey = '';
+  for (let char = 0; char < data.length; char += 1) {
+    index1 = (index1 + 1) % 256;
+    index2 = (index2 + state[index1]) % 256;
+    const temp = state[index1];
+    state[index1] = state[index2];
+    state[index2] = temp;
+    if (typeof data[char] === 'string') {
+      finalKey += String.fromCharCode(data[char].charCodeAt(0) ^ state[(state[index1] + state[index2]) % 256]);
+    } else if (typeof data[char] === 'number') {
+      finalKey += String.fromCharCode(data[char] ^ state[(state[index1] + state[index2]) % 256]);
+    }
   }
-
-  const decoded = new Uint8Array(str.length);
-  let i = 0;
-  let k = 0;
-  for (let index = 0; index < str.length; index += 1) {
-    i = (i + 1) & 0xff;
-    k = (k + s[i]) & 0xff;
-    [s[i], s[k]] = [s[k], s[i]];
-    const t = (s[i] + s[k]) & 0xff;
-    decoded[index] = str[index] ^ s[t];
-  }
-
-  return decoded;
+  return finalKey;
 };
 
 export const decryptSourceUrl = (sourceUrl: string) => {
   const encoded = decodeBase64UrlSafe(sourceUrl);
-  const decoded = decode(encoded);
-  const decodedText = new TextDecoder().decode(decoded);
-
-  return decodeURIComponent(decodeURIComponent(decodedText));
+  const decoded = decodeData(DECRYPTION_KEY, encoded);
+  return decodeURIComponent(decodeURIComponent(decoded));
 };
