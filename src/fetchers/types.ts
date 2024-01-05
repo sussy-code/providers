@@ -4,7 +4,7 @@ export type FetcherOptions = {
   baseUrl?: string;
   headers?: Record<string, string>;
   query?: Record<string, string>;
-  method?: 'GET' | 'POST';
+  method?: 'HEAD' | 'GET' | 'POST';
   readHeaders?: string[];
   body?: Record<string, any> | string | FormData | URLSearchParams;
 };
@@ -17,7 +17,7 @@ export type DefaultedFetcherOptions = {
   headers: Record<string, string>;
   query: Record<string, string>;
   readHeaders: string[];
-  method: 'GET' | 'POST';
+  method: 'HEAD' | 'GET' | 'POST';
 };
 
 export type FetcherResponse<T = any> = {
