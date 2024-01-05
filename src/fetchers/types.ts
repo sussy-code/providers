@@ -4,7 +4,7 @@ export type FetcherOptions = {
   baseUrl?: string;
   headers?: Record<string, string>;
   query?: Record<string, string>;
-  method?: 'GET' | 'POST';
+  method?: 'HEAD' | 'GET' | 'POST';
   readHeaders?: string[];
   body?: Record<string, any> | string | FormData | URLSearchParams;
 };
@@ -17,7 +17,7 @@ export type DefaultedFetcherOptions = {
   headers: Record<string, string>;
   query: Record<string, string>;
   readHeaders: string[];
-  method: 'GET' | 'POST';
+  method: 'HEAD' | 'GET' | 'POST';
 };
 
 export type FetcherResponse<T = any> = {
@@ -28,12 +28,12 @@ export type FetcherResponse<T = any> = {
 };
 
 // This is the version that will be inputted by library users
-export type Fetcher<T = any> = {
-  (url: string, ops: DefaultedFetcherOptions): Promise<FetcherResponse<T>>;
+export type Fetcher = {
+  <T = any>(url: string, ops: DefaultedFetcherOptions): Promise<FetcherResponse<T>>;
 };
 
 // This is the version that scrapers will be interacting with
-export type UseableFetcher<T = any> = {
-  (url: string, ops?: FetcherOptions): Promise<T>;
-  full: (url: string, ops?: FetcherOptions) => Promise<FetcherResponse<T>>;
+export type UseableFetcher = {
+  <T = any>(url: string, ops?: FetcherOptions): Promise<T>;
+  full: <T = any>(url: string, ops?: FetcherOptions) => Promise<FetcherResponse<T>>;
 };

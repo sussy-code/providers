@@ -38,7 +38,7 @@ export async function formatSource(
         embed.embedId = mixdropScraper.id;
         break;
       default:
-        throw new Error(`Failed to find ZoeChip embed source for ${link}`);
+        return null;
     }
 
     return embed;
