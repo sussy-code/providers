@@ -2,7 +2,7 @@ import { getConfig } from '@/dev-cli/config';
 
 import { MovieMedia, ShowMedia } from '..';
 
-export async function makeTMDBRequest(url: string): Promise<Response> {
+export async function makeTMDBRequest(url: string, appendToResponse?: string): Promise<Response> {
   const headers: {
     accept: 'application/json';
     authorization?: string;
@@ -10,7 +10,7 @@ export async function makeTMDBRequest(url: string): Promise<Response> {
     accept: 'application/json',
   };
 
-  let requestURL = url;
+  const requestURL = new URL(url);
   const key = getConfig().tmdbApiKey;
 
   // * JWT keys always start with ey and are ONLY valid as a header.
@@ -19,7 +19,11 @@ export async function makeTMDBRequest(url: string): Promise<Response> {
   if (key.startsWith('ey')) {
     headers.authorization = `Bearer ${key}`;
   } else {
-    requestURL += `?api_key=${key}`;
+    requestURL.searchParams.append('api_key', key);
+  }
+
+  if (appendToResponse) {
+    requestURL.searchParams.append('append_to_response', appendToResponse);
   }
 
   return fetch(requestURL, {
@@ -29,7 +33,7 @@ export async function makeTMDBRequest(url: string): Promise<Response> {
 }
 
 export async function getMovieMediaDetails(id: string): Promise<MovieMedia> {
-  const response = await makeTMDBRequest(`https://api.themoviedb.org/3/movie/${id}`);
+  const response = await makeTMDBRequest(`https://api.themoviedb.org/3/movie/${id}`, 'external_ids');
   const movie = await response.json();
 
   if (movie.success === false) {
@@ -45,13 +49,14 @@ export async function getMovieMediaDetails(id: string): Promise<MovieMedia> {
     title: movie.title,
     releaseYear: Number(movie.release_date.split('-')[0]),
     tmdbId: id,
+    imdbId: movie.imdb_id,
   };
 }
 
 export async function getShowMediaDetails(id: string, seasonNumber: string, episodeNumber: string): Promise<ShowMedia> {
   // * TV shows require the TMDB ID for the series, season, and episode
   // * and the name of the series. Needs multiple requests
-  let response = await makeTMDBRequest(`https://api.themoviedb.org/3/tv/${id}`);
+  let response = await makeTMDBRequest(`https://api.themoviedb.org/3/tv/${id}`, 'external_ids');
   const series = await response.json();
 
   if (series.success === false) {
@@ -91,5 +96,6 @@ export async function getShowMediaDetails(id: string, seasonNumber: string, epis
       number: season.season_number,
       tmdbId: season.id,
     },
+    imdbId: series.external_ids.imdb_id,
   };
 }
