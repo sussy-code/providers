@@ -1,6 +1,5 @@
 import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
-import { febboxHlsScraper } from '@/providers/embeds/febbox/hls';
 import { febboxMp4Scraper } from '@/providers/embeds/febbox/mp4';
 import { compareTitle } from '@/utils/compare';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
@@ -31,10 +30,6 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
   return {
     embeds: [
-      {
-        embedId: febboxHlsScraper.id,
-        url: `/${ctx.media.type}/${id}/${season}/${episode}`,
-      },
       {
         embedId: febboxMp4Scraper.id,
         url: `/${ctx.media.type}/${id}/${season}/${episode}`,

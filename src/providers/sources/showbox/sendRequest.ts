@@ -49,9 +49,9 @@ export const sendRequest = async (ctx: ScrapeContext, data: object, altApi = fal
     headers: {
       Platform: 'android',
       'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': 'okhttp/3.2.0',
     },
     body: formatted,
   });
-
   return JSON.parse(response);
 };
