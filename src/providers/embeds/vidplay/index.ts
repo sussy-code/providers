@@ -1,7 +1,8 @@
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '@/providers/captions';
 
-import { getFileUrl } from './common';
+import { getFileUrl, referer } from './common';
 import { SubtitleResult, VidplaySourceResponse } from './types';
 
 export const vidplayScraper = makeEmbed({
@@ -46,6 +47,10 @@ export const vidplayScraper = makeEmbed({
           playlist: source,
           flags: [],
           captions,
+          preferredHeaders: {
+            Referer: referer,
+            Origin: referer,
+          },
         },
       ],
     };
