@@ -5,6 +5,10 @@ export const flags = {
   // the stream is locked on IP, so only works if
   // request maker is same as player (not compatible with proxies)
   IP_LOCKED: 'ip-locked',
+
+  // The source/embed is blocking cloudflare ip's
+  // This flag is not compatible with a proxy hosted on cloudflare
+  CF_BLOCKED: 'cf-blocked',
 } as const;
 
 export type Flags = (typeof flags)[keyof typeof flags];
