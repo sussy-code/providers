@@ -20,6 +20,7 @@ import { zoechipScraper } from '@/providers/sources/zoechip';
 import { fileMoonScraper } from './embeds/filemoon';
 import { smashyStreamDScraper } from './embeds/smashystream/dued';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
+import { vidCloudScraper } from './embeds/vidcloud';
 import { vidplayScraper } from './embeds/vidplay';
 import { smashyStreamScraper } from './sources/smashystream';
 import { vidSrcToScraper } from './sources/vidsrcto';
@@ -44,6 +45,7 @@ export function gatherAllEmbeds(): Array<Embed> {
   // all embeds are gathered here
   return [
     upcloudScraper,
+    vidCloudScraper,
     mp4uploadScraper,
     streamsbScraper,
     upstreamScraper,
