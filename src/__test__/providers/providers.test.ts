@@ -2,8 +2,9 @@ import { testSource } from "./providerUtils";
 import { lookmovieScraper } from "@/providers/sources/lookmovie";
 import { testMedia } from "./testMedia";
 import { showboxScraper } from "@/providers/sources/showbox";
+import dotenv from 'dotenv';
 
-// TODO add embed testing
+dotenv.config();
 
 testSource({
   source: lookmovieScraper,
@@ -17,7 +18,7 @@ testSource({
 testSource({
   source: showboxScraper,
   testSuite: [testMedia.arcane, testMedia.hamilton],
-  types: ['standard'],
+  types: ['standard', 'proxied'],
   expect: {
     embeds: 1,
   }
