@@ -81,7 +81,7 @@ export function testSource(ops: TestSourceOptions) {
         }
 
         if (ops.types.includes('standard')) {
-          it(`Should pass test ${i} - standard`, async () => {
+          it(`standard`, async () => {
             const providers = makeBaseProviders()
               .addSource(ops.source)
               .build();
@@ -90,7 +90,7 @@ export function testSource(ops: TestSourceOptions) {
         }
 
         if (ops.types.includes('ip:standard')) {
-          it(`Should pass test ${i} - standard:ip`, async () => {
+          it(`standard:ip`, async () => {
             const providers = makeBaseProviders()
               .addSource(ops.source)
               .enableConsistentIpForRequests()
@@ -100,7 +100,7 @@ export function testSource(ops: TestSourceOptions) {
         }
 
         if (ops.types.includes('proxied')) {
-          it(`Should pass test ${i} - proxied`, async () => {
+          it(`proxied`, async () => {
             if (!process.env.MOVIE_WEB_PROXY_URL)
               throw new Error("Cant use proxied test without setting MOVIE_WEB_PROXY_URL env");
             const providers = makeBaseProviders()
@@ -140,7 +140,7 @@ export function testEmbed(ops: TestEmbedOptions) {
         }
 
         if (ops.types.includes('standard')) {
-          it(`Should pass test ${i} - standard`, async () => {
+          it(`standard`, async () => {
             const providers = makeBaseEmbedProviders()
               .addEmbed(ops.embed)
               .build();
@@ -149,7 +149,7 @@ export function testEmbed(ops: TestEmbedOptions) {
         }
 
         if (ops.types.includes('ip:standard')) {
-          it(`Should pass test ${i} - standard:ip`, async () => {
+          it(`standard:ip`, async () => {
             const providers = makeBaseEmbedProviders()
               .addEmbed(ops.embed)
               .enableConsistentIpForRequests()
@@ -159,7 +159,7 @@ export function testEmbed(ops: TestEmbedOptions) {
         }
 
         if (ops.types.includes('proxied')) {
-          it(`Should pass test ${i} - proxied`, async () => {
+          it(`proxied`, async () => {
             if (!process.env.MOVIE_WEB_PROXY_URL)
               throw new Error("Cant use proxied test without setting MOVIE_WEB_PROXY_URL env");
             const providers = makeBaseEmbedProviders()
