@@ -2,7 +2,7 @@
 import { vi } from 'vitest';
 
 import { gatherAllEmbeds, gatherAllSources } from '@/providers/all';
-import { Embed, Sourcerer } from '@/providers/base';
+import { makeEmbed, makeSourcerer } from '@/providers/base';
 
 export function makeProviderMocks() {
   const embedsMock = vi.fn<Parameters<typeof gatherAllEmbeds>, ReturnType<typeof gatherAllEmbeds>>();
@@ -13,104 +13,104 @@ export function makeProviderMocks() {
   };
 }
 
-const sourceA = {
+const sourceA = makeSourcerer({
   id: 'a',
   name: 'A',
   rank: 1,
   disabled: false,
   flags: [],
-} as Sourcerer;
-const sourceB = {
+});
+const sourceB = makeSourcerer({
   id: 'b',
   name: 'B',
   rank: 2,
   disabled: false,
   flags: [],
-} as Sourcerer;
-const sourceCDisabled = {
+});
+const sourceCDisabled = makeSourcerer({
   id: 'c',
   name: 'C',
   rank: 3,
   disabled: true,
   flags: [],
-} as Sourcerer;
-const sourceAHigherRank = {
+});
+const sourceAHigherRank = makeSourcerer({
   id: 'a',
   name: 'A',
   rank: 100,
   disabled: false,
   flags: [],
-} as Sourcerer;
-const sourceGSameRankAsA = {
+});
+const sourceGSameRankAsA = makeSourcerer({
   id: 'g',
   name: 'G',
   rank: 1,
   disabled: false,
   flags: [],
-} as Sourcerer;
-const fullSourceYMovie = {
+});
+const fullSourceYMovie = makeSourcerer({
   id: 'y',
   name: 'Y',
   rank: 105,
   scrapeMovie: vi.fn(),
   flags: [],
-} as Sourcerer;
-const fullSourceYShow = {
+});
+const fullSourceYShow = makeSourcerer({
   id: 'y',
   name: 'Y',
   rank: 105,
   scrapeShow: vi.fn(),
   flags: [],
-} as Sourcerer;
-const fullSourceZBoth = {
+});
+const fullSourceZBoth = makeSourcerer({
   id: 'z',
   name: 'Z',
   rank: 106,
   scrapeMovie: vi.fn(),
   scrapeShow: vi.fn(),
   flags: [],
-} as Sourcerer;
+});
 
-const embedD = {
+const embedD = makeEmbed({
   id: 'd',
   rank: 4,
   disabled: false,
-} as Embed;
-const embedA = {
+} as any);
+const embedA = makeEmbed({
   id: 'a',
   rank: 5,
   disabled: false,
-} as Embed;
-const embedEDisabled = {
+} as any);
+const embedEDisabled = makeEmbed({
   id: 'e',
   rank: 6,
   disabled: true,
-} as Embed;
-const embedDHigherRank = {
+} as any);
+const embedDHigherRank = makeEmbed({
   id: 'd',
   rank: 4000,
   disabled: false,
-} as Embed;
-const embedFSameRankAsA = {
+} as any);
+const embedFSameRankAsA = makeEmbed({
   id: 'f',
   rank: 5,
   disabled: false,
-} as Embed;
-const embedHSameRankAsSourceA = {
+} as any);
+const embedHSameRankAsSourceA = makeEmbed({
   id: 'h',
   rank: 1,
   disabled: false,
-} as Embed;
-const fullEmbedX = {
+} as any);
+const fullEmbedX = makeEmbed({
   id: 'x',
   name: 'X',
   rank: 104,
-} as Embed;
-const fullEmbedZ = {
+} as any);
+const fullEmbedZ = makeEmbed({
   id: 'z',
   name: 'Z',
   rank: 109,
-} as Embed;
+} as any);
 
 export const mockSources = {
   sourceA,
