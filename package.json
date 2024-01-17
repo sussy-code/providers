@@ -38,7 +38,7 @@
     "cli": "ts-node ./src/dev-cli/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:providers": "cross-env MW_TEST_PROVIDERS=true vitest run",
+    "test:providers": "cross-env MW_TEST_PROVIDERS=true vitest run --reporter verbose",
     "test:integration": "node ./tests/cjs && node ./tests/esm && node ./tests/browser",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint --ext .ts,.js src/",
