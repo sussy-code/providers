@@ -16,11 +16,14 @@ import { remotestreamScraper } from '@/providers/sources/remotestream';
 import { showboxScraper } from '@/providers/sources/showbox/index';
 import { vidsrcScraper } from '@/providers/sources/vidsrc/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
+import { doodScraper } from '@/providers/embeds/dood';
 
 import { fileMoonScraper } from './embeds/filemoon';
 import { smashyStreamDScraper } from './embeds/smashystream/dued';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
 import { vidplayScraper } from './embeds/vidplay';
+import { wootlyScraper } from './embeds/wootly';
+import { goojaraScraper } from './sources/goojara';
 import { smashyStreamScraper } from './sources/smashystream';
 import { vidSrcToScraper } from './sources/vidsrcto';
 
@@ -37,6 +40,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     lookmovieScraper,
     smashyStreamScraper,
     vidSrcToScraper,
+    goojaraScraper,
   ];
 }
 
@@ -56,5 +60,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     smashyStreamDScraper,
     fileMoonScraper,
     vidplayScraper,
+    wootlyScraper,
+    doodScraper
   ];
 }
