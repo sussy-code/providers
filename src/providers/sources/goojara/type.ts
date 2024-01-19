@@ -23,7 +23,7 @@ interface MovieConfig extends BaseConfig {
 }
 export type Config = MovieConfig | TvConfig;
 
-export type EmbedsResult = { embedId: string; url: string; }[]
+export type EmbedsResult = { embedId: string; url: string }[];
 
 export interface Result {
   title: string;

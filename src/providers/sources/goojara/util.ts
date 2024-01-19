@@ -6,7 +6,7 @@ import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 import { getEmbeds } from './getEmbeds';
-import { Result, EmbedsResult } from './type';
+import { EmbedsResult, Result } from './type';
 
 const headersData = {
   accept: '*/*',
@@ -32,7 +32,7 @@ export async function searchAndFindMedia(
     headers: headersData,
     method: 'POST',
     body: `q=${media.title}`,
-  })
+  });
 
   const $ = load(data);
 
@@ -58,7 +58,11 @@ export async function searchAndFindMedia(
   return result;
 }
 
-export async function scrapeIds(ctx: ScrapeContext, media: MovieMedia | ShowMedia, result: Result): Promise<EmbedsResult> {
+export async function scrapeIds(
+  ctx: ScrapeContext,
+  media: MovieMedia | ShowMedia,
+  result: Result,
+): Promise<EmbedsResult> {
   // Find the relevant id
   let id = null;
   if (media.type === 'movie') {
