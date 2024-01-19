@@ -12,12 +12,11 @@ async function universalScraper(ctx: ShowScrapeContext | MovieScrapeContext): Pr
   const embeds = await scrapeIds(ctx, ctx.media, goojaraData);
   if (embeds?.length === 0) throw new NotFoundError('No embeds found');
 
-
   ctx.progress(60);
 
   return {
-    embeds
-  }
+    embeds,
+  };
 }
 
 export const goojaraScraper = makeSourcerer({
