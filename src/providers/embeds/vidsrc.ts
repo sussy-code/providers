@@ -18,7 +18,8 @@ export const vidsrcembedScraper = makeEmbed({
     const match = html
       .match(hlsURLRegex)?.[1]
       ?.replace(/(\/\/\S+?=)/g, '')
-      .replace('#2', '');
+      .replace('#2', '')
+      .replace(/=/g, '');
     if (!match) throw new Error('Unable to find HLS playlist');
     const finalUrl = atob(match);
 
