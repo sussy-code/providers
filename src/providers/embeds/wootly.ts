@@ -47,7 +47,6 @@ export const wootlyScraper = makeEmbed({
 
     const tk = scriptText.split('tk=')[1].split(';')[0].replaceAll('"', '').replaceAll(' ', '');
     const vd = scriptText.split('vd=')[1].split(',')[0].replaceAll('"', '').replaceAll(' ', '');
-    const cv = scriptText.split('cv=')[1].split(',')[0].replaceAll('"', '').replaceAll(' ', '');
 
     const url = await ctx.proxiedFetcher<string>(`/grabd`, {
       baseUrl,
@@ -63,10 +62,16 @@ export const wootlyScraper = makeEmbed({
         stream: [
           {
             id: 'primary',
-            type: 'hls',
-            playlist: url,
+            type: 'file',
+            url,
             flags: [flags.CORS_ALLOWED, flags.IP_LOCKED],
             captions: [],
+            qualities: {
+              unknown: {
+                type: 'mp4',
+                url,
+              },
+            },
           },
         ],
       };

@@ -1,5 +1,3 @@
-import { load } from 'cheerio';
-
 import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 
@@ -56,14 +54,20 @@ export const doodScraper = makeEmbed({
         stream: [
           {
             id: 'primary',
-            type: 'hls',
-            playlist: downloadURL,
+            type: 'file',
+            url: downloadURL,
             flags: [flags.CORS_ALLOWED],
             captions: [],
-            preferredHeaders: {
-              referer: 'https://do0od.com/',
-              'content-type': 'video/mp4',
-              range: 'bytes=0-',
+            qualities: {
+              unknown: {
+                type: 'mp4',
+                url: downloadURL,
+                preferredHeaders: {
+                  referer: 'https://do0od.com/',
+                  'content-type': 'video/mp4',
+                  range: 'bytes=0-',
+                },
+              },
             },
           },
         ],
