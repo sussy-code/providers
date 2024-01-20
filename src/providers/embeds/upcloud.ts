@@ -4,6 +4,9 @@ import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '@/providers/captions';
 
+const origin = 'https://rabbitstream.net';
+const referer = 'https://rabbitstream.net/';
+
 const { AES, enc } = crypto;
 
 interface StreamRes {
@@ -126,6 +129,10 @@ export const upcloudScraper = makeEmbed({
           playlist: sources.file,
           flags: [flags.CORS_ALLOWED],
           captions,
+          preferredHeaders: {
+            Referer: referer,
+            Origin: origin,
+          },
         },
       ],
     };
