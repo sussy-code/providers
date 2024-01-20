@@ -19,8 +19,8 @@ export const remotestreamScraper = makeSourcerer({
     const playlistLink = `${remotestreamBase}/Shows/${ctx.media.tmdbId}/${seasonNumber}/${episodeNumber}/${episodeNumber}.m3u8`;
 
     ctx.progress(30);
-    const streamRes = await ctx.fetcher.full(playlistLink, {
-      method: 'HEAD',
+    const streamRes = await ctx.proxiedFetcher.full(playlistLink, {
+      method: 'GET',
       readHeaders: ['content-type'],
       headers: {
         Referer: referer,
@@ -51,8 +51,8 @@ export const remotestreamScraper = makeSourcerer({
     const playlistLink = `${remotestreamBase}/Movies/${ctx.media.tmdbId}/${ctx.media.tmdbId}.m3u8`;
 
     ctx.progress(30);
-    const streamRes = await ctx.fetcher.full(playlistLink, {
-      method: 'HEAD',
+    const streamRes = await ctx.proxiedFetcher.full(playlistLink, {
+      method: 'GET',
       readHeaders: ['content-type'],
       headers: {
         Referer: referer,
