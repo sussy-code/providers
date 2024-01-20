@@ -116,8 +116,14 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       };
     }
 
-    // run embed scrapers on listed embeds
-    const sortedEmbeds = output.embeds.sort((a, b) => embedIds.indexOf(a.embedId) - embedIds.indexOf(b.embedId));
+    // filter disabled and run embed scrapers on listed embeds
+    const sortedEmbeds = output.embeds
+      .filter((embed) => {
+        const e = list.embeds.find((v) => v.id === embed.embedId);
+        if (!e || e.disabled) return false;
+        return true;
+      })
+      .sort((a, b) => embedIds.indexOf(a.embedId) - embedIds.indexOf(b.embedId));
 
     if (sortedEmbeds.length > 0) {
       ops.events?.discoverEmbeds?.({

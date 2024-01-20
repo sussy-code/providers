@@ -32,7 +32,7 @@ async function universalScraper(ctx: MovieScrapeContext | ShowScrapeContext): Pr
 export const lookmovieScraper = makeSourcerer({
   id: 'lookmovie',
   name: 'LookMovie',
-  rank: 1,
+  rank: 700,
   flags: [flags.IP_LOCKED],
   scrapeShow: universalScraper,
   scrapeMovie: universalScraper,
