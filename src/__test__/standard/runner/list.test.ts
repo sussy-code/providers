@@ -1,4 +1,4 @@
-import { mockEmbeds, mockSources } from '@/__test__/providerTests';
+import { mockEmbeds, mockSources } from '../providerTests.ts';
 import { makeProviders } from '@/entrypoint/declare';
 import { targets } from '@/entrypoint/utils/targets';
 import { afterEach, describe, expect, it, vi } from 'vitest';
