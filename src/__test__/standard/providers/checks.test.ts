@@ -1,4 +1,4 @@
-import { mockEmbeds, mockSources } from '@/__test__/providerTests';
+import { mockEmbeds, mockSources } from '../providerTests';
 import { getBuiltinEmbeds, getBuiltinSources } from '@/entrypoint/providers';
 import { FeatureMap } from '@/entrypoint/utils/targets';
 import { getProviders } from '@/providers/get';

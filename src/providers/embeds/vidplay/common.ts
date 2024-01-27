@@ -2,15 +2,14 @@ import { makeFullUrl } from '@/fetchers/common';
 import { decodeData } from '@/providers/sources/vidsrcto/common';
 import { EmbedScrapeContext } from '@/utils/context';
 
-export const vidplayBase = 'https://vidplay.site';
+export const vidplayBase = 'https://vidplay.online';
+export const referer = `${vidplayBase}/`;
 
 // This file is based on https://github.com/Ciarands/vidsrc-to-resolver/blob/dffa45e726a4b944cb9af0c9e7630476c93c0213/vidsrc.py#L16
 // Full credits to @Ciarands!
 
 export const getDecryptionKeys = async (ctx: EmbedScrapeContext): Promise<string[]> => {
-  const res = await ctx.fetcher<string>(
-    'https://raw.githubusercontent.com/Claudemirovsky/worstsource-keys/keys/keys.json',
-  );
+  const res = await ctx.fetcher<string>('https://raw.githubusercontent.com/Ciarands/vidsrc-keys/main/keys.json');
   return JSON.parse(res);
 };
 

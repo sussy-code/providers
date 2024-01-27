@@ -5,7 +5,9 @@ const dts = require('vite-plugin-dts');
 const pkg = require('./package.json');
 const fs = require('fs/promises');
 
-const main = path.resolve(__dirname, 'src/index.ts');
+const shouldTestProviders = process.env.MW_TEST_PROVIDERS === "true"
+let tests = ['src/__test__/standard/**/*.test.ts'];
+if (shouldTestProviders) tests = ['src/__test__/providers/**/*.test.ts']
 
 module.exports = defineConfig({
   plugins: [
@@ -34,10 +36,13 @@ module.exports = defineConfig({
     outDir: 'lib',
 
     lib: {
-      entry: main,
+      entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'index',
       fileName: 'index',
       formats: ['umd', 'es'],
     },
   },
+  test: {
+    include: tests
+  }
 });

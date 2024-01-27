@@ -4,6 +4,14 @@ import { makeEmbed } from '@/providers/base';
 const hlsURLRegex = /file:"(.*?)"/;
 const setPassRegex = /var pass_path = "(.*set_pass\.php.*)";/;
 
+function formatHlsB64(data: string): string {
+  const encodedB64 = data.replace(/\/@#@\/[^=/]+==/g, '');
+  if (encodedB64.match(/\/@#@\/[^=/]+==/)) {
+    return formatHlsB64(encodedB64);
+  }
+  return encodedB64;
+}
+
 export const vidsrcembedScraper = makeEmbed({
   id: 'vidsrcembed', // VidSrc is both a source and an embed host
   name: 'VidSrc',
@@ -15,13 +23,12 @@ export const vidsrcembedScraper = makeEmbed({
       },
     });
 
-    const match = html
-      .match(hlsURLRegex)?.[1]
-      ?.replace(/(\/\/\S+?=)/g, '')
-      .replace('#2', '');
-    if (!match) throw new Error('Unable to find HLS playlist');
-    const finalUrl = atob(match);
-
+    // When this eventually breaks see the player js @ pjs_main.js
+    // If you know what youre doing and are slightly confused about how to reverse this feel free to reach out to ciaran_ds on discord with any queries
+    let hlsMatch = html.match(hlsURLRegex)?.[1]?.slice(2);
+    if (!hlsMatch) throw new Error('Unable to find HLS playlist');
+    hlsMatch = formatHlsB64(hlsMatch);
+    const finalUrl = atob(hlsMatch);
     if (!finalUrl.includes('.m3u8')) throw new Error('Unable to find HLS playlist');
 
     let setPassLink = html.match(setPassRegex)?.[1];
