@@ -7,6 +7,8 @@ const headerMap: Record<string, string> = {
   cookie: 'X-Cookie',
   referer: 'X-Referer',
   origin: 'X-Origin',
+  'user-agent': 'X-User-Agent',
+  'x-real-ip': 'X-X-Real-Ip',
 };
 
 const responseHeaderMap: Record<string, string> = {
