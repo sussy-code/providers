@@ -32,7 +32,7 @@ export const closeLoadScraper = makeEmbed({
         return {
           id: url,
           language,
-          hasCorsRestrictions: false,
+          hasCorsRestrictions: true,
           type: captionType,
           url,
         };
@@ -60,6 +60,10 @@ export const closeLoadScraper = makeEmbed({
           playlist: url,
           captions,
           flags: [flags.IP_LOCKED],
+          preferredHeaders: {
+            Referer: 'https://closeload.top/',
+            Origin: 'https://closeload.top',
+          },
         },
       ],
     };
