@@ -60,7 +60,7 @@ export const closeLoadScraper = makeEmbed({
           playlist: url,
           captions,
           flags: [flags.IP_LOCKED],
-          preferredHeaders: {
+          headers: {
             Referer: 'https://closeload.top/',
             Origin: 'https://closeload.top',
           },
