@@ -1,5 +1,4 @@
 import { load } from 'cheerio';
-import { stringify } from 'crypto-js/enc-base64';
 
 import { MovieMedia, ShowMedia } from '@/entrypoint/utils/media';
 import { compareMedia } from '@/utils/compare';
