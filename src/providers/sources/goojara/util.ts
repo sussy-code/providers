@@ -74,7 +74,7 @@ export async function scrapeIds(
 
     const dataId = $1('#seon').attr('data-id');
 
-    if (!dataId) throw new NotFoundError();
+    if (!dataId) throw new NotFoundError('Not found');
 
     data = await ctx.fetcher<string>(`/xhrc.php`, {
       baseUrl,
