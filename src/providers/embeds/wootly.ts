@@ -15,7 +15,7 @@ export const wootlyScraper = makeEmbed({
       readHeaders: ['Set-Cookie'],
     });
 
-    const wootssesCookie = wootlyData.headers.get('Set-Cookie')?.split(';')[0].split('wootsses=')[1];
+    const wootssesCookie = wootlyData.headers.get('Set-Cookie')?.match(/wootsses=([^;]+)/)?.[1];
 
     let $ = load(wootlyData.body); // load the html data
     const iframeSrc = $('iframe').attr('src') ?? '';
@@ -28,7 +28,7 @@ export const wootlyScraper = makeEmbed({
       },
     });
 
-    const woozCookie = woozCookieRequest.headers.get('Set-Cookie')?.split(';')[0].split('wooz=')[1];
+    const woozCookie = woozCookieRequest.headers.get('Set-Cookie')?.match(/wooz=([^;]+)/)?.[1];
 
     const iframeData = await ctx.proxiedFetcher<string>(iframeSrc, {
       method: 'POST',
@@ -45,8 +45,10 @@ export const wootlyScraper = makeEmbed({
 
     // Regular expressions to match the variables
 
-    const tk = scriptText.split('tk=')[1].split(';')[0].replaceAll('"', '').replaceAll(' ', '');
-    const vd = scriptText.split('vd=')[1].split(',')[0].replaceAll('"', '').replaceAll(' ', '');
+    const tk = scriptText.match(/tk=([^;]+)/)?.[0].replace(/tk=|["\s]/g, '');
+    const vd = scriptText.match(/vd=([^,]+)/)?.[0].replace(/vd=|["\s]/g, '');
+
+    if (!tk || !vd) throw new Error('wootly source not found');
 
     const url = await ctx.proxiedFetcher<string>(`/grabd`, {
       baseUrl,
@@ -57,26 +59,24 @@ export const wootlyScraper = makeEmbed({
       },
     });
 
-    if (url) {
-      return {
-        stream: [
-          {
-            id: 'primary',
-            type: 'file',
-            url,
-            flags: [flags.CORS_ALLOWED, flags.IP_LOCKED],
-            captions: [],
-            qualities: {
-              unknown: {
-                type: 'mp4',
-                url,
-              },
+    if (!url) throw new Error('wootly source not found');
+
+    return {
+      stream: [
+        {
+          id: 'primary',
+          type: 'file',
+          url,
+          flags: [flags.IP_LOCKED],
+          captions: [],
+          qualities: {
+            unknown: {
+              type: 'mp4',
+              url,
             },
           },
-        ],
-      };
-    }
-
-    throw new Error('wootly source not found');
+        },
+      ],
+    };
   },
 });

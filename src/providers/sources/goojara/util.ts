@@ -1,4 +1,5 @@
 import { load } from 'cheerio';
+import { stringify } from 'crypto-js/enc-base64';
 
 import { MovieMedia, ShowMedia } from '@/entrypoint/utils/media';
 import { compareMedia } from '@/utils/compare';
@@ -8,30 +9,24 @@ import { NotFoundError } from '@/utils/errors';
 import { getEmbeds } from './getEmbeds';
 import { EmbedsResult, Result } from './type';
 
+let data;
+
+// The cookie for this headerData doesn't matter, Goojara just checks it's there. T
 const headersData = {
-  accept: '*/*',
-  'accept-language': 'en-US,en;q=0.9',
   'content-type': 'application/x-www-form-urlencoded',
-  'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-  'sec-ch-ua-mobile': '?0',
-  'sec-ch-ua-platform': '"Windows"',
-  'sec-fetch-dest': 'empty',
-  'sec-fetch-mode': 'cors',
-  'sec-fetch-site': 'same-origin',
   cookie: `aGooz=t9pmkdtef1b3lg3pmo1u2re816; bd9aa48e=0d7b89e8c79844e9df07a2; _b414=2151C6B12E2A88379AFF2C0DD65AC8298DEC2BF4; 9d287aaa=8f32ad589e1c4288fe152f`,
   Referer: 'https://www.goojara.to/',
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
 };
 
 export async function searchAndFindMedia(
   ctx: ScrapeContext,
   media: MovieMedia | ShowMedia,
 ): Promise<Result | undefined> {
-  const data = await ctx.fetcher<string>(`/xhrr.php`, {
+  data = await ctx.fetcher<string>(`/xhrr.php`, {
     baseUrl: 'https://www.goojara.to',
     headers: headersData,
     method: 'POST',
-    body: `q=${media.title}`,
+    body: new URLSearchParams({ q: media.title }),
   });
 
   const $ = load(data);
@@ -47,6 +42,8 @@ export async function searchAndFindMedia(
     const type = typeDiv === 'it' ? 'show' : typeDiv === 'im' ? 'movie' : '';
     const year = yearMatch ? yearMatch[1] : '';
     const slug = $(element).find('a').attr('href')?.split('/')[3];
+
+    if (!slug) throw new NotFoundError('Not found');
 
     if (media.type === type) {
       results.push({ title, year, slug, type });
@@ -68,7 +65,7 @@ export async function scrapeIds(
   if (media.type === 'movie') {
     id = result.slug;
   } else if (media.type === 'show') {
-    const data = await ctx.fetcher<string>(`/${result.slug}`, {
+    data = await ctx.fetcher<string>(`/${result.slug}`, {
       baseUrl: 'https://www.goojara.to',
       headers: headersData,
       method: 'GET',
@@ -76,18 +73,20 @@ export async function scrapeIds(
 
     const $1 = load(data);
 
-    const dataId = $1('#seon').data('id');
+    const dataId = $1('#seon').attr('data-id');
 
-    const data2 = await ctx.fetcher<string>(`/xhrc.php`, {
+    if (!dataId) throw NotFoundError;
+
+    data = await ctx.fetcher<string>(`/xhrc.php`, {
       baseUrl: 'https://ww1.goojara.to',
       headers: headersData,
       method: 'POST',
-      body: `s=${media.season.number}&t=${dataId}`,
+      body: new URLSearchParams({ s: media.season.number.toString(), t: dataId }),
     });
 
     let episodeId = '';
 
-    const $2 = load(data2);
+    const $2 = load(data);
 
     $2('.seho').each((index, element) => {
       // Extracting the episode number as a string
