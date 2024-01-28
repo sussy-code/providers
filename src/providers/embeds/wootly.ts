@@ -66,7 +66,6 @@ export const wootlyScraper = makeEmbed({
         {
           id: 'primary',
           type: 'file',
-          url,
           flags: [flags.IP_LOCKED],
           captions: [],
           qualities: {

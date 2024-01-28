@@ -41,7 +41,7 @@ export async function getEmbeds(ctx: ScrapeContext, id: string): Promise<EmbedsR
   );
 
   // Initialize an array to hold the results
-  const results = [];
+  const results: EmbedsResult = [];
 
   // Process each page result
   for (const result of embedPages) {

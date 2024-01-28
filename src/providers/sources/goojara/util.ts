@@ -11,9 +11,8 @@ import { EmbedsResult, Result, baseUrl } from './type';
 
 let data;
 
-// The cookie for this headerData doesn't matter, Goojara just checks it's there. T
+// The cookie for this headerData doesn't matter, Goojara just checks it's there.
 const headersData = {
-  'content-type': 'application/x-www-form-urlencoded',
   cookie: `aGooz=t9pmkdtef1b3lg3pmo1u2re816; bd9aa48e=0d7b89e8c79844e9df07a2; _b414=2151C6B12E2A88379AFF2C0DD65AC8298DEC2BF4; 9d287aaa=8f32ad589e1c4288fe152f`,
   Referer: 'https://www.goojara.to/',
 };
@@ -75,7 +74,7 @@ export async function scrapeIds(
 
     const dataId = $1('#seon').attr('data-id');
 
-    if (!dataId) throw NotFoundError;
+    if (!dataId) throw new NotFoundError();
 
     data = await ctx.fetcher<string>(`/xhrc.php`, {
       baseUrl,

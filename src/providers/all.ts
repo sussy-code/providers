@@ -24,12 +24,9 @@ import { ridooScraper } from './embeds/ridoo';
 import { smashyStreamDScraper } from './embeds/smashystream/dued';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
 import { vidplayScraper } from './embeds/vidplay';
-
 import { wootlyScraper } from './embeds/wootly';
 import { goojaraScraper } from './sources/goojara';
-
 import { ridooMoviesScraper } from './sources/ridomovies';
-
 import { smashyStreamScraper } from './sources/smashystream';
 import { vidSrcToScraper } from './sources/vidsrcto';
 

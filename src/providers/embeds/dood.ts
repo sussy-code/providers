@@ -32,8 +32,6 @@ export const doodScraper = makeEmbed({
 
     const downloadURL = `${doodPage}${nanoid()}?token=${dataForLater}${Date.now()}`;
 
-    if (!downloadURL) throw new Error('dood source not found');
-
     return {
       stream: [
         {
