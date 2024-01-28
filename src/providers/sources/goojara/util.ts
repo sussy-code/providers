@@ -7,7 +7,7 @@ import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 import { getEmbeds } from './getEmbeds';
-import { EmbedsResult, Result } from './type';
+import { EmbedsResult, Result, baseUrl } from './type';
 
 let data;
 
@@ -23,7 +23,7 @@ export async function searchAndFindMedia(
   media: MovieMedia | ShowMedia,
 ): Promise<Result | undefined> {
   data = await ctx.fetcher<string>(`/xhrr.php`, {
-    baseUrl: 'https://www.goojara.to',
+    baseUrl,
     headers: headersData,
     method: 'POST',
     body: new URLSearchParams({ q: media.title }),
@@ -66,7 +66,7 @@ export async function scrapeIds(
     id = result.slug;
   } else if (media.type === 'show') {
     data = await ctx.fetcher<string>(`/${result.slug}`, {
-      baseUrl: 'https://www.goojara.to',
+      baseUrl,
       headers: headersData,
       method: 'GET',
     });
@@ -78,7 +78,7 @@ export async function scrapeIds(
     if (!dataId) throw NotFoundError;
 
     data = await ctx.fetcher<string>(`/xhrc.php`, {
-      baseUrl: 'https://ww1.goojara.to',
+      baseUrl,
       headers: headersData,
       method: 'POST',
       body: new URLSearchParams({ s: media.season.number.toString(), t: dataId }),

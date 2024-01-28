@@ -2,13 +2,13 @@ import { load } from 'cheerio';
 
 import { ScrapeContext } from '@/utils/context';
 
-import { EmbedsResult } from './type';
+import { EmbedsResult, baseUrl, baseUrl2 } from './type';
 
 export async function getEmbeds(ctx: ScrapeContext, id: string): Promise<EmbedsResult> {
   const data = await ctx.fetcher.full(`/${id}`, {
-    baseUrl: 'https://ww1.goojara.to',
+    baseUrl: baseUrl2,
     headers: {
-      Referer: 'https://www.goojara.to/',
+      Referer: baseUrl,
     },
     readHeaders: ['Set-Cookie'],
     method: 'GET',
@@ -23,7 +23,7 @@ export async function getEmbeds(ctx: ScrapeContext, id: string): Promise<EmbedsR
   const embedRedirectURLs = $('a')
     .map((index, element) => $(element).attr('href'))
     .get()
-    .filter((href) => href && href.includes('https://ww1.goojara.to/go.php'));
+    .filter((href) => href && href.includes(`${baseUrl2}/go.php`));
 
   const embedPages = await Promise.all(
     embedRedirectURLs.map(
@@ -32,7 +32,7 @@ export async function getEmbeds(ctx: ScrapeContext, id: string): Promise<EmbedsR
           .full(url, {
             headers: {
               cookie: `aGooz=${aGoozCookie}; ${RandomCookieName}=${RandomCookieValue};`,
-              Referer: 'https://ww1.goojara.to/eJwD5z',
+              Referer: baseUrl2,
             },
             method: 'GET',
           })
