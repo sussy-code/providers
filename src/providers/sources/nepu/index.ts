@@ -2,11 +2,11 @@ import { load } from 'cheerio';
 
 import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
+import { compareTitle } from '@/utils/compare';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 import { SearchResults } from './types';
-import { compareTitle } from '@/utils/compare';
 
 const nepuBase = 'https://nepu.to';
 const nepuReferer = `${nepuBase}/`;
@@ -24,8 +24,8 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
 
   const show = searchResult.data.find((item) => {
     if (!item) return false;
-    if (ctx.media.type === 'movie' && item.type !== "Movie") return false;
-    if (ctx.media.type === "show" && item.type !== "Serie") return false
+    if (ctx.media.type === 'movie' && item.type !== 'Movie') return false;
+    if (ctx.media.type === 'show' && item.type !== 'Serie') return false;
 
     return compareTitle(ctx.media.title, item.name);
   });
