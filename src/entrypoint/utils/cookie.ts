@@ -1,3 +1,6 @@
+import cookie from 'cookie';
+import setCookieParser from 'set-cookie-parser';
+
 export interface Cookie {
   name: string;
   value: string;
@@ -5,18 +8,13 @@ export interface Cookie {
 
 export function makeCookieHeader(cookies: Record<string, string>): string {
   return Object.entries(cookies)
-    .map(([name, value]) => `${name}=${value}`)
+    .map(([name, value]) => cookie.serialize(name, value))
     .join('; ');
 }
 
 export function parseSetCookie(headerValue: string): Record<string, Cookie> {
-  const cookies: Record<string, Cookie> = {};
-  const parts = headerValue.split(/; */);
-  for (const part of parts) {
-    const [name, value] = part.split('=');
-    if (name && value) {
-      cookies[name] = { name, value };
-    }
-  }
-  return cookies;
+  const parsedCookies = setCookieParser.parse(headerValue, {
+    map: true,
+  });
+  return parsedCookies;
 }
