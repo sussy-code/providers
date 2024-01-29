@@ -10,23 +10,14 @@ import { NotFoundError } from '@/utils/errors';
 import { reorderOnIdList } from '@/utils/list';
 import { isValidStream } from '@/utils/valid';
 
+// Define types for the output of the run function
 export type RunOutput = {
   sourceId: string;
   embedId?: string;
   stream: Stream;
 };
 
-export type SourceRunOutput = {
-  sourceId: string;
-  stream: Stream[];
-  embeds: [];
-};
-
-export type EmbedRunOutput = {
-  embedId: string;
-  stream: Stream[];
-};
-
+// Define options for the provider runner
 export type ProviderRunnerOptions = {
   fetcher: UseableFetcher;
   proxiedFetcher: UseableFetcher;
@@ -37,20 +28,52 @@ export type ProviderRunnerOptions = {
   media: ScrapeMedia;
 };
 
+// Main function to run all providers
 export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOptions): Promise<RunOutput | null> {
-  const sources = reorderOnIdList(ops.sourceOrder ?? [], list.sources).filter((v) => {
+  // Reorder the sources and embeds based on the provided order
+  const { sources, embeds } = reorderProviders(list, ops);
+  let lastId = '';
+
+  // Create the base context for scraping
+  const contextBase: ScrapeContext = createContextBase(ops, lastId);
+
+  // Initialize the events with the source IDs
+  ops.events?.init?.({
+    sourceIds: sources.map((v: any) => v.id),
+  });
+
+  // Iterate over each source
+  for (const s of sources) {
+    // Run the source scrapers and get the output
+    const output = await runSourceScrapers(s, ops, contextBase);
+    if (!output) continue;
+
+    // Process the output from the source scrapers
+    const result = await processOutput(s, output, ops, embeds, contextBase);
+    if (result) return result;
+  }
+
+  // If no providers or embeds return streams, return null
+  return null;
+}
+
+// Function to reorder the providers based on the provided order
+function reorderProviders(list: ProviderList, ops: ProviderRunnerOptions) {
+  const sources = reorderOnIdList(ops.sourceOrder ?? [], list.sources).filter((v: any) => {
     if (ops.media.type === 'movie') return !!v.scrapeMovie;
     if (ops.media.type === 'show') return !!v.scrapeShow;
     return false;
   });
   const embeds = reorderOnIdList(ops.embedOrder ?? [], list.embeds);
-  const embedIds = embeds.map((v) => v.id);
-  let lastId = '';
+  return { sources, embeds };
+}
 
-  const contextBase: ScrapeContext = {
+// Function to create the base context for scraping
+function createContextBase(ops: ProviderRunnerOptions, lastId: string): ScrapeContext {
+  return {
     fetcher: ops.fetcher,
     proxiedFetcher: ops.proxiedFetcher,
-    progress(val) {
+    progress(val: number) {
       ops.events?.update?.({
         id: lastId,
         percentage: val,
@@ -58,130 +81,147 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       });
     },
   };
+}
 
-  ops.events?.init?.({
-    sourceIds: sources.map((v) => v.id),
-  });
+// Function to run the source scrapers and get the output
+async function runSourceScrapers(s: any, ops: ProviderRunnerOptions, contextBase: ScrapeContext) {
+  ops.events?.start?.(s.id);
+  let output: SourcererOutput | null = null;
+  try {
+    output = await scrapeSource(s, ops, contextBase);
+    if (!output) throw Error('No output');
+    if ((!output.stream || output.stream.length === 0) && output.embeds.length === 0)
+      throw new NotFoundError('No streams found');
+  } catch (err) {
+    handleSourceError(s, err, ops);
+  }
+  return output;
+}
 
-  for (const s of sources) {
-    ops.events?.start?.(s.id);
-    lastId = s.id;
+// Function to scrape the source based on the media type
+async function scrapeSource(s: any, ops: ProviderRunnerOptions, contextBase: ScrapeContext) {
+  let output: SourcererOutput | null = null;
+  if (ops.media.type === 'movie' && s.scrapeMovie)
+    output = await s.scrapeMovie({
+      ...contextBase,
+      media: ops.media,
+    });
+  else if (ops.media.type === 'show' && s.scrapeShow)
+    output = await s.scrapeShow({
+      ...contextBase,
+      media: ops.media,
+    });
+  return output;
+}
 
-    // run source scrapers
-    let output: SourcererOutput | null = null;
-    try {
-      if (ops.media.type === 'movie' && s.scrapeMovie)
-        output = await s.scrapeMovie({
-          ...contextBase,
-          media: ops.media,
-        });
-      else if (ops.media.type === 'show' && s.scrapeShow)
-        output = await s.scrapeShow({
-          ...contextBase,
-          media: ops.media,
-        });
-      if (output) {
-        output.stream = (output.stream ?? [])
-          .filter((stream) => isValidStream(stream))
-          .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
-      }
-      if (!output) throw Error('No output');
-      if ((!output.stream || output.stream.length === 0) && output.embeds.length === 0)
-        throw new NotFoundError('No streams found');
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        ops.events?.update?.({
-          id: s.id,
-          percentage: 100,
-          status: 'notfound',
-          reason: err.message,
-        });
-        continue;
-      }
-      ops.events?.update?.({
-        id: s.id,
-        percentage: 100,
-        status: 'failure',
-        error: err,
-      });
-      continue;
-    }
-    if (!output) throw new Error('Invalid media type');
+// Function to handle errors during source scraping
+function handleSourceError(s: any, err: any, ops: ProviderRunnerOptions) {
+  if (err instanceof NotFoundError) {
+    ops.events?.update?.({
+      id: s.id,
+      percentage: 100,
+      status: 'notfound',
+      reason: err.message,
+    });
+  } else {
+    ops.events?.update?.({
+      id: s.id,
+      percentage: 100,
+      status: 'failure',
+      error: err,
+    });
+  }
+}
 
-    // return stream is there are any
-    if (output.stream?.[0]) {
-      return {
-        sourceId: s.id,
-        stream: output.stream[0],
-      };
-    }
-
-    // filter disabled and run embed scrapers on listed embeds
-    const sortedEmbeds = output.embeds
-      .filter((embed) => {
-        const e = list.embeds.find((v) => v.id === embed.embedId);
-        if (!e || e.disabled) return false;
-        return true;
-      })
-      .sort((a, b) => embedIds.indexOf(a.embedId) - embedIds.indexOf(b.embedId));
-
-    if (sortedEmbeds.length > 0) {
-      ops.events?.discoverEmbeds?.({
-        embeds: sortedEmbeds.map((v, i) => ({
-          id: [s.id, i].join('-'),
-          embedScraperId: v.embedId,
-        })),
-        sourceId: s.id,
-      });
-    }
-
-    for (const ind in sortedEmbeds) {
-      if (!Object.prototype.hasOwnProperty.call(sortedEmbeds, ind)) continue;
-      const e = sortedEmbeds[ind];
-      const scraper = embeds.find((v) => v.id === e.embedId);
-      if (!scraper) throw new Error('Invalid embed returned');
-
-      // run embed scraper
-      const id = [s.id, ind].join('-');
-      ops.events?.start?.(id);
-      lastId = id;
-      let embedOutput: EmbedOutput;
-      try {
-        embedOutput = await scraper.scrape({
-          ...contextBase,
-          url: e.url,
-        });
-        embedOutput.stream = embedOutput.stream
-          .filter((stream) => isValidStream(stream))
-          .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
-        if (embedOutput.stream.length === 0) throw new NotFoundError('No streams found');
-      } catch (err) {
-        if (err instanceof NotFoundError) {
-          ops.events?.update?.({
-            id,
-            percentage: 100,
-            status: 'notfound',
-            reason: err.message,
-          });
-          continue;
-        }
-        ops.events?.update?.({
-          id,
-          percentage: 100,
-          status: 'failure',
-          error: err,
-        });
-        continue;
-      }
-
-      return {
-        sourceId: s.id,
-        embedId: scraper.id,
-        stream: embedOutput.stream[0],
-      };
-    }
+// Function to process the output from the source scrapers
+async function processOutput(s: any, output: any, ops: ProviderRunnerOptions, embeds: any[], contextBase: ScrapeContext) {
+  if (output.stream?.[0]) {
+    return {
+      sourceId: s.id,
+      stream: output.stream[0],
+    };
   }
 
-  // no providers or embeds returns streams
-  return null;
+  // Filter and sort the embeds from the output
+  const sortedEmbeds = filterAndSortEmbeds(output, embeds, ops);
+
+  // If there are any sorted embeds, discover them
+  if (sortedEmbeds.length > 0) {
+    ops.events?.discoverEmbeds?.({
+      embeds: sortedEmbeds.map((v: any, i: number) => ({
+        id: [s.id, i].join('-'),
+        embedScraperId: v.embedId,
+      })),
+      sourceId: s.id,
+    });
+  }
+
+  // Iterate over each sorted embed
+  for (const ind in sortedEmbeds) {
+    if (!Object.prototype.hasOwnProperty.call(sortedEmbeds, ind)) continue;
+    const e = sortedEmbeds[ind];
+    const scraper = embeds.find((v: any) => v.id === e.embedId);
+    if (!scraper) throw new Error('Invalid embed returned');
+
+    // Run the embed scraper and get the result
+    const result = await runEmbedScraper(s, e, scraper, ops, contextBase);
+    if (result) return result;
+  }
+}
+
+// Function to filter and sort the embeds from the output
+function filterAndSortEmbeds(output: any, embeds: any[], ops: ProviderRunnerOptions) {
+  const embedIds = embeds.map((v: any) => v.id);
+  return output.embeds
+    .filter((embed: any) => {
+      const e = embeds.find((v: any) => v.id === embed.embedId);
+      if (!e || e.disabled) return false;
+      return true;
+    })
+    .sort((a: any, b: any) => embedIds.indexOf(a.embedId) - embedIds.indexOf(b.embedId));
+}
+
+// Function to run the embed scraper and get the result
+async function runEmbedScraper(s: any, e: any, scraper: any, ops: ProviderRunnerOptions, contextBase: ScrapeContext) {
+  const id = [s.id, e].join('-');
+  ops.events?.start?.(id);
+  let embedOutput: EmbedOutput;
+  try {
+    embedOutput = await scraper.scrape({
+      ...contextBase,
+      url: e.url,
+    });
+    embedOutput.stream = embedOutput.stream
+      .filter((stream: Stream) => isValidStream(stream))
+      .filter((stream: Stream) => flagsAllowedInFeatures(ops.features, stream.flags));
+    if (embedOutput.stream.length === 0) throw new NotFoundError('No streams found');
+  } catch (err) {
+    handleEmbedError(id, err, ops);
+    return null;
+  }
+
+  return {
+    sourceId: s.id,
+    embedId: scraper.id,
+    stream: embedOutput.stream[0],
+  };
+}
+
+// Function to handle errors during embed scraping
+function handleEmbedError(id: string, err: any, ops: ProviderRunnerOptions) {
+  if (err instanceof NotFoundError) {
+    ops.events?.update?.({
+      id,
+      percentage: 100,
+      status: 'notfound',
+      reason: err.message,
+    });
+  } else {
+    ops.events?.update?.({
+      id,
+      percentage: 100,
+      status: 'failure',
+      error: err,
+    });
+  }
 }
