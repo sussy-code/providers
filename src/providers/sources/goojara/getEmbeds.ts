@@ -1,5 +1,6 @@
 import { load } from 'cheerio';
 
+import { makeCookieHeader, parseSetCookie } from '@/entrypoint/utils/cookie';
 import { ScrapeContext } from '@/utils/context';
 
 import { EmbedsResult, baseUrl, baseUrl2 } from './type';
@@ -14,7 +15,8 @@ export async function getEmbeds(ctx: ScrapeContext, id: string): Promise<EmbedsR
     method: 'GET',
   });
 
-  const aGoozCookie = data.headers.get('Set-Cookie')?.match(/aGooz=([^;]+)/)?.[1];
+  const cookies = parseSetCookie(data.headers.get('Set-Cookie') || '');
+  const aGoozCookie = cookies.aGooz.value;
 
   const $ = load(data.body);
   const RandomCookieName = data.body.split(`_3chk('`)[1].split(`'`)[0];
@@ -31,7 +33,10 @@ export async function getEmbeds(ctx: ScrapeContext, id: string): Promise<EmbedsR
         ctx.fetcher
           .full(url, {
             headers: {
-              cookie: `aGooz=${aGoozCookie}; ${RandomCookieName}=${RandomCookieValue};`,
+              cookie: makeCookieHeader({
+                aGooz: aGoozCookie,
+                [RandomCookieName]: RandomCookieValue,
+              }),
               Referer: baseUrl2,
             },
             method: 'GET',
@@ -45,11 +50,8 @@ export async function getEmbeds(ctx: ScrapeContext, id: string): Promise<EmbedsR
 
   // Process each page result
   for (const result of embedPages) {
-    // Ensure there's a result to process
     if (result) {
-      // Attempt to find a matching embed ID
       const embedId = ['wootly', 'upstream', 'mixdrop', 'dood'].find((a) => result.finalUrl.includes(a));
-      // If an embed ID is found, push the result to the results array
       if (embedId) {
         results.push({ embedId, url: result.finalUrl });
       }

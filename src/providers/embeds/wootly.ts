@@ -1,5 +1,6 @@
 import { load } from 'cheerio';
 
+import { makeCookieHeader, parseSetCookie } from '@/entrypoint/utils/cookie';
 import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 
@@ -15,7 +16,8 @@ export const wootlyScraper = makeEmbed({
       readHeaders: ['Set-Cookie'],
     });
 
-    const wootssesCookie = wootlyData.headers.get('Set-Cookie')?.match(/wootsses=([^;]+)/)?.[1];
+    const cookies = parseSetCookie(wootlyData.headers.get('Set-Cookie') || '');
+    const wootssesCookie = cookies.wootsses.value;
 
     let $ = load(wootlyData.body); // load the html data
     const iframeSrc = $('iframe').attr('src') ?? '';
@@ -24,17 +26,18 @@ export const wootlyScraper = makeEmbed({
       method: 'GET',
       readHeaders: ['Set-Cookie'],
       headers: {
-        cookie: `wootsses=${wootssesCookie};`,
+        cookie: makeCookieHeader({ wootsses: wootssesCookie }),
       },
     });
 
-    const woozCookie = woozCookieRequest.headers.get('Set-Cookie')?.match(/wooz=([^;]+)/)?.[1];
+    const woozCookies = parseSetCookie(woozCookieRequest.headers.get('Set-Cookie') || '');
+    const woozCookie = woozCookies.wooz.value;
 
     const iframeData = await ctx.proxiedFetcher<string>(iframeSrc, {
       method: 'POST',
       body: new URLSearchParams({ qdf: '1' }),
       headers: {
-        cookie: `wooz=${woozCookie}`,
+        cookie: makeCookieHeader({ wooz: woozCookie }),
         Referer: iframeSrc,
       },
     });
@@ -44,7 +47,6 @@ export const wootlyScraper = makeEmbed({
     const scriptText = $('script').html() ?? '';
 
     // Regular expressions to match the variables
-
     const tk = scriptText.match(/tk=([^;]+)/)?.[0].replace(/tk=|["\s]/g, '');
     const vd = scriptText.match(/vd=([^,]+)/)?.[0].replace(/vd=|["\s]/g, '');
 
@@ -55,7 +57,7 @@ export const wootlyScraper = makeEmbed({
       query: { t: tk, id: vd },
       method: 'GET',
       headers: {
-        cookie: `wooz=${woozCookie}; wootsses=${wootssesCookie};`,
+        cookie: makeCookieHeader({ wooz: woozCookie, wootsses: wootssesCookie }),
       },
     });
 
