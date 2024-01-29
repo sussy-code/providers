@@ -9,10 +9,9 @@ import { NotFoundError } from '@/utils/errors';
 import { SearchResults } from './types';
 
 const nepuBase = 'https://nepu.to';
-const nepuReferer = `${nepuBase}/`;
 
 const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => {
-  const searchResultRequest = await ctx.proxiedFetcher('/ajax/posts', {
+  const searchResultRequest = await ctx.proxiedFetcher<string>('/ajax/posts', {
     baseUrl: nepuBase,
     query: {
       q: ctx.media.title,
@@ -38,7 +37,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
     videoUrl = `${show.url}/season/${ctx.media.season.number}/episode/${ctx.media.episode.number}`;
   }
 
-  const videoPage = await ctx.proxiedFetcher(videoUrl, {
+  const videoPage = await ctx.proxiedFetcher<string>(videoUrl, {
     baseUrl: nepuBase,
   });
   const videoPage$ = load(videoPage);
@@ -46,13 +45,10 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
 
   if (!embedId) throw new NotFoundError('No embed found.');
 
-  const playerPage = await ctx.proxiedFetcher('/ajax/embed', {
+  const playerPage = await ctx.proxiedFetcher<string>('/ajax/embed', {
     method: 'POST',
     baseUrl: nepuBase,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: `id=${embedId}`,
+    body: new URLSearchParams({ id: embedId }),
   });
 
   const streamUrl = playerPage.match(/"file":"(http[^"]+)"/);
@@ -68,10 +64,6 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
         playlist: streamUrl[1],
         type: 'hls',
         flags: [flags.CORS_ALLOWED],
-        preferredHeaders: {
-          Origin: nepuBase,
-          Referer: nepuReferer,
-        },
       },
     ],
   } as SourcererOutput;
