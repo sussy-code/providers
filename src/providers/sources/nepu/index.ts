@@ -6,6 +6,7 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 import { SearchResults } from './types';
+import { compareTitle } from '@/utils/compare';
 
 const nepuBase = 'https://nepu.to';
 const nepuReferer = `${nepuBase}/`;
@@ -17,10 +18,18 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
       q: ctx.media.title,
     },
   });
-  // json isn't parsed by searchResultRequest for some reason.
+
+  // json isn't parsed by proxiedFetcher due to content-type being text/html.
   const searchResult = JSON.parse(searchResultRequest) as SearchResults;
 
-  const show = searchResult.data[0];
+  const show = searchResult.data.find((item) => {
+    if (!item) return false;
+    if (ctx.media.type === 'movie' && item.type !== "Movie") return false;
+    if (ctx.media.type === "show" && item.type !== "Serie") return false
+
+    return compareTitle(ctx.media.title, item.name);
+  });
+
   if (!show) throw new NotFoundError('No watchable item found');
 
   let videoUrl = show.url;
