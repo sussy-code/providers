@@ -43,7 +43,7 @@ export async function scrape(ctx: ScrapeContext, media: MovieMedia | ShowMedia, 
     const movieRes = await ctx.fetcher<string>(`movies/view/${result.slug}`, {
       baseUrl: baseUrl2,
     });
-    var movieStorageObject = JSON.parse(movieRes.match(/var movie_storage = (.*?);/s)?.[1] ?? '{}');
+    const movieStorageObject = JSON.parse(movieRes.match(/var movie_storage = (.*?);/s)?.[1] ?? '{}');
 
     id = movieStorageObject.id_movie;
   } else if (media.type === 'show') {
@@ -51,7 +51,7 @@ export async function scrape(ctx: ScrapeContext, media: MovieMedia | ShowMedia, 
       baseUrl: baseUrl2,
     });
 
-    var idShow = showRes.match(/id_show:\s*(\d+)/)?.[1];
+    const idShow = showRes.match(/id_show:\s*(\d+)/)?.[1];
 
     if (!idShow) throw new NotFoundError('Not found');
 
