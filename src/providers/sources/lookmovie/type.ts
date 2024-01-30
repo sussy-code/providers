@@ -65,5 +65,5 @@ export interface Result {
   year(year: any): number | undefined;
   id_movie: any;
   id_show: string;
-  items: ResultItem[];
+  result: ResultItem[];
 }
