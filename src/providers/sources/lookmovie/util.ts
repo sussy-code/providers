@@ -16,7 +16,7 @@ export async function searchAndFindMedia(
   if (media.type === 'show') {
     const searchRes = await ctx.fetcher<Result>(`/api/v1/shows/do-search/`, {
       baseUrl: baseUrl2,
-      query: { 'q': media.title },
+      query: { q: media.title },
     });
 
     const results = searchRes.result;
@@ -27,7 +27,7 @@ export async function searchAndFindMedia(
   if (media.type === 'movie') {
     const searchRes = await ctx.fetcher<Result>(`/api/v1/movies/do-search/`, {
       baseUrl: baseUrl2,
-      query: { 'q': media.title },
+      query: { q: media.title },
     });
 
     const results = searchRes.result;
@@ -43,20 +43,17 @@ export async function scrape(ctx: ScrapeContext, media: MovieMedia | ShowMedia, 
     const movieRes = await ctx.fetcher<string>(`movies/view/${result.slug}`, {
       baseUrl: baseUrl2,
     });
-    var movieStorageObject = JSON.parse(movieRes.match(/var movie_storage = (.*?);/s)?.[1] ?? "{}");
-
-
+    var movieStorageObject = JSON.parse(movieRes.match(/var movie_storage = (.*?);/s)?.[1] ?? '{}');
 
     id = movieStorageObject.id_movie;
   } else if (media.type === 'show') {
     const showRes = await ctx.fetcher<string>(`shows/view/${result.slug}`, {
       baseUrl: baseUrl2,
-    });    
+    });
 
     var idShow = showRes.match(/id_show:\s*(\d+)/)?.[1];
 
     if (!idShow) throw new NotFoundError('Not found');
-
 
     const data = await ctx.fetcher<ShowDataResult>(`/v1/shows`, {
       baseUrl,
