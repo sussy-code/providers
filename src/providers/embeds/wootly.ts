@@ -1,8 +1,8 @@
 import { load } from 'cheerio';
 
-import { makeCookieHeader, parseSetCookie } from '@/entrypoint/utils/cookie';
 import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
+import { makeCookieHeader, parseSetCookie } from '@/utils/cookie';
 
 export const wootlyScraper = makeEmbed({
   id: 'wootly',

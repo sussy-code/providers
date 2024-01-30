@@ -1,7 +1,7 @@
 import { load } from 'cheerio';
 
-import { makeCookieHeader, parseSetCookie } from '@/entrypoint/utils/cookie';
 import { ScrapeContext } from '@/utils/context';
+import { makeCookieHeader, parseSetCookie } from '@/utils/cookie';
 
 import { EmbedsResult, baseUrl, baseUrl2 } from './type';
 
