@@ -1,6 +1,5 @@
 import { load } from 'cheerio';
 
-import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { compareTitle } from '@/utils/compare';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
@@ -9,6 +8,7 @@ import { NotFoundError } from '@/utils/errors';
 import { SearchResults } from './types';
 
 const nepuBase = 'https://nepu.to';
+const nepuReferer = `${nepuBase}/`;
 
 const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => {
   const searchResultRequest = await ctx.proxiedFetcher<string>('/ajax/posts', {
@@ -63,7 +63,11 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
         captions: [],
         playlist: streamUrl[1],
         type: 'hls',
-        flags: [flags.CORS_ALLOWED],
+        flags: [],
+        headers: {
+          Origin: nepuBase,
+          Referer: nepuReferer,
+        },
       },
     ],
   } as SourcererOutput;
@@ -73,7 +77,7 @@ export const nepuScraper = makeSourcerer({
   id: 'nepu',
   name: 'Nepu',
   rank: 111,
-  flags: [flags.CORS_ALLOWED],
+  flags: [],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
 });
