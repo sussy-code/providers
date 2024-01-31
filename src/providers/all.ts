@@ -26,6 +26,7 @@ import { smashyStreamFScraper } from './embeds/smashystream/video1';
 import { vidplayScraper } from './embeds/vidplay';
 import { wootlyScraper } from './embeds/wootly';
 import { goojaraScraper } from './sources/goojara';
+import { nepuScraper } from './sources/nepu';
 import { ridooMoviesScraper } from './sources/ridomovies';
 import { smashyStreamScraper } from './sources/smashystream';
 import { vidSrcToScraper } from './sources/vidsrcto';
@@ -44,6 +45,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     smashyStreamScraper,
     ridooMoviesScraper,
     vidSrcToScraper,
+    nepuScraper,
     goojaraScraper,
   ];
 }
