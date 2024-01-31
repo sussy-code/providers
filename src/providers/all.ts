@@ -1,4 +1,5 @@
 import { Embed, Sourcerer } from '@/providers/base';
+import { doodScraper } from '@/providers/embeds/dood';
 import { febboxHlsScraper } from '@/providers/embeds/febbox/hls';
 import { febboxMp4Scraper } from '@/providers/embeds/febbox/mp4';
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
@@ -17,11 +18,17 @@ import { showboxScraper } from '@/providers/sources/showbox/index';
 import { vidsrcScraper } from '@/providers/sources/vidsrc/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
+import { closeLoadScraper } from './embeds/closeload';
 import { fileMoonScraper } from './embeds/filemoon';
+import { ridooScraper } from './embeds/ridoo';
 import { smashyStreamDScraper } from './embeds/smashystream/dued';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
 import { vidCloudScraper } from './embeds/vidcloud';
 import { vidplayScraper } from './embeds/vidplay';
+import { wootlyScraper } from './embeds/wootly';
+import { goojaraScraper } from './sources/goojara';
+import { nepuScraper } from './sources/nepu';
+import { ridooMoviesScraper } from './sources/ridomovies';
 import { smashyStreamScraper } from './sources/smashystream';
 import { vidSrcToScraper } from './sources/vidsrcto';
 
@@ -37,7 +44,10 @@ export function gatherAllSources(): Array<Sourcerer> {
     vidsrcScraper,
     lookmovieScraper,
     smashyStreamScraper,
+    ridooMoviesScraper,
     vidSrcToScraper,
+    nepuScraper,
+    goojaraScraper,
   ];
 }
 
@@ -56,7 +66,11 @@ export function gatherAllEmbeds(): Array<Embed> {
     streambucketScraper,
     smashyStreamFScraper,
     smashyStreamDScraper,
+    ridooScraper,
+    closeLoadScraper,
     fileMoonScraper,
     vidplayScraper,
+    wootlyScraper,
+    doodScraper,
   ];
 }

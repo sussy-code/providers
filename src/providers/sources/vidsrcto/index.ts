@@ -46,7 +46,10 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
   }
 
   // Originally Filemoon does not have subtitles. But we can use the ones from Vidplay.
-  const subtitleUrl = new URL(embedUrls.find((v) => v.includes('sub.info')) ?? '').searchParams.get('sub.info');
+  const urlWithSubtitles = embedUrls.find((v) => v.includes('sub.info'));
+  let subtitleUrl: string | null = null;
+  if (urlWithSubtitles) subtitleUrl = new URL(urlWithSubtitles).searchParams.get('sub.info');
+
   for (const source of sources.result) {
     if (source.title === 'Vidplay') {
       const embedUrl = embedUrls.find((v) => v.includes('vidplay'));
