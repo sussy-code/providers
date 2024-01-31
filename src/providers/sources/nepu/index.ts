@@ -41,7 +41,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
     baseUrl: nepuBase,
   });
   const videoPage$ = load(videoPage);
-  const embedId = videoPage$('a.btn-service').attr('data-embed');
+  const embedId = videoPage$('a[data-embed]').attr('data-embed');
 
   if (!embedId) throw new NotFoundError('No embed found.');
 
