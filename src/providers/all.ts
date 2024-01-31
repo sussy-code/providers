@@ -1,4 +1,5 @@
 import { Embed, Sourcerer } from '@/providers/base';
+import { doodScraper } from '@/providers/embeds/dood';
 import { febboxHlsScraper } from '@/providers/embeds/febbox/hls';
 import { febboxMp4Scraper } from '@/providers/embeds/febbox/mp4';
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
@@ -24,6 +25,8 @@ import { smashyStreamDScraper } from './embeds/smashystream/dued';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
 import { vidplayScraper } from './embeds/vidplay';
 import { nepuScraper } from './sources/nepu';
+import { wootlyScraper } from './embeds/wootly';
+import { goojaraScraper } from './sources/goojara';
 import { ridooMoviesScraper } from './sources/ridomovies';
 import { smashyStreamScraper } from './sources/smashystream';
 import { vidSrcToScraper } from './sources/vidsrcto';
@@ -43,6 +46,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     ridooMoviesScraper,
     vidSrcToScraper,
     nepuScraper,
+    goojaraScraper,
   ];
 }
 
@@ -64,5 +68,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     closeLoadScraper,
     fileMoonScraper,
     vidplayScraper,
+    wootlyScraper,
+    doodScraper,
   ];
 }
