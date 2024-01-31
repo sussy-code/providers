@@ -1,6 +1,7 @@
 import { flags } from '@/entrypoint/utils/targets';
-import { makeSourcerer } from '@/providers/base';
+import { SourcererEmbed, makeSourcerer } from '@/providers/base';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
+import { vidCloudScraper } from '@/providers/embeds/vidcloud';
 import { getFlixhqMovieSources, getFlixhqShowSources, getFlixhqSourceDetails } from '@/providers/sources/flixhq/scrape';
 import { getFlixhqId } from '@/providers/sources/flixhq/search';
 import { NotFoundError } from '@/utils/errors';
@@ -15,16 +16,25 @@ export const flixhqScraper = makeSourcerer({
     if (!id) throw new NotFoundError('no search results match');
 
     const sources = await getFlixhqMovieSources(ctx, ctx.media, id);
-    const upcloudStream = sources.find((v) => v.embed.toLowerCase() === 'upcloud');
-    if (!upcloudStream) throw new NotFoundError('upcloud stream not found for flixhq');
+
+    const embeds: SourcererEmbed[] = [];
+
+    for (const source of sources) {
+      if (source.embed.toLowerCase() === 'upcloud') {
+        embeds.push({
+          embedId: upcloudScraper.id,
+          url: await getFlixhqSourceDetails(ctx, source.episodeId),
+        });
+      } else if (source.embed.toLowerCase() === 'vidcloud') {
+        embeds.push({
+          embedId: vidCloudScraper.id,
+          url: await getFlixhqSourceDetails(ctx, source.episodeId),
+        });
+      }
+    }
 
     return {
-      embeds: [
-        {
-          embedId: upcloudScraper.id,
-          url: await getFlixhqSourceDetails(ctx, upcloudStream.episodeId),
-        },
-      ],
+      embeds,
     };
   },
   async scrapeShow(ctx) {
@@ -32,16 +42,24 @@ export const flixhqScraper = makeSourcerer({
     if (!id) throw new NotFoundError('no search results match');
 
     const sources = await getFlixhqShowSources(ctx, ctx.media, id);
-    const upcloudStream = sources.find((v) => v.embed.toLowerCase() === 'server upcloud');
-    if (!upcloudStream) throw new NotFoundError('upcloud stream not found for flixhq');
+
+    const embeds: SourcererEmbed[] = [];
+    for (const source of sources) {
+      if (source.embed.toLowerCase() === 'server upcloud') {
+        embeds.push({
+          embedId: upcloudScraper.id,
+          url: await getFlixhqSourceDetails(ctx, source.episodeId),
+        });
+      } else if (source.embed.toLowerCase() === 'server vidcloud') {
+        embeds.push({
+          embedId: vidCloudScraper.id,
+          url: await getFlixhqSourceDetails(ctx, source.episodeId),
+        });
+      }
+    }
 
     return {
-      embeds: [
-        {
-          embedId: upcloudScraper.id,
-          url: await getFlixhqSourceDetails(ctx, upcloudStream.episodeId),
-        },
-      ],
+      embeds,
     };
   },
 });
