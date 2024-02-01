@@ -21,14 +21,13 @@ export const doodScraper = makeEmbed({
     const dataForLater = doodData.match(/a\+"\?token=([^"]+)/)?.[1];
     const path = doodData.match(/\$\.get\('\/pass_md5([^']+)/)?.[1];
 
-    const doodPage = await ctx.proxiedFetcher<string>(`/pass_md5/${path}`, {
+    const doodPage = await ctx.proxiedFetcher<string>(`/pass_md5${path}`, {
       headers: {
         referer: `${baseUrl}/e/${id}`,
       },
       method: 'GET',
       baseUrl,
     });
-
     const downloadURL = `${doodPage}${nanoid()}?token=${dataForLater}${Date.now()}`;
 
     return {

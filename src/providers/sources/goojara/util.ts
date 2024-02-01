@@ -73,10 +73,9 @@ export async function scrapeIds(
 
     const $2 = load(data);
 
-    $2('.seho').each((_index: any, element: any) => {
+    $2('.seho').each((index, element) => {
       // Extracting the episode number as a string
       const episodeNumber = $2(element).find('.seep .sea').text().trim();
-      console.log(episodeNumber);
       // Comparing with the desired episode number as a string
       if (parseInt(episodeNumber, 10) === media.episode.number) {
         const href = $2(element).find('.snfo h1 a').attr('href');
