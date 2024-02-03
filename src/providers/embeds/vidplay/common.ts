@@ -9,8 +9,12 @@ export const referer = `${vidplayBase}/`;
 // Full credits to @Ciarands!
 
 export const getDecryptionKeys = async (ctx: EmbedScrapeContext): Promise<string[]> => {
-  const res = await ctx.fetcher<string>('https://raw.githubusercontent.com/Ciarands/vidsrc-keys/main/keys.json');
-  return JSON.parse(res);
+  const res = await ctx.proxiedFetcher<string>('https://github.com/Ciarands/vidsrc-keys/blob/main/keys.json');
+  const regex = /"rawLines":\s*\[([\s\S]*?)\]/;
+  const rawLines = res.match(regex)?.[1];
+  if (!rawLines) throw new Error('No keys found');
+  const keys = JSON.parse(`${rawLines.substring(1).replace(/\\"/g, '"')}]`);
+  return keys;
 };
 
 export const getEncodedId = async (ctx: EmbedScrapeContext) => {
