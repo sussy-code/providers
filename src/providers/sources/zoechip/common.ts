@@ -1,6 +1,7 @@
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { upstreamScraper } from '@/providers/embeds/upstream';
+import { vidCloudScraper } from '@/providers/embeds/vidcloud';
 import { getZoeChipSourceURL, getZoeChipSources } from '@/providers/sources/zoechip/scrape';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
@@ -55,6 +56,11 @@ export async function createZoeChipStreamData(ctx: MovieScrapeContext | ShowScra
   for (const source of sources) {
     const formatted = await formatSource(ctx, source);
     if (formatted) {
+      // Zoechip does not return titles for their sources, so we can not check if a source is upcloud or vidcloud because the domain is the same.
+      const upCloudAlreadyExists = embeds.find((e) => e.embedId === upcloudScraper.id);
+      if (formatted.embedId === upcloudScraper.id && upCloudAlreadyExists) {
+        formatted.embedId = vidCloudScraper.id;
+      }
       embeds.push(formatted);
     }
   }
