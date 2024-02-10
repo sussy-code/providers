@@ -83,5 +83,5 @@ export const vidSrcToScraper = makeSourcerer({
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
   flags: [],
-  rank: 400,
+  rank: 300,
 });
