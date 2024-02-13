@@ -43,7 +43,7 @@ export const closeLoadScraper = makeEmbed({
     const evalCode = iframeRes$('script')
       .filter((_, el) => {
         const script = iframeRes$(el);
-        return (script.attr('type') === 'text/javascript' && script.html()?.includes('eval')) ?? false;
+        return (script.attr('type') === 'text/javascript' && script.html()?.includes('p,a,c,k,e,d')) ?? false;
       })
       .html();
     if (!evalCode) throw new Error("Couldn't find eval code");
