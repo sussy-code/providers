@@ -32,7 +32,7 @@
   "bugs": {
     "url": "https://github.com/movie-web/providers/issues"
   },
-  "homepage": "https://providers.docs.movie-web.app/",
+  "homepage": "https://movie-web.github.io/providers/",
   "scripts": {
     "build": "vite build && tsc --noEmit",
     "cli": "ts-node ./src/dev-cli/index.ts",
