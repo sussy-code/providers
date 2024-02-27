@@ -2,6 +2,7 @@ import CryptoJS from 'crypto-js';
 import { customAlphabet } from 'nanoid';
 
 import type { ScrapeContext } from '@/utils/context';
+import { createSearchParams } from '@/utils/params';
 
 import { apiUrls, appId, appKey, key } from './common';
 import { encrypt, getVerify } from './crypto';
@@ -35,12 +36,12 @@ export const sendRequest = async (ctx: ScrapeContext, data: object, altApi = fal
   const base64body = btoa(body);
 
   const formatted = {
-    'data': base64body,
-    'appid': '27',
-    'platform': 'android',
-    'version': '129',
-    'medium': 'Website',
-    'token': randomId(32)
+    data: base64body,
+    appid: '27',
+    platform: 'android',
+    version: '129',
+    medium: 'Website',
+    token: randomId(32),
   };
 
   const requestUrl = altApi ? apiUrls[1] : apiUrls[0];
@@ -52,7 +53,7 @@ export const sendRequest = async (ctx: ScrapeContext, data: object, altApi = fal
       'Content-Type': 'application/x-www-form-urlencoded',
       'User-Agent': 'okhttp/3.2.0',
     },
-    body: Object.entries(formatted).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&'),
+    body: createSearchParams(formatted),
   });
   return JSON.parse(response);
 };
