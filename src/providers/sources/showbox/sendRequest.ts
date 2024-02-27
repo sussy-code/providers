@@ -34,13 +34,14 @@ export const sendRequest = async (ctx: ScrapeContext, data: object, altApi = fal
   });
   const base64body = btoa(body);
 
-  const formatted = new URLSearchParams();
-  formatted.append('data', base64body);
-  formatted.append('appid', '27');
-  formatted.append('platform', 'android');
-  formatted.append('version', '129');
-  formatted.append('medium', 'Website');
-  formatted.append('token', randomId(32));
+  const formatted = {
+    'data': base64body,
+    'appid': '27',
+    'platform': 'android',
+    'version': '129',
+    'medium': 'Website',
+    'token': randomId(32)
+  };
 
   const requestUrl = altApi ? apiUrls[1] : apiUrls[0];
 
@@ -51,7 +52,7 @@ export const sendRequest = async (ctx: ScrapeContext, data: object, altApi = fal
       'Content-Type': 'application/x-www-form-urlencoded',
       'User-Agent': 'okhttp/3.2.0',
     },
-    body: formatted,
+    body: Object.entries(formatted).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&'),
   });
   return JSON.parse(response);
 };
