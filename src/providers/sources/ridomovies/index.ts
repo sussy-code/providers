@@ -28,9 +28,9 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
     const showPageResult = await ctx.proxiedFetcher<string>(`/${show.fullSlug}`, {
       baseUrl: ridoMoviesBase,
     });
-    const fullEpisodeSlug = `${show.fullSlug}/season-${ctx.media.season.number}/episode-${ctx.media.episode.number}`;
+    const fullEpisodeSlug = `season-${ctx.media.season.number}/episode-${ctx.media.episode.number}`;
     const regexPattern = new RegExp(
-      `\\\\"id\\\\":\\\\"(\\d+)\\\\"(?=.*?\\\\\\"fullSlug\\\\\\":\\\\\\"${fullEpisodeSlug}\\\\\\")`,
+      `\\\\"id\\\\":\\\\"(\\d+)\\\\"(?=.*?\\\\\\"fullSlug\\\\\\":\\\\\\"[^"]*${fullEpisodeSlug}[^"]*\\\\\\")`,
       'g',
     );
     const matches = [...showPageResult.matchAll(regexPattern)];
