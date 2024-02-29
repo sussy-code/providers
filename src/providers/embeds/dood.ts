@@ -41,10 +41,10 @@ export const doodScraper = makeEmbed({
             unknown: {
               type: 'mp4',
               url: downloadURL,
-              headers: {
-                Referer: 'https://d0000d.com/',
-              },
             },
+          },
+          headers: {
+            Referer: 'https://d0000d.com/',
           },
         },
       ],
