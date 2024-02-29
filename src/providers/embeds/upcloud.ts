@@ -110,7 +110,7 @@ export const upcloudScraper = makeEmbed({
       if (track.kind !== 'captions') return;
       const type = getCaptionTypeFromUrl(track.file);
       if (!type) return;
-      const language = labelToLanguageCode(track.label);
+      const language = labelToLanguageCode(track.label.split(' ')[0]);
       if (!language) return;
       captions.push({
         id: track.file,
