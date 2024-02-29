@@ -1,6 +1,7 @@
 import FormData from 'form-data';
 
 import { FetcherOptions } from '@/fetchers/types';
+import { isReactNative } from '@/utils/native';
 
 export interface SeralizedBody {
   headers: Record<string, string>;
@@ -8,11 +9,18 @@ export interface SeralizedBody {
 }
 
 export function serializeBody(body: FetcherOptions['body']): SeralizedBody {
-  if (body === undefined || typeof body === 'string' || body instanceof URLSearchParams || body instanceof FormData)
+  if (body === undefined || typeof body === 'string' || body instanceof URLSearchParams || body instanceof FormData) {
+    if (body instanceof URLSearchParams && isReactNative()) {
+      return {
+        headers: {},
+        body: body.toString(),
+      };
+    }
     return {
       headers: {},
       body,
     };
+  }
 
   // serialize as JSON
   return {
