@@ -10,17 +10,27 @@ export async function getEmbeds(ctx: ScrapeContext, id: string): Promise<EmbedsR
     baseUrl: baseUrl2,
     headers: {
       Referer: baseUrl,
+      cookie: '',
     },
     readHeaders: ['Set-Cookie'],
     method: 'GET',
   });
 
   const cookies = parseSetCookie(data.headers.get('Set-Cookie') || '');
-  const aGoozCookie = cookies.aGooz.value;
-
-  const $ = load(data.body);
   const RandomCookieName = data.body.split(`_3chk('`)[1].split(`'`)[0];
   const RandomCookieValue = data.body.split(`_3chk('`)[1].split(`'`)[2];
+
+  let aGoozCookie = '';
+  let cookie = '';
+  if (cookies && cookies.aGooz && RandomCookieName && RandomCookieValue) {
+    aGoozCookie = cookies.aGooz.value;
+    cookie = makeCookieHeader({
+      aGooz: aGoozCookie,
+      [RandomCookieName]: RandomCookieValue,
+    });
+  }
+
+  const $ = load(data.body);
 
   const embedRedirectURLs = $('a')
     .map((index, element) => $(element).attr('href'))
@@ -33,10 +43,7 @@ export async function getEmbeds(ctx: ScrapeContext, id: string): Promise<EmbedsR
         ctx.fetcher
           .full(url, {
             headers: {
-              cookie: makeCookieHeader({
-                aGooz: aGoozCookie,
-                [RandomCookieName]: RandomCookieValue,
-              }),
+              cookie,
               Referer: baseUrl2,
             },
             method: 'GET',

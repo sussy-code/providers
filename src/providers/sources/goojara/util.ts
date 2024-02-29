@@ -49,7 +49,6 @@ export async function searchAndFindMedia(
   });
 
   const result = results.find((res: Result) => compareMedia(media, res.title, Number(res.year)));
-
   return result;
 }
 
@@ -67,19 +66,7 @@ export async function scrapeIds(
       baseUrl,
       headers: headersData,
       method: 'GET',
-    });
-
-    const $1 = load(data);
-
-    const dataId = $1('#seon').attr('data-id');
-
-    if (!dataId) throw new NotFoundError('Not found');
-
-    data = await ctx.fetcher<string>(`/xhrc.php`, {
-      baseUrl,
-      headers: headersData,
-      method: 'POST',
-      body: new URLSearchParams({ s: media.season.number.toString(), t: dataId }),
+      query: { s: media.season.number.toString() },
     });
 
     let episodeId = '';
@@ -89,7 +76,6 @@ export async function scrapeIds(
     $2('.seho').each((index, element) => {
       // Extracting the episode number as a string
       const episodeNumber = $2(element).find('.seep .sea').text().trim();
-
       // Comparing with the desired episode number as a string
       if (parseInt(episodeNumber, 10) === media.episode.number) {
         const href = $2(element).find('.snfo h1 a').attr('href');
