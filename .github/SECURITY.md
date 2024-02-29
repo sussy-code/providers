@@ -11,4 +11,4 @@ Support is not provided for any forks or mirrors of movie-web.
 
 There are two ways you can contact the movie-web maintainers to report a vulnerability:
  - Email [security@movie-web.app](mailto:security@movie-web.app)
- - Report the vulnerability in the [movie-web Discord server](https://discord.gg/gQYB6fGArX)
+ - Report the vulnerability in the [movie-web Discord server](https://movie-web.github.io/links/discord)
