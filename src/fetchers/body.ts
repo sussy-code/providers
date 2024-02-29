@@ -12,7 +12,9 @@ export function serializeBody(body: FetcherOptions['body']): SeralizedBody {
   if (body === undefined || typeof body === 'string' || body instanceof URLSearchParams || body instanceof FormData) {
     if (body instanceof URLSearchParams && isReactNative()) {
       return {
-        headers: {},
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
         body: body.toString(),
       };
     }
