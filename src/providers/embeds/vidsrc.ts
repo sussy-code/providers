@@ -54,6 +54,10 @@ export const vidsrcembedScraper = makeEmbed({
           type: 'hls',
           playlist: finalUrl,
           flags: [flags.CORS_ALLOWED],
+          // VidSrc streams now require a referer header, if not set the streams return 403.
+          headers: {
+            referer: ctx.url,
+          },
           captions: [],
         },
       ],
