@@ -7,7 +7,8 @@ export const vidsrcScraper = makeSourcerer({
   id: 'vidsrc',
   name: 'VidSrc',
   rank: 120,
-  flags: [flags.CORS_ALLOWED],
+  // No longer works without refrer header
+  flags: [],
   scrapeMovie,
   scrapeShow,
 });
