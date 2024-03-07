@@ -88,22 +88,16 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       if (!output || (!output.stream?.length && !output.embeds.length)) {
         throw new NotFoundError('No streams found');
       }
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        ops.events?.update?.({
-          id: source.id,
-          percentage: 100,
-          status: 'notfound',
-          reason: err.message,
-        });
-        continue;
-      }
-      ops.events?.update?.({
+    } catch (error) {
+      const updateParams: UpdateEvent = {
         id: source.id,
         percentage: 100,
-        status: 'failure',
-        error: err,
-      });
+        status: error instanceof NotFoundError ? 'notfound' : 'failure',
+        reason: error instanceof NotFoundError ? error.message : undefined,
+        error: error instanceof NotFoundError ? undefined : error,
+      };
+
+      ops.events?.update?.(updateParams);
       continue;
     }
     if (!output) throw new Error('Invalid media type');
@@ -161,16 +155,11 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
           percentage: 100,
           status: error instanceof NotFoundError ? 'notfound' : 'failure',
           reason: error instanceof NotFoundError ? error.message : undefined,
-          error,
+          error: error instanceof NotFoundError ? undefined : error,
         };
 
         ops.events?.update?.(updateParams);
-
-        if (error instanceof NotFoundError) {
-          continue;
-        }
-
-        throw error;
+        continue;
       }
 
       return {
