@@ -2,9 +2,11 @@ import { CommonMedia } from '@/entrypoint/utils/media';
 
 export function normalizeTitle(title: string): string {
   let titleTrimmed = title.trim().toLowerCase();
-  if (((titleTrimmed !== "the movie" && titleTrimmed.endsWith("the movie")) || 
-    (titleTrimmed !== "the series" && titleTrimmed.endsWith("the series")))) {
+  if (((titleTrimmed !== "the movie" && titleTrimmed.endsWith("the movie")))) {
     titleTrimmed = titleTrimmed.replace("the movie", "");
+  }
+  if (((titleTrimmed !== "the series" && titleTrimmed.endsWith("the series")))) {
+    titleTrimmed = titleTrimmed.replace("the series", "");
   }
   return titleTrimmed
     .replace(/['":]/g, "")
