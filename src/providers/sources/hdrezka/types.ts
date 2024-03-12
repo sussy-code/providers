@@ -3,7 +3,6 @@ export type VideoLinks = {
   message: string;
   premium_content: number;
   url: string;
-  parseVideoLinks: string;
   quality: string;
   subtitle: boolean | string;
   subtitle_lns: boolean;
