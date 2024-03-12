@@ -88,7 +88,7 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
       {
         id: 'primary',
         type: 'file',
-        flags: [flags.CORS_ALLOWED],
+        flags: [flags.CORS_ALLOWED, flags.IP_LOCKED],
         captions: parsedSubtitles,
         qualities: parsedVideos,
       },
