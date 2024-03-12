@@ -1,6 +1,7 @@
 import { flags } from '@/entrypoint/utils/targets';
+import { ScrapeMedia } from '@/index';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
-import { MovieScrapeContext, ScrapeContext, ShowScrapeContext } from '@/utils/context';
+import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 import { VideoLinks } from './types';
@@ -12,30 +13,20 @@ const baseHeaders = {
   'X-Hdrezka-Android-App-Version': '2.2.0',
 };
 
-async function searchAndFindMediaId({
-  type,
-  title,
-  releaseYear,
-  ctx,
-}: {
-  type: 'show' | 'movie';
-  title: string;
-  releaseYear: number;
-  ctx: ScrapeContext;
-}): Promise<string | null> {
+async function searchAndFindMediaId(ctx: ShowScrapeContext | MovieScrapeContext): Promise<string | null> {
   const itemRegexPattern = /<a href="([^"]+)"><span class="enty">([^<]+)<\/span> \(([^)]+)\)/g;
   const idRegexPattern = /\/(\d+)-[^/]+\.html$/;
 
   const searchData = await ctx.proxiedFetcher<string>(`/engine/ajax/search.php`, {
     baseUrl: rezkaBase,
     headers: baseHeaders,
-    query: { q: title },
+    query: { q: ctx.media.title },
   });
 
   const movieData: {
     id: string | null;
     year: number | null;
-    type: 'show' | 'movie';
+    type: ScrapeMedia['type'];
   }[] = [];
 
   for (const match of searchData.matchAll(itemRegexPattern)) {
@@ -46,11 +37,11 @@ async function searchAndFindMediaId({
     if (result !== null) {
       const id = url.match(idRegexPattern)?.[1] || null;
 
-      movieData.push({ id, year: result.year, type });
+      movieData.push({ id, year: result.year, type: ctx.media.type });
     }
   }
 
-  const filteredItems = movieData.filter((item) => item.type === type && item.year === releaseYear);
+  const filteredItems = movieData.filter((item) => item.type === ctx.media.type && item.year === ctx.media.releaseYear);
 
   return filteredItems[0]?.id || null;
 }
@@ -84,12 +75,7 @@ async function getStream(id: string, ctx: ShowScrapeContext | MovieScrapeContext
 }
 
 const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> => {
-  const id = await searchAndFindMediaId({
-    type: ctx.media.type === 'show' ? 'show' : 'movie',
-    title: ctx.media.title,
-    releaseYear: ctx.media.releaseYear,
-    ctx,
-  });
+  const id = await searchAndFindMediaId(ctx);
   if (!id) throw new NotFoundError('No result found');
 
   const { url: streamUrl, subtitle: streamSubtitle } = await getStream(id, ctx);

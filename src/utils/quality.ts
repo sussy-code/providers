@@ -1,4 +1,4 @@
-import { Qualities } from '../../lib';
+import { Qualities } from '@/providers/streams';
 
 export function getValidQualityFromString(quality: string): Qualities {
   switch (quality.toLowerCase().replace('p', '')) {
