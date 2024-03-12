@@ -67,7 +67,7 @@ export const upcloudScraper = makeEmbed({
     const dataPath = parsedUrl.pathname.split('/');
     const dataId = dataPath[dataPath.length - 1];
 
-    const streamRes = await ctx.proxiedFetcher<StreamRes>(`${parsedUrl.origin}/ajax/embed-4/getSources?id=${dataId}`, {
+    const streamRes = await ctx.proxiedFetcher<StreamRes>(`${parsedUrl.origin}/ajax/v2/embed-4/getSources?id=${dataId}`, {
       headers: {
         Referer: parsedUrl.origin,
         'X-Requested-With': 'XMLHttpRequest',
