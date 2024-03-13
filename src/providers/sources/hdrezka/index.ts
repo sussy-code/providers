@@ -72,7 +72,7 @@ async function getStream(
   return JSON.parse(response);
 }
 
-async function getTranslator(
+async function getTranslatorId(
   url: string,
   id: string,
   ctx: ShowScrapeContext | MovieScrapeContext,
@@ -94,9 +94,9 @@ async function getTranslator(
 
 const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> => {
   const result = await searchAndFindMediaId(ctx);
-  if (!result) throw new NotFoundError('No result found');
+  if (!result || !result.id) throw new NotFoundError('No result found');
 
-  const translatorId = await getTranslator(result.url, result.id, ctx);
+  const translatorId = await getTranslatorId(result.url, result.id, ctx);
   if (!translatorId) throw new NotFoundError('No translator id found');
 
   const { url: streamUrl, subtitle: streamSubtitle } = await getStream(result.id, translatorId, ctx);

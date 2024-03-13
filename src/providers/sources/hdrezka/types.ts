@@ -13,7 +13,7 @@ export type VideoLinks = {
 };
 
 export interface MovieData {
-  id: string;
+  id: string | null;
   year: number;
   type: ScrapeMedia['type'];
   url: string;
