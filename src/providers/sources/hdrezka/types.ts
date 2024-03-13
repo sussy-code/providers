@@ -1,3 +1,5 @@
+import { ScrapeMedia } from '@/index';
+
 export type VideoLinks = {
   success: boolean;
   message: string;
@@ -9,3 +11,10 @@ export type VideoLinks = {
   subtitle_def: boolean;
   thumbnails: string;
 };
+
+export interface MovieData {
+  id: string | null;
+  year: number;
+  type: ScrapeMedia['type'];
+  url: string;
+}

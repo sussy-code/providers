@@ -1,10 +1,9 @@
 import { flags } from '@/entrypoint/utils/targets';
-import { ScrapeMedia } from '@/index';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-import { VideoLinks } from './types';
+import { MovieData, VideoLinks } from './types';
 import { extractTitleAndYear, generateRandomFavs, parseSubtitleLinks, parseVideoLinks } from './utils';
 
 const rezkaBase = 'https://hdrzk.org';
@@ -13,7 +12,7 @@ const baseHeaders = {
   'X-Hdrezka-Android-App-Version': '2.2.0',
 };
 
-async function searchAndFindMediaId(ctx: ShowScrapeContext | MovieScrapeContext): Promise<string | null> {
+async function searchAndFindMediaId(ctx: ShowScrapeContext | MovieScrapeContext): Promise<MovieData | null> {
   const itemRegexPattern = /<a href="([^"]+)"><span class="enty">([^<]+)<\/span> \(([^)]+)\)/g;
   const idRegexPattern = /\/(\d+)-[^/]+\.html$/;
 
@@ -23,11 +22,7 @@ async function searchAndFindMediaId(ctx: ShowScrapeContext | MovieScrapeContext)
     query: { q: ctx.media.title },
   });
 
-  const movieData: {
-    id: string | null;
-    year: number | null;
-    type: ScrapeMedia['type'];
-  }[] = [];
+  const movieData: MovieData[] = [];
 
   for (const match of searchData.matchAll(itemRegexPattern)) {
     const url = match[1];
@@ -37,20 +32,23 @@ async function searchAndFindMediaId(ctx: ShowScrapeContext | MovieScrapeContext)
     if (result !== null) {
       const id = url.match(idRegexPattern)?.[1] || null;
 
-      movieData.push({ id, year: result.year, type: ctx.media.type });
+      movieData.push({ id: id ?? '', year: result.year ?? 0, type: ctx.media.type, url });
     }
   }
 
   const filteredItems = movieData.filter((item) => item.type === ctx.media.type && item.year === ctx.media.releaseYear);
 
-  return filteredItems[0]?.id || null;
+  return filteredItems[0] || null;
 }
 
-async function getStream(id: string, ctx: ShowScrapeContext | MovieScrapeContext): Promise<VideoLinks> {
+async function getStream(
+  id: string,
+  translatorId: string,
+  ctx: ShowScrapeContext | MovieScrapeContext,
+): Promise<VideoLinks> {
   const searchParams = new URLSearchParams();
   searchParams.append('id', id);
-  // Translator ID 238 represents the Original + subtitles player.
-  searchParams.append('translator_id', '238');
+  searchParams.append('translator_id', translatorId);
   if (ctx.media.type === 'show') {
     searchParams.append('season', ctx.media.season.number.toString());
     searchParams.append('episode', ctx.media.episode.number.toString());
@@ -74,11 +72,34 @@ async function getStream(id: string, ctx: ShowScrapeContext | MovieScrapeContext
   return JSON.parse(response);
 }
 
-const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> => {
-  const id = await searchAndFindMediaId(ctx);
-  if (!id) throw new NotFoundError('No result found');
+async function getTranslatorId(
+  url: string,
+  id: string,
+  ctx: ShowScrapeContext | MovieScrapeContext,
+): Promise<string | null> {
+  const response = await ctx.proxiedFetcher<string>(url, {
+    headers: baseHeaders,
+  });
 
-  const { url: streamUrl, subtitle: streamSubtitle } = await getStream(id, ctx);
+  // Translator ID 238 represents the Original + subtitles player.
+  if (response.includes(`data-translator_id="238"`)) return '238';
+
+  const functionName = ctx.media.type === 'movie' ? 'initCDNMoviesEvents' : 'initCDNSeriesEvents';
+  const regexPattern = new RegExp(`sof\\.tv\\.${functionName}\\(${id}, ([^,]+)`, 'i');
+  const match = response.match(regexPattern);
+  const translatorId = match ? match[1] : null;
+
+  return translatorId;
+}
+
+const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> => {
+  const result = await searchAndFindMediaId(ctx);
+  if (!result || !result.id) throw new NotFoundError('No result found');
+
+  const translatorId = await getTranslatorId(result.url, result.id, ctx);
+  if (!translatorId) throw new NotFoundError('No translator id found');
+
+  const { url: streamUrl, subtitle: streamSubtitle } = await getStream(result.id, translatorId, ctx);
   const parsedVideos = parseVideoLinks(streamUrl);
   const parsedSubtitles = parseSubtitleLinks(streamSubtitle);
 
