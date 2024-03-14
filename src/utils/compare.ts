@@ -2,15 +2,13 @@ import { CommonMedia } from '@/entrypoint/utils/media';
 
 export function normalizeTitle(title: string): string {
   let titleTrimmed = title.trim().toLowerCase();
-  if (((titleTrimmed !== "the movie" && titleTrimmed.endsWith("the movie")))) {
-    titleTrimmed = titleTrimmed.replace("the movie", "");
+  if (titleTrimmed !== 'the movie' && titleTrimmed.endsWith('the movie')) {
+    titleTrimmed = titleTrimmed.replace('the movie', '');
   }
-  if (((titleTrimmed !== "the series" && titleTrimmed.endsWith("the series")))) {
-    titleTrimmed = titleTrimmed.replace("the series", "");
+  if (titleTrimmed !== 'the series' && titleTrimmed.endsWith('the series')) {
+    titleTrimmed = titleTrimmed.replace('the series', '');
   }
-  return titleTrimmed
-    .replace(/['":]/g, "")
-    .replace(/[^a-zA-Z0-9]+/g, "_");
+  return titleTrimmed.replace(/['":]/g, '').replace(/[^a-zA-Z0-9]+/g, '_');
 }
 
 export function compareTitle(a: string, b: string): boolean {
