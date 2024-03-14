@@ -45,15 +45,9 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
     embedArr.push({ source: source.title, url: decryptedUrl });
   }
 
-  // Originally Filemoon does not have subtitles. But we can use the ones from Vidplay.
-  const urlWithSubtitles = embedArr.find((v) => v.url.includes('sub.info'))?.url;
-  let subtitleUrl: string | null = null;
-  if (urlWithSubtitles) subtitleUrl = new URL(urlWithSubtitles).searchParams.get('sub.info');
-
   for (const embedObj of embedArr) {
     if (embedObj.source === 'Vidplay') {
       const fullUrl = new URL(embedObj.url);
-      if (subtitleUrl) fullUrl.searchParams.set('sub.info', subtitleUrl);
       embeds.push({
         embedId: 'vidplay',
         url: fullUrl.toString(),
@@ -62,6 +56,9 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
 
     if (embedObj.source === 'Filemoon') {
       const fullUrl = new URL(embedObj.url);
+      // Originally Filemoon does not have subtitles. But we can use the ones from Vidplay.
+      const urlWithSubtitles = embedArr.find((v) => v.source === 'Vidplay' && v.url.includes('sub.info'))?.url;
+      const subtitleUrl = urlWithSubtitles ? new URL(urlWithSubtitles).searchParams.get('sub.info') : null;
       if (subtitleUrl) fullUrl.searchParams.set('sub.info', subtitleUrl);
       embeds.push({
         embedId: 'filemoon',
