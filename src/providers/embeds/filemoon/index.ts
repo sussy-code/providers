@@ -1,6 +1,7 @@
 import { unpack } from 'unpacker';
 
 import { SubtitleResult } from './types';
+import { flags } from '../../../../lib';
 import { makeEmbed } from '../../base';
 import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '../../captions';
 
@@ -49,7 +50,7 @@ export const fileMoonScraper = makeEmbed({
           id: 'primary',
           type: 'hls',
           playlist: file[1],
-          flags: [],
+          flags: [flags.CORS_ALLOWED],
           captions,
         },
       ],
