@@ -30,6 +30,8 @@ export const doodScraper = makeEmbed({
     });
     const downloadURL = `${doodPage}${nanoid()}?token=${dataForLater}&expiry=${Date.now()}`;
 
+    if (!downloadURL.startsWith('http')) throw new Error('Invalid URL');
+
     return {
       stream: [
         {
