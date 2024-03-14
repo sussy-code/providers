@@ -1,7 +1,8 @@
 import { unpack } from 'unpacker';
 
+import { flags } from '@/entrypoint/utils/targets';
+
 import { SubtitleResult } from './types';
-import { flags } from '../../../../lib';
 import { makeEmbed } from '../../base';
 import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '../../captions';
 
