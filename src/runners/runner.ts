@@ -1,4 +1,4 @@
-import { FullScraperEvents } from '@/entrypoint/utils/events';
+import { FullScraperEvents, UpdateEvent } from '@/entrypoint/utils/events';
 import { ScrapeMedia } from '@/entrypoint/utils/media';
 import { FeatureMap, flagsAllowedInFeatures } from '@/entrypoint/utils/targets';
 import { UseableFetcher } from '@/fetchers/types';
@@ -38,13 +38,13 @@ export type ProviderRunnerOptions = {
 };
 
 export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOptions): Promise<RunOutput | null> {
-  const sources = reorderOnIdList(ops.sourceOrder ?? [], list.sources).filter((v) => {
-    if (ops.media.type === 'movie') return !!v.scrapeMovie;
-    if (ops.media.type === 'show') return !!v.scrapeShow;
+  const sources = reorderOnIdList(ops.sourceOrder ?? [], list.sources).filter((source) => {
+    if (ops.media.type === 'movie') return !!source.scrapeMovie;
+    if (ops.media.type === 'show') return !!source.scrapeShow;
     return false;
   });
   const embeds = reorderOnIdList(ops.embedOrder ?? [], list.embeds);
-  const embedIds = embeds.map((v) => v.id);
+  const embedIds = embeds.map((embed) => embed.id);
   let lastId = '';
 
   const contextBase: ScrapeContext = {
@@ -63,47 +63,41 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
     sourceIds: sources.map((v) => v.id),
   });
 
-  for (const s of sources) {
-    ops.events?.start?.(s.id);
-    lastId = s.id;
+  for (const source of sources) {
+    ops.events?.start?.(source.id);
+    lastId = source.id;
 
     // run source scrapers
     let output: SourcererOutput | null = null;
     try {
-      if (ops.media.type === 'movie' && s.scrapeMovie)
-        output = await s.scrapeMovie({
+      if (ops.media.type === 'movie' && source.scrapeMovie)
+        output = await source.scrapeMovie({
           ...contextBase,
           media: ops.media,
         });
-      else if (ops.media.type === 'show' && s.scrapeShow)
-        output = await s.scrapeShow({
+      else if (ops.media.type === 'show' && source.scrapeShow)
+        output = await source.scrapeShow({
           ...contextBase,
           media: ops.media,
         });
       if (output) {
         output.stream = (output.stream ?? [])
-          .filter((stream) => isValidStream(stream))
+          .filter(isValidStream)
           .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
       }
-      if (!output) throw Error('No output');
-      if ((!output.stream || output.stream.length === 0) && output.embeds.length === 0)
+      if (!output || (!output.stream?.length && !output.embeds.length)) {
         throw new NotFoundError('No streams found');
-    } catch (err) {
-      if (err instanceof NotFoundError) {
-        ops.events?.update?.({
-          id: s.id,
-          percentage: 100,
-          status: 'notfound',
-          reason: err.message,
-        });
-        continue;
       }
-      ops.events?.update?.({
-        id: s.id,
+    } catch (error) {
+      const updateParams: UpdateEvent = {
+        id: source.id,
         percentage: 100,
-        status: 'failure',
-        error: err,
-      });
+        status: error instanceof NotFoundError ? 'notfound' : 'failure',
+        reason: error instanceof NotFoundError ? error.message : undefined,
+        error: error instanceof NotFoundError ? undefined : error,
+      };
+
+      ops.events?.update?.(updateParams);
       continue;
     }
     if (!output) throw new Error('Invalid media type');
@@ -111,7 +105,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
     // return stream is there are any
     if (output.stream?.[0]) {
       return {
-        sourceId: s.id,
+        sourceId: source.id,
         stream: output.stream[0],
       };
     }
@@ -120,62 +114,56 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
     const sortedEmbeds = output.embeds
       .filter((embed) => {
         const e = list.embeds.find((v) => v.id === embed.embedId);
-        if (!e || e.disabled) return false;
-        return true;
+        return e && !e.disabled;
       })
       .sort((a, b) => embedIds.indexOf(a.embedId) - embedIds.indexOf(b.embedId));
 
     if (sortedEmbeds.length > 0) {
       ops.events?.discoverEmbeds?.({
-        embeds: sortedEmbeds.map((v, i) => ({
-          id: [s.id, i].join('-'),
-          embedScraperId: v.embedId,
+        embeds: sortedEmbeds.map((embed, i) => ({
+          id: [source.id, i].join('-'),
+          embedScraperId: embed.embedId,
         })),
-        sourceId: s.id,
+        sourceId: source.id,
       });
     }
 
-    for (const ind in sortedEmbeds) {
-      if (!Object.prototype.hasOwnProperty.call(sortedEmbeds, ind)) continue;
-      const e = sortedEmbeds[ind];
-      const scraper = embeds.find((v) => v.id === e.embedId);
+    for (const [ind, embed] of sortedEmbeds.entries()) {
+      const scraper = embeds.find((v) => v.id === embed.embedId);
       if (!scraper) throw new Error('Invalid embed returned');
 
       // run embed scraper
-      const id = [s.id, ind].join('-');
+      const id = [source.id, ind].join('-');
       ops.events?.start?.(id);
       lastId = id;
+
       let embedOutput: EmbedOutput;
       try {
         embedOutput = await scraper.scrape({
           ...contextBase,
-          url: e.url,
+          url: embed.url,
         });
         embedOutput.stream = embedOutput.stream
-          .filter((stream) => isValidStream(stream))
+          .filter(isValidStream)
           .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
-        if (embedOutput.stream.length === 0) throw new NotFoundError('No streams found');
-      } catch (err) {
-        if (err instanceof NotFoundError) {
-          ops.events?.update?.({
-            id,
-            percentage: 100,
-            status: 'notfound',
-            reason: err.message,
-          });
-          continue;
+        if (embedOutput.stream.length === 0) {
+          throw new NotFoundError('No streams found');
         }
-        ops.events?.update?.({
-          id,
+      } catch (error) {
+        const updateParams: UpdateEvent = {
+          id: source.id,
           percentage: 100,
-          status: 'failure',
-          error: err,
-        });
+          status: error instanceof NotFoundError ? 'notfound' : 'failure',
+          reason: error instanceof NotFoundError ? error.message : undefined,
+          error: error instanceof NotFoundError ? undefined : error,
+        };
+
+        ops.events?.update?.(updateParams);
         continue;
       }
 
       return {
-        sourceId: s.id,
+        sourceId: source.id,
         embedId: scraper.id,
         stream: embedOutput.stream[0],
       };
