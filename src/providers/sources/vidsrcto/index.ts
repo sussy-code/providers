@@ -52,7 +52,7 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
 
   for (const source of sources.result) {
     if (source.title === 'Vidplay') {
-      const embedUrl = embedUrls.find((v) => v.includes('vidplay'));
+      const embedUrl = embedUrls.find((v) => v.match(/https:\/\/(?:[a-zA-Z0-9]{10})\./));
       if (!embedUrl) continue;
       embeds.push({
         embedId: 'vidplay',
@@ -61,7 +61,7 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
     }
 
     if (source.title === 'Filemoon') {
-      const embedUrl = embedUrls.find((v) => v.includes('filemoon'));
+      const embedUrl = embedUrls.find((v) => v.includes('kerapoxy'));
       if (!embedUrl) continue;
       const fullUrl = new URL(embedUrl);
       if (subtitleUrl) fullUrl.searchParams.set('sub.info', subtitleUrl);
