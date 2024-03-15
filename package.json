@@ -35,7 +35,7 @@
   "homepage": "https://movie-web.github.io/providers/",
   "scripts": {
     "build": "vite build && tsc --noEmit",
-    "cli": "ts-node ./src/dev-cli/index.ts",
+    "cli": "ts-node -T ./src/dev-cli/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:providers": "cross-env MW_TEST_PROVIDERS=true vitest run --reporter verbose",

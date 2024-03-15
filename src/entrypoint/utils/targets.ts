@@ -11,7 +11,7 @@ export const flags = {
   CF_BLOCKED: 'cf-blocked',
 } as const;
 
-export type Flags = (typeof flags)[keyof typeof flags];
+export type Flags = typeof flags[keyof typeof flags];
 
 export const targets = {
   // browser with CORS restrictions
@@ -27,7 +27,7 @@ export const targets = {
   ANY: 'any',
 } as const;
 
-export type Targets = (typeof targets)[keyof typeof targets];
+export type Targets = typeof targets[keyof typeof targets];
 
 export type FeatureMap = {
   requires: Flags[];
