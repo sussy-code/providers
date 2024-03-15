@@ -141,7 +141,7 @@ class Blowfish {
     this.generateSubkeys(t);
   }
 
-  encrypt(e: string): string {
+  encrypt(e: string) {
     const root = this.utf8Decode(e);
     let encrypted = '';
     const blockSize = 8;
@@ -164,7 +164,7 @@ class Blowfish {
     return encrypted;
   }
 
-  decrypt(input: string): string {
+  decrypt(input: string) {
     const numBlocks = Math.ceil(input.length / 8);
     let decrypted = '';
     for (let i = 0; i < numBlocks; i++) {
@@ -179,7 +179,7 @@ class Blowfish {
     return this.utf8Encode(decrypted);
   }
 
-  substitute(value: number): number {
+  substitute(value: number) {
     const t = value >>> 24;
     const n = (value << 8) >>> 24;
     const r = (value << 16) >>> 24;
@@ -190,13 +190,23 @@ class Blowfish {
     return result;
   }
 
-  encipher(e, t) {
-    for (var n, r = 0; r < 16; r++)
-      (n = e = this.xor(e, this.pArray[r])), (e = t = this.xor(this.substitute(e), t)), (t = n);
-    return (n = e), (e = t), (t = n), (t = this.xor(t, this.pArray[16])), [(e = this.xor(e, this.pArray[17])), t];
-  }
+  /* eslint-disable */
+  encipher(plaintext: number, key: number) {
+    for (var temp, round = 0; round < 16; round++) {
+      temp = plaintext = this.xor(plaintext, this.pArray[round]);
+      plaintext = key = this.xor(this.substitute(plaintext), key);
+      key = temp;
+    }
+    temp = plaintext;
+    plaintext = key;
+    key = temp;
+    key = this.xor(key, this.pArray[16]);
 
-  decipher(left: number, right: number): [number, number] {
+    return [(plaintext = this.xor(plaintext, this.pArray[17])), key];
+  }
+  /* eslint-enable */
+
+  decipher(left: number, right: number) {
     let n;
     let e = left;
     let t = right;
@@ -287,7 +297,7 @@ class Blowfish {
     return [this.block32toNum(t), this.block32toNum(n)];
   }
 
-  utf8Decode(input: string): string {
+  utf8Decode(input: string) {
     let decoded = '';
     for (let i = 0; i < input.length; i++) {
       const charCode = input.charCodeAt(i);
@@ -307,7 +317,7 @@ class Blowfish {
     return decoded;
   }
 
-  utf8Encode(input: string): string {
+  utf8Encode(input: string) {
     let encoded = '';
     let charCode;
     for (let i = 0; i < input.length; i++) {
@@ -328,7 +338,7 @@ class Blowfish {
     return encoded;
   }
 
-  bd(e: string): string {
+  bd(e: string) {
     let t;
     let n;
     let r;
