@@ -254,7 +254,7 @@ class Blowfish {
     }
   }
 
-  block32toNum(e) {
+  block32toNum(e: string) {
     return this.fixNegative(
       (e.charCodeAt(0) << 24) | (e.charCodeAt(1) << 16) | (e.charCodeAt(2) << 8) | e.charCodeAt(3),
     );
