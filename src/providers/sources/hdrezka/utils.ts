@@ -52,7 +52,6 @@ function parseVideoLinks(inputString?: string): FileBasedStream['qualities'] {
       const numericQualityMatch = qualityText.match(/(\d+p)/);
       const quality = numericQualityMatch ? numericQualityMatch[1] : 'Unknown';
 
-      console.log(quality, mp4Url);
       const validQuality = getValidQualityFromString(quality);
       result[validQuality] = { type: 'mp4', url: mp4Url };
     }
