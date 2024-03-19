@@ -22,7 +22,7 @@ module.exports = {
     'no-bitwise': 'off',
     'no-underscore-dangle': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    'no-console': 'off',
+    'no-console': ['error', { allow: ['warn', 'error'] }],
     '@typescript-eslint/no-this-alias': 'off',
     'import/prefer-default-export': 'off',
     '@typescript-eslint/no-empty-function': 'off',
