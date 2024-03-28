@@ -23,6 +23,9 @@ export const voeScraper = makeEmbed({
           playlist: streamUrl,
           flags: [flags.CORS_ALLOWED],
           captions: [],
+          headers: {
+            Referer: 'https://voe.sx',
+          },
         },
       ],
     };

@@ -29,6 +29,9 @@ export const streamtapeScraper = makeEmbed({
               url,
             },
           },
+          headers: {
+            Referer: 'https://streamtape.com',
+          },
         },
       ],
     };

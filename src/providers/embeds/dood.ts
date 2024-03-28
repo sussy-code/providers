@@ -51,7 +51,7 @@ export const doodScraper = makeEmbed({
             },
           },
           headers: {
-            Referer: 'https://d0000d.com/',
+            Referer: baseUrl,
           },
         },
       ],

@@ -71,13 +71,13 @@ async function getStreams(title: string) {
 export const primewireScraper = makeSourcerer({
   id: 'primewire',
   name: 'Primewire',
-  rank: 350,
+  rank: 250,
   flags: [flags.CORS_ALLOWED],
   async scrapeMovie(ctx) {
     if (!ctx.media.imdbId) throw new Error('No imdbId provided');
     const searchResult = await search(ctx, ctx.media.imdbId);
 
-    const title = await ctx.fetcher<string>(`movie/${searchResult}`, {
+    const title = await ctx.proxiedFetcher<string>(`movie/${searchResult}`, {
       baseUrl: primewireBase,
     });
 
@@ -91,7 +91,7 @@ export const primewireScraper = makeSourcerer({
     if (!ctx.media.imdbId) throw new Error('No imdbId provided');
     const searchResult = await search(ctx, ctx.media.imdbId);
 
-    const season = await ctx.fetcher<string>(`tv/${searchResult}`, {
+    const season = await ctx.proxiedFetcher<string>(`tv/${searchResult}`, {
       baseUrl: primewireBase,
     });
 
@@ -105,7 +105,7 @@ export const primewireScraper = makeSourcerer({
 
     if (!episodeLink) throw new NotFoundError('No episode links found');
 
-    const title = await ctx.fetcher<string>(episodeLink, {
+    const title = await ctx.proxiedFetcher<string>(episodeLink, {
       baseUrl: primewireBase,
     });
 
