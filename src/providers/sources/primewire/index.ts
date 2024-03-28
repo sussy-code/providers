@@ -51,6 +51,9 @@ async function getStreams(title: string) {
         case 'streamvid.net':
           embedId = 'streamvid';
           break;
+        case 'dood.watch':
+          embedId = 'dood';
+          break;
         default:
           embedId = null;
       }
