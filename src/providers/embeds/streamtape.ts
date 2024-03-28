@@ -3,7 +3,7 @@ import { makeEmbed } from '@/providers/base';
 
 export const streamtapeScraper = makeEmbed({
   id: 'streamtape',
-  name: 'streamtape',
+  name: 'Streamtape',
   rank: 160,
   async scrape(ctx) {
     const embed = await ctx.proxiedFetcher<string>(ctx.url);
