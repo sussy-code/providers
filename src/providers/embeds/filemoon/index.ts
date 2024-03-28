@@ -19,7 +19,7 @@ export const fileMoonScraper = makeEmbed({
         referer: ctx.url,
       },
     });
-    const evalCode = evalCodeRegex.exec(embedRes);
+    const evalCode = embedRes.match(evalCodeRegex);
     if (!evalCode) throw new Error('Failed to find eval code');
     const unpacked = unpack(evalCode[1]);
     const file = fileRegex.exec(unpacked);
