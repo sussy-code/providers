@@ -23,6 +23,7 @@ import { fileMoonScraper } from './embeds/filemoon';
 import { ridooScraper } from './embeds/ridoo';
 import { smashyStreamDScraper } from './embeds/smashystream/dued';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
+import { streamtapeScraper } from './embeds/streamtape';
 import { streamvidScraper } from './embeds/streamvid';
 import { vidCloudScraper } from './embeds/vidcloud';
 import { vidplayScraper } from './embeds/vidplay';
@@ -80,5 +81,6 @@ export function gatherAllEmbeds(): Array<Embed> {
     doodScraper,
     streamvidScraper,
     voeScraper,
+    streamtapeScraper,
   ];
 }
