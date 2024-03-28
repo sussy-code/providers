@@ -5,8 +5,8 @@ import { makeSourcerer } from '@/providers/base';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-import { getLinks } from './blowfish';
 import { primewireApiKey, primewireBase } from './common';
+import { getLinks } from './decryption/blowfish';
 
 async function search(ctx: ScrapeContext, imdbId: string) {
   const searchResult = await ctx.proxiedFetcher<{
@@ -31,6 +31,8 @@ async function getStreams(title: string) {
 
   const embeds = [];
 
+  if (!links) throw new NotFoundError('No links found');
+
   for (const link in links) {
     if (link.includes(link)) {
       const element = titlePage(`.propper-link[link_version='${link}']`);
@@ -54,7 +56,7 @@ async function getStreams(title: string) {
       }
       if (!embedId) continue;
       embeds.push({
-        url: `https://www.primewire.tf/links/go/${links[link]}`,
+        url: `${primewireBase}/links/go/${links[link]}`,
         embedId,
       });
     }
@@ -66,7 +68,7 @@ async function getStreams(title: string) {
 export const primewireScraper = makeSourcerer({
   id: 'primewire',
   name: 'Primewire',
-  rank: 250,
+  rank: 350,
   flags: [flags.CORS_ALLOWED],
   async scrapeMovie(ctx) {
     if (!ctx.media.imdbId) throw new Error('No imdbId provided');

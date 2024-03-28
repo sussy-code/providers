@@ -1,8 +1,8 @@
-const pArray = [
+export const pArray = [
   608135816, 2242054355, 320440878, 57701188, 2752067618, 698298832, 137296536, 3964562569, 1160258022, 953160567,
   3193202383, 887688300, 3232508343, 3380367581, 1065670069, 3041331479, 2450970073, 2306472731,
 ];
-const sBox0 = [
+export const sBox0 = [
   3509652390, 2564797868, 805139163, 3491422135, 3101798381, 1780907670, 3128725573, 4046225305, 614570311, 3012652279,
   134345442, 2240740374, 1667834072, 1901547113, 2757295779, 4103290238, 227898511, 1921955416, 1904987480, 2182433518,
   2069144605, 3260701109, 2620446009, 720527379, 3318853667, 677414384, 3393288472, 3101374703, 2390351024, 1614419982,
@@ -30,7 +30,7 @@ const sBox0 = [
   2589141269, 3591329599, 3164325604, 727753846, 2179363840, 146436021, 1461446943, 4069977195, 705550613, 3059967265,
   3887724982, 4281599278, 3313849956, 1404054877, 2845806497, 146425753, 1854211946,
 ];
-const sBox1 = [
+export const sBox1 = [
   1266315497, 3048417604, 3681880366, 3289982499, 290971e4, 1235738493, 2632868024, 2414719590, 3970600049, 1771706367,
   1449415276, 3266420449, 422970021, 1963543593, 2690192192, 3826793022, 1062508698, 1531092325, 1804592342, 2583117782,
   2714934279, 4024971509, 1294809318, 4028980673, 1289560198, 2221992742, 1669523910, 35572830, 157838143, 1052438473,
@@ -58,7 +58,7 @@ const sBox1 = [
   3305899714, 1510255612, 2148256476, 2655287854, 3276092548, 4258621189, 236887753, 3681803219, 274041037, 1734335097,
   3815195456, 3317970021, 1899903192, 1026095262, 4050517792, 356393447, 2410691914, 3873677099, 3682840055,
 ];
-const sBox2 = [
+export const sBox2 = [
   3913112168, 2491498743, 4132185628, 2489919796, 1091903735, 1979897079, 3170134830, 3567386728, 3557303409, 857797738,
   1136121015, 1342202287, 507115054, 2535736646, 337727348, 3213592640, 1301675037, 2528481711, 1895095763, 1721773893,
   3216771564, 62756741, 2142006736, 835421444, 2531993523, 1442658625, 3659876326, 2882144922, 676362277, 1392781812,
@@ -86,7 +86,7 @@ const sBox2 = [
   1917689273, 448879540, 3550394620, 3981727096, 150775221, 3627908307, 1303187396, 508620638, 2975983352, 2726630617,
   1817252668, 1876281319, 1457606340, 908771278, 3720792119, 3617206836, 2455994898, 1729034894, 1080033504,
 ];
-const sBox3 = [
+export const sBox3 = [
   976866871, 3556439503, 2881648439, 1522871579, 1555064734, 1336096578, 3548522304, 2579274686, 3574697629, 3205460757,
   3593280638, 3338716283, 3079412587, 564236357, 2993598910, 1781952180, 1464380207, 3163844217, 3332601554, 1699332808,
   1393555694, 1183702653, 3581086237, 1288719814, 691649499, 2847557200, 2895455976, 3193889540, 2717570544, 1781354906,
@@ -114,265 +114,3 @@ const sBox3 = [
   3124240540, 4148612726, 2007998917, 544563296, 2244738638, 2330496472, 2058025392, 1291430526, 424198748, 50039436,
   29584100, 3605783033, 2429876329, 2791104160, 1057563949, 3255363231, 3075367218, 3463963227, 1469046755, 985887462,
 ];
-
-class Blowfish {
-  sBox0: number[];
-
-  sBox1: number[];
-
-  sBox2: number[];
-
-  sBox3: number[];
-
-  pArray: number[];
-
-  keyStr: string;
-
-  iv: string;
-
-  constructor(t: string) {
-    this.sBox0 = sBox0.slice();
-    this.sBox1 = sBox1.slice();
-    this.sBox2 = sBox2.slice();
-    this.sBox3 = sBox3.slice();
-    this.pArray = pArray.slice();
-    this.keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-    this.iv = 'abc12345';
-    this.generateSubkeys(t);
-  }
-
-  encrypt(e: string) {
-    const root = this.utf8Decode(e);
-    let encrypted = '';
-    const blockSize = 8;
-    const paddingChar = '\0';
-    const numBlocks = Math.ceil(e.length / blockSize);
-
-    for (let i = 0; i < numBlocks; i++) {
-      let block = root.substr(blockSize * i, blockSize);
-
-      if (block.length < blockSize) {
-        block += paddingChar.repeat(blockSize - block.length);
-      }
-
-      let [left, right] = this.split64by32(block);
-      [left, right] = this.encipher(left, right);
-
-      encrypted += this.num2block32(left) + this.num2block32(right);
-    }
-
-    return encrypted;
-  }
-
-  decrypt(input: string) {
-    const numBlocks = Math.ceil(input.length / 8);
-    let decrypted = '';
-    for (let i = 0; i < numBlocks; i++) {
-      const block = input.substr(8 * i, 8);
-      if (block.length < 8) {
-        throw new Error('Invalid block size');
-      }
-      const [left, right] = this.split64by32(block);
-      const [decipheredLeft, decipheredRight] = this.decipher(left, right);
-      decrypted += this.num2block32(decipheredLeft) + this.num2block32(decipheredRight);
-    }
-    return this.utf8Encode(decrypted);
-  }
-
-  substitute(value: number) {
-    const t = value >>> 24;
-    const n = (value << 8) >>> 24;
-    const r = (value << 16) >>> 24;
-    const i = (value << 24) >>> 24;
-    let result = this.addMod32(this.sBox0[t], this.sBox1[n]);
-    result = this.xor(result, this.sBox2[r]);
-    result = this.addMod32(result, this.sBox3[i]);
-    return result;
-  }
-
-  /* eslint-disable */
-  encipher(plaintext: number, key: number) {
-    for (var temp, round = 0; round < 16; round++) {
-      temp = plaintext = this.xor(plaintext, this.pArray[round]);
-      plaintext = key = this.xor(this.substitute(plaintext), key);
-      key = temp;
-    }
-    temp = plaintext;
-    plaintext = key;
-    key = temp;
-    key = this.xor(key, this.pArray[16]);
-
-    return [(plaintext = this.xor(plaintext, this.pArray[17])), key];
-  }
-  /* eslint-enable */
-
-  decipher(left: number, right: number) {
-    let n;
-    let e = left;
-    let t = right;
-    n = this.xor(e, this.pArray[17]);
-    e = this.xor(t, this.pArray[16]);
-    t = n;
-    for (let r = 15; r >= 0; r--) {
-      n = e;
-      e = t;
-      t = n;
-      t = this.xor(this.substitute(e), t);
-      e = this.xor(e, this.pArray[r]);
-    }
-    return [e, t];
-  }
-
-  generateSubkeys(key: string) {
-    let temp;
-    let keyIndex = 0;
-    let pIndex = 0;
-    for (let i = 0; i < 18; i++) {
-      temp = 0;
-      for (let j = 0; j < 4; j++) {
-        temp = this.fixNegative((temp << 8) | key.charCodeAt(keyIndex));
-        keyIndex = (keyIndex + 1) % key.length;
-      }
-      this.pArray[pIndex] = this.xor(this.pArray[pIndex], temp);
-      pIndex++;
-    }
-    let tempSubkey = [0, 0];
-    for (let i = 0; i < 18; i += 2) {
-      tempSubkey = this.encipher(tempSubkey[0], tempSubkey[1]);
-      this.pArray[i] = tempSubkey[0];
-      this.pArray[i + 1] = tempSubkey[1];
-    }
-    for (let i = 0; i < 256; i += 2) {
-      tempSubkey = this.encipher(tempSubkey[0], tempSubkey[1]);
-      this.sBox0[i] = tempSubkey[0];
-      this.sBox0[i + 1] = tempSubkey[1];
-    }
-    for (let i = 0; i < 256; i += 2) {
-      tempSubkey = this.encipher(tempSubkey[0], tempSubkey[1]);
-      this.sBox1[i] = tempSubkey[0];
-      this.sBox1[i + 1] = tempSubkey[1];
-    }
-    for (let i = 0; i < 256; i += 2) {
-      tempSubkey = this.encipher(tempSubkey[0], tempSubkey[1]);
-      this.sBox2[i] = tempSubkey[0];
-      this.sBox2[i + 1] = tempSubkey[1];
-    }
-    for (let i = 0; i < 256; i += 2) {
-      tempSubkey = this.encipher(tempSubkey[0], tempSubkey[1]);
-      this.sBox3[i] = tempSubkey[0];
-      this.sBox3[i + 1] = tempSubkey[1];
-    }
-  }
-
-  block32toNum(e: string) {
-    return this.fixNegative(
-      (e.charCodeAt(0) << 24) | (e.charCodeAt(1) << 16) | (e.charCodeAt(2) << 8) | e.charCodeAt(3),
-    );
-  }
-
-  num2block32(e: number) {
-    return (
-      String.fromCharCode(e >>> 24) +
-      String.fromCharCode((e << 8) >>> 24) +
-      String.fromCharCode((e << 16) >>> 24) +
-      String.fromCharCode((e << 24) >>> 24)
-    );
-  }
-
-  xor(e: number, t: number) {
-    return this.fixNegative(e ^ t);
-  }
-
-  addMod32(e: number, t: number) {
-    return this.fixNegative((e + t) | 0);
-  }
-
-  fixNegative(e: number) {
-    return e >>> 0;
-  }
-
-  split64by32(e: string) {
-    const t = e.substring(0, 4);
-    const n = e.substring(4, 8);
-    return [this.block32toNum(t), this.block32toNum(n)];
-  }
-
-  utf8Decode(input: string) {
-    let decoded = '';
-    for (let i = 0; i < input.length; i++) {
-      const charCode = input.charCodeAt(i);
-      if (charCode < 128) {
-        decoded += String.fromCharCode(charCode);
-      } else if (charCode > 127 && charCode < 2048) {
-        const firstCharCode = (charCode >> 6) | 192;
-        const secondCharCode = (63 & charCode) | 128;
-        decoded += String.fromCharCode(firstCharCode, secondCharCode);
-      } else {
-        const firstCharCode = (charCode >> 12) | 224;
-        const secondCharCode = ((charCode >> 6) & 63) | 128;
-        const thirdCharCode = (63 & charCode) | 128;
-        decoded += String.fromCharCode(firstCharCode, secondCharCode, thirdCharCode);
-      }
-    }
-    return decoded;
-  }
-
-  utf8Encode(input: string) {
-    let encoded = '';
-    let charCode;
-    for (let i = 0; i < input.length; i++) {
-      charCode = input.charCodeAt(i);
-      if (charCode < 128) {
-        encoded += String.fromCharCode(charCode);
-      } else if (charCode > 191 && charCode < 224) {
-        const secondCharCode = input.charCodeAt(i + 1);
-        encoded += String.fromCharCode(((31 & charCode) << 6) | (63 & secondCharCode));
-        i += 1;
-      } else {
-        const secondCharCode = input.charCodeAt(i + 1);
-        const thirdCharCode = input.charCodeAt(i + 2);
-        encoded += String.fromCharCode(((15 & charCode) << 12) | ((63 & secondCharCode) << 6) | (63 & thirdCharCode));
-        i += 2;
-      }
-    }
-    return encoded;
-  }
-
-  bd(e: string) {
-    let t;
-    let n;
-    let r;
-    let i;
-    let o;
-    let a;
-    let s = '';
-    let l = 0;
-    const root = e.replace(/[^A-Za-z0-9\\+\\/=]/g, '');
-    while (l < root.length) {
-      t = (this.keyStr.indexOf(root.charAt(l++)) << 2) | ((i = this.keyStr.indexOf(root.charAt(l++))) >> 4);
-      n = ((15 & i) << 4) | ((o = this.keyStr.indexOf(root.charAt(l++))) >> 2);
-      r = ((3 & o) << 6) | (a = this.keyStr.indexOf(root.charAt(l++)));
-      s += String.fromCharCode(t);
-      if (o !== 64) {
-        s += String.fromCharCode(n);
-      }
-      if (a !== 64) {
-        s += String.fromCharCode(r);
-      }
-    }
-    return s;
-  }
-}
-
-export function getLinks(e: string) {
-  const t = e.slice(-10);
-  const n = e.slice(0, -10);
-  const r = new Blowfish(t);
-  const returnedValue = r.decrypt(r.bd(n)).match(/.{1,5}/g);
-
-  if (!returnedValue) {
-    throw new Error('No links found');
-  } else {
-    return returnedValue;
-  }
-}
