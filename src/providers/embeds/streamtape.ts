@@ -24,7 +24,7 @@ export const streamtapeScraper = makeEmbed({
           flags: [flags.CORS_ALLOWED, flags.IP_LOCKED],
           captions: [],
           qualities: {
-            '1080': {
+            unknown: {
               type: 'mp4',
               url,
             },
