@@ -3,15 +3,20 @@ import { customAlphabet } from 'nanoid';
 import { makeEmbed } from '@/providers/base';
 
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 10);
+const baseUrl = 'https://d000d.com';
 
 export const doodScraper = makeEmbed({
   id: 'dood',
   name: 'dood',
   rank: 173,
   async scrape(ctx) {
-    const baseUrl = 'https://d0000d.com';
+    let url = ctx.url;
+    if (ctx.url.includes('primewire')) {
+      const request = await ctx.proxiedFetcher.full(ctx.url);
+      url = request.finalUrl;
+    }
 
-    const id = ctx.url.split('/d/')[1] || ctx.url.split('/e/')[1];
+    const id = url.split('/d/')[1] || url.split('/e/')[1];
 
     const doodData = await ctx.proxiedFetcher<string>(`/e/${id}`, {
       method: 'GET',
@@ -46,7 +51,7 @@ export const doodScraper = makeEmbed({
             },
           },
           headers: {
-            Referer: 'https://d0000d.com/',
+            Referer: baseUrl,
           },
         },
       ],
