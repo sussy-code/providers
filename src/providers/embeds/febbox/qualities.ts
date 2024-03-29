@@ -20,6 +20,21 @@ function mapToQuality(quality: FebboxQuality): FebboxQuality | null {
   };
 }
 
+function removeBadUrlParams(url: string): string {
+  const urlObject = new URL(url);
+
+  const urlSearchParams = new URLSearchParams(urlObject.search);
+
+  const keysToKeep = ['KEY1', 'KEY2'];
+  for (const key of Array.from(urlSearchParams.keys())) {
+    if (!keysToKeep.includes(key)) {
+      urlSearchParams.delete(key);
+    }
+  }
+
+  return `${urlObject.origin}${urlObject.pathname}?${urlSearchParams.toString()}`;
+}
+
 export async function getStreamQualities(ctx: ScrapeContext, apiQuery: object) {
   const mediaRes: { list: FebboxQuality[] } = (await sendRequest(ctx, apiQuery)).data;
 
@@ -32,7 +47,7 @@ export async function getStreamQualities(ctx: ScrapeContext, apiQuery: object) {
     if (foundQuality) {
       qualities[quality] = {
         type: 'mp4',
-        url: foundQuality.path,
+        url: removeBadUrlParams(foundQuality.path),
       };
     }
   });
