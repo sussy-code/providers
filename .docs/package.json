@@ -7,7 +7,8 @@
     "build": "nuxi build",
     "generate": "nuxi generate",
     "preview": "nuxi preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "preinstall": "npx -y only-allow pnpm"
   },
   "devDependencies": {
     "@nuxt-themes/docus": "^1.13.1",

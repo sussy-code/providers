@@ -1,4 +1,4 @@
-import { makeProviders, makeStandardFetcher, targets } from '../../lib/index.mjs';
+import { makeProviders, makeStandardFetcher, targets } from '../../lib/index.js';
 
 (window as any).TEST = () => {
   makeProviders({

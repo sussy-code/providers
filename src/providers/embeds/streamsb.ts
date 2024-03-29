@@ -146,13 +146,16 @@ export const streamsbScraper = makeEmbed({
 
     ctx.progress(80);
 
-    const qualities = dls.reduce((a, v) => {
-      a[v.quality] = {
-        type: 'mp4',
-        url: v.url as string,
-      };
-      return a;
-    }, {} as Record<string, StreamFile>);
+    const qualities = dls.reduce(
+      (a, v) => {
+        a[v.quality] = {
+          type: 'mp4',
+          url: v.url as string,
+        };
+        return a;
+      },
+      {} as Record<string, StreamFile>,
+    );
 
     return {
       stream: [
