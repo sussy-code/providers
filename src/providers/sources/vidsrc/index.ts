@@ -6,7 +6,7 @@ import { scrapeShow } from '@/providers/sources/vidsrc/scrape-show';
 export const vidsrcScraper = makeSourcerer({
   id: 'vidsrc',
   name: 'VidSrc',
-  rank: 120,
+  rank: 90,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie,
   scrapeShow,

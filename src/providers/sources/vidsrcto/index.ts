@@ -11,11 +11,11 @@ const vidSrcToBase = 'https://vidsrc.to';
 const referer = `${vidSrcToBase}/`;
 
 const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> => {
-  const imdbId = ctx.media.imdbId;
+  const mediaId = ctx.media.imdbId ?? ctx.media.tmdbId;
   const url =
     ctx.media.type === 'movie'
-      ? `/embed/movie/${imdbId}`
-      : `/embed/tv/${imdbId}/${ctx.media.season.number}/${ctx.media.episode.number}`;
+      ? `/embed/movie/${mediaId}`
+      : `/embed/tv/${mediaId}/${ctx.media.season.number}/${ctx.media.episode.number}`;
   const mainPage = await ctx.proxiedFetcher<string>(url, {
     baseUrl: vidSrcToBase,
     headers: {
@@ -79,5 +79,5 @@ export const vidSrcToScraper = makeSourcerer({
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
   flags: [flags.CORS_ALLOWED],
-  rank: 300,
+  rank: 130,
 });

@@ -19,10 +19,11 @@ module.exports = {
   plugins: ['@typescript-eslint', 'import', 'prettier'],
   rules: {
     'no-plusplus': 'off',
+    'class-methods-use-this': 'off',
     'no-bitwise': 'off',
     'no-underscore-dangle': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    'no-console': 'off',
+    'no-console': ['error', { allow: ['warn', 'error'] }],
     '@typescript-eslint/no-this-alias': 'off',
     'import/prefer-default-export': 'off',
     '@typescript-eslint/no-empty-function': 'off',

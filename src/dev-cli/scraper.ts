@@ -41,6 +41,8 @@ async function runBrowserScraping(
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
+    // This is the dev cli, so we can use console.log
+    // eslint-disable-next-line no-console
     page.on('console', (message) => console.log(`${message.type().slice(0, 3).toUpperCase()} ${message.text()}`));
     await page.goto(server.resolvedUrls.local[0]);
     await page.waitForFunction('!!window.scrape', { timeout: 5000 });
