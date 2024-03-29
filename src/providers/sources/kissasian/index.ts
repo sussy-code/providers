@@ -12,7 +12,7 @@ import { search } from './search';
 export const kissAsianScraper = makeSourcerer({
   id: 'kissasian',
   name: 'KissAsian',
-  rank: 130,
+  rank: 40,
   flags: [flags.CORS_ALLOWED],
   disabled: true,
 
