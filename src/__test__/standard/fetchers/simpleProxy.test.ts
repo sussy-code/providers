@@ -128,21 +128,21 @@ describe('makeSimpleProxyFetcher()', () => {
       },
       outputBody: 'hello world',
     });
-    // setResult("json", { hello: 42 });
-    // expectFetchCall({
-    //   inputUrl: "https://google.com/",
-    //   input: {
-    //     method: "POST",
-    //     query: {},
-    //     readHeaders: [],
-    //     headers: {},
-    //   },
-    //   outputUrl: `https://example.com/proxy?destination=${encodeURIComponent('https://google.com/')}`,
-    //   output: {
-    //     method: "POST",
-    //     headers: {},
-    //   },
-    //   outputBody: { hello: 42 }
-    // })
+    setResult('json', { hello: 42 });
+    expectFetchCall({
+      inputUrl: 'https://google.com/',
+      input: {
+        method: 'POST',
+        query: {},
+        readHeaders: [],
+        headers: {},
+      },
+      outputUrl: `https://example.com/proxy?destination=${encodeURIComponent('https://google.com/')}`,
+      output: {
+        method: 'POST',
+        headers: {},
+      },
+      outputBody: { hello: 42 },
+    });
   });
 });
