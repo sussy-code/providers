@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "es2021",
     "lib": ["es2021", "DOM"],
-    "module": "CommonJS",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "declaration": true,
     "outDir": "./lib",
@@ -11,14 +12,12 @@
     "experimentalDecorators": true,
     "isolatedModules": false,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "paths": {
       "@/*": ["./*"],
       "@entrypoint": ["./index.ts"]
     }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "**/__test__"],
-  "ts-node": {
-    "require": ["tsconfig-paths/register"]
-  }
+  "include": ["src", "vite.config.ts"],
+  "exclude": ["node_modules", "**/__test__"]
 }

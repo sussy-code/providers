@@ -11,28 +11,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    
-    - name: Install Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Install packages
-      working-directory: ./.docs
-      run: npm install
-    
-    - name: Build project
-      working-directory: ./.docs
-      run: npm run generate
-      env:
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install packages
+        working-directory: ./.docs
+        run: pnpm install
+
+      - name: Build project
+        working-directory: ./.docs
+        run: pnpm run generate
+        env:
           NUXT_APP_BASE_URL: /providers/
 
-    - name: Upload production-ready build files
-      uses: actions/upload-pages-artifact@v1
-      with: 
-        path: ./.docs/.output/public
+      - name: Upload production-ready build files
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./.docs/.output/public
 
   deploy:
     name: Deploy

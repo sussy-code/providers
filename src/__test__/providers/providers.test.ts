@@ -1,15 +1,15 @@
-import { testSource } from "./providerUtils";
-import { lookmovieScraper } from "@/providers/sources/lookmovie";
-import { testMedia } from "./testMedia";
-import { showboxScraper } from "@/providers/sources/showbox";
+import { testSource } from './providerUtils';
+import { lookmovieScraper } from '@/providers/sources/lookmovie';
+import { testMedia } from './testMedia';
+import { showboxScraper } from '@/providers/sources/showbox';
 import dotenv from 'dotenv';
-import { flixhqScraper } from "@/providers/sources/flixhq";
-import { goMoviesScraper } from "@/providers/sources/gomovies";
-import { smashyStreamScraper } from "@/providers/sources/smashystream";
-import { vidsrcScraper } from "@/providers/sources/vidsrc";
-import { vidSrcToScraper } from "@/providers/sources/vidsrcto";
-import { zoechipScraper } from "@/providers/sources/zoechip";
-import { remotestreamScraper } from "@/providers/sources/remotestream";
+import { flixhqScraper } from '@/providers/sources/flixhq';
+import { goMoviesScraper } from '@/providers/sources/gomovies';
+import { smashyStreamScraper } from '@/providers/sources/smashystream';
+import { vidsrcScraper } from '@/providers/sources/vidsrc';
+import { vidSrcToScraper } from '@/providers/sources/vidsrcto';
+import { zoechipScraper } from '@/providers/sources/zoechip';
+import { remotestreamScraper } from '@/providers/sources/remotestream';
 
 dotenv.config();
 
@@ -19,8 +19,8 @@ testSource({
   types: ['ip:standard'],
   expect: {
     streams: 1,
-  }
-})
+  },
+});
 
 testSource({
   source: showboxScraper,
@@ -28,8 +28,8 @@ testSource({
   types: ['standard', 'proxied'],
   expect: {
     embeds: 1,
-  }
-})
+  },
+});
 
 testSource({
   source: flixhqScraper,
@@ -37,8 +37,8 @@ testSource({
   types: ['standard', 'proxied'],
   expect: {
     embeds: 1,
-  }
-})
+  },
+});
 
 testSource({
   source: goMoviesScraper,
@@ -46,8 +46,8 @@ testSource({
   types: ['standard', 'proxied'],
   expect: {
     embeds: 1,
-  }
-})
+  },
+});
 
 testSource({
   source: smashyStreamScraper,
@@ -55,8 +55,8 @@ testSource({
   types: ['standard', 'proxied'],
   expect: {
     embeds: 1,
-  }
-})
+  },
+});
 
 testSource({
   source: vidsrcScraper,
@@ -64,8 +64,8 @@ testSource({
   types: ['standard', 'proxied'],
   expect: {
     embeds: 1,
-  }
-})
+  },
+});
 
 testSource({
   source: vidSrcToScraper,
@@ -73,8 +73,8 @@ testSource({
   types: ['standard', 'proxied'],
   expect: {
     embeds: 2,
-  }
-})
+  },
+});
 
 testSource({
   source: zoechipScraper,
@@ -82,8 +82,8 @@ testSource({
   types: ['standard', 'proxied'],
   expect: {
     embeds: 3,
-  }
-})
+  },
+});
 
 testSource({
   source: remotestreamScraper,
@@ -91,5 +91,5 @@ testSource({
   types: ['standard', 'proxied'],
   expect: {
     streams: 1,
-  }
-})
+  },
+});

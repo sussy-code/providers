@@ -1,9 +1,9 @@
-import { makeStandardFetcher } from "@/fetchers/standardFetch";
-import { DefaultedFetcherOptions } from "@/fetchers/types";
-import { Headers } from "node-fetch";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { makeStandardFetcher } from '@/fetchers/standardFetch';
+import { DefaultedFetcherOptions } from '@/fetchers/types';
+import { Headers } from 'node-fetch';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-describe("makeStandardFetcher()", () => {
+describe('makeStandardFetcher()', () => {
   const fetch = vi.fn();
   const fetcher = makeStandardFetcher(fetch);
 
@@ -11,129 +11,139 @@ describe("makeStandardFetcher()", () => {
     vi.clearAllMocks();
   });
 
-  function setResult(type: "text" | "json", value: any) {
-    if (type === 'text') return fetch.mockResolvedValueOnce({
-      headers: new Headers({
-        "content-type": "text/plain",
-      }),
-      status: 204,
-      url: "test123",
-      text() { 
-        return Promise.resolve(value);
-      },
-    });
-    if (type === 'json') return fetch.mockResolvedValueOnce({
-      headers: new Headers({
-        "content-type": "application/json",
-      }),
-      status: 204,
-      url: "test123",
-      json() {
-        return Promise.resolve(value);
-      },
-    });
+  function setResult(type: 'text' | 'json', value: any) {
+    if (type === 'text')
+      return fetch.mockResolvedValueOnce({
+        headers: new Headers({
+          'content-type': 'text/plain',
+        }),
+        status: 204,
+        url: 'test123',
+        text() {
+          return Promise.resolve(value);
+        },
+      });
+    if (type === 'json')
+      return fetch.mockResolvedValueOnce({
+        headers: new Headers({
+          'content-type': 'application/json',
+        }),
+        status: 204,
+        url: 'test123',
+        json() {
+          return Promise.resolve(value);
+        },
+      });
   }
 
-  function expectFetchCall(ops: { inputUrl: string, input: DefaultedFetcherOptions, outputUrl?: string, output: any, outputBody: any }) {
+  function expectFetchCall(ops: {
+    inputUrl: string;
+    input: DefaultedFetcherOptions;
+    outputUrl?: string;
+    output: any;
+    outputBody: any;
+  }) {
     const prom = fetcher(ops.inputUrl, ops.input);
     expect((async () => (await prom).body)()).resolves.toEqual(ops.outputBody);
-    expect((async () => (await prom).headers.entries())()).resolves.toEqual((new Headers()).entries());
+    expect((async () => Array.from((await prom).headers.entries()))()).resolves.toEqual(
+      Array.from(new Headers().entries()),
+    );
     expect((async () => (await prom).statusCode)()).resolves.toEqual(204);
-    expect((async () => (await prom).finalUrl)()).resolves.toEqual("test123");
+    expect((async () => (await prom).finalUrl)()).resolves.toEqual('test123');
     expect(fetch).toBeCalledWith(ops.outputUrl ?? ops.inputUrl, ops.output);
     vi.clearAllMocks();
   }
 
   it('should pass options through', () => {
-    setResult("text", "hello world");
+    setResult('text', 'hello world');
     expectFetchCall({
-      inputUrl: "https://google.com",
+      inputUrl: 'https://google.com',
       input: {
-        method: "GET",
+        method: 'GET',
         query: {},
         readHeaders: [],
         headers: {
-          "X-Hello": "world",
+          'X-Hello': 'world',
         },
       },
-      outputUrl: "https://google.com/",
+      outputUrl: 'https://google.com/',
       output: {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "X-Hello": "world",
+          'X-Hello': 'world',
         },
         body: undefined,
       },
-      outputBody: "hello world"
-    })
-    setResult("text", "hello world");
+      outputBody: 'hello world',
+    });
+    setResult('text', 'hello world');
     expectFetchCall({
-      inputUrl: "https://google.com",
+      inputUrl: 'https://google.com',
       input: {
-        method: "GET",
+        method: 'GET',
         headers: {},
         readHeaders: [],
         query: {
-          "a": 'b',
-        }
+          a: 'b',
+        },
       },
-      outputUrl: "https://google.com/?a=b",
+      outputUrl: 'https://google.com/?a=b',
       output: {
-        method: "GET",
+        method: 'GET',
         headers: {},
       },
-      outputBody: "hello world"
-    })
-    setResult("text", "hello world");
+      outputBody: 'hello world',
+    });
+    setResult('text', 'hello world');
     expectFetchCall({
-      inputUrl: "https://google.com",
+      inputUrl: 'https://google.com',
       input: {
         query: {},
         headers: {},
         readHeaders: [],
-        method: "GET"
+        method: 'GET',
       },
-      outputUrl: "https://google.com/",
+      outputUrl: 'https://google.com/',
       output: {
-        method: "GET",
+        method: 'GET',
         headers: {},
       },
-      outputBody: "hello world"
-    })
+      outputBody: 'hello world',
+    });
   });
 
   it('should parse response correctly', () => {
-    setResult("text", "hello world");
+    setResult('text', 'hello world');
     expectFetchCall({
-      inputUrl: "https://google.com/",
+      inputUrl: 'https://google.com/',
       input: {
         query: {},
         headers: {},
         readHeaders: [],
-        method: "POST"
+        method: 'POST',
       },
-      outputUrl: "https://google.com/",
+      outputUrl: 'https://google.com/',
       output: {
-        method: "POST",
+        method: 'POST',
         headers: {},
       },
-      outputBody: "hello world"
-    })
-    setResult("json", { hello: 42 });
+      outputBody: 'hello world',
+    });
+    setResult('json', { hello: 42 });
     expectFetchCall({
-      inputUrl: "https://google.com/",
+      inputUrl: 'https://google.com/',
       input: {
         query: {},
         headers: {},
         readHeaders: [],
-        method: "POST"
+        method: 'POST',
       },
-      outputUrl: "https://google.com/",
+      outputUrl: 'https://google.com/',
       output: {
-        method: "POST",
+        method: 'POST',
         headers: {},
       },
-      outputBody: { hello: 42 }
-    })
+      outputBody: { hello: 42 },
+    });
   });
 });
