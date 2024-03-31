@@ -3,6 +3,7 @@ import { makeEmbed } from '@/providers/base';
 import { parseInputUrl } from '@/providers/embeds/febbox/common';
 import { getStreamQualities } from '@/providers/embeds/febbox/qualities';
 import { getSubtitles } from '@/providers/embeds/febbox/subtitles';
+import { StreamFile } from '@/providers/streams';
 
 export const febboxMp4Scraper = makeEmbed({
   id: 'febbox-mp4',
@@ -38,12 +39,35 @@ export const febboxMp4Scraper = makeEmbed({
     if (fid === undefined) throw new Error('No streamable file found');
     ctx.progress(70);
 
+    const filteredQualities = (
+      await Promise.all(
+        Object.keys(qualities).map(async (quality) => {
+          const url = qualities[quality].url;
+
+          const { statusCode } = await ctx.proxiedFetcher.full(url, {
+            method: 'HEAD',
+          });
+
+          if (statusCode !== 200) return null;
+          return quality;
+        }),
+      )
+    )
+      .filter((quality) => quality !== null)
+      .reduce((acc: Record<string, StreamFile>, quality) => {
+        if (!quality) return acc;
+        acc[quality] = qualities[quality];
+        return acc;
+      }, {});
+
+    if (Object.keys(filteredQualities).length === 0) throw new Error('No streamable file found');
+
     return {
       stream: [
         {
           id: 'primary',
           captions: await getSubtitles(ctx, id, fid, type, episode, season),
-          qualities,
+          qualities: filteredQualities,
           type: 'file',
           flags: [flags.CORS_ALLOWED],
         },
