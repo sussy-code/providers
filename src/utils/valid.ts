@@ -30,7 +30,7 @@ export async function validatePlayableStream(
         ...stream.headers,
       },
     });
-    if (result.statusCode !== 200) return null;
+    if (result.statusCode < 200 || result.statusCode >= 400) return null;
     return stream;
   }
   if (stream.type === 'file') {
