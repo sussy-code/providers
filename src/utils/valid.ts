@@ -22,7 +22,7 @@ export async function validatePlayableStream(
   stream: Stream,
   ops: ProviderRunnerOptions | IndividualEmbedRunnerOptions,
 ): Promise<Stream | null> {
-  const fetcher = stream.flags.includes('cors-allowed') ? ops.fetcher : ops.proxiedFetcher;
+  const fetcher = stream.flags.length === 1 && stream.flags.includes('cors-allowed') ? ops.fetcher : ops.proxiedFetcher;
   if (stream.type === 'hls') {
     const headResult = await fetcher.full(stream.playlist, {
       method: 'HEAD',
