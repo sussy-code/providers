@@ -27,6 +27,8 @@ import { streamtapeScraper } from './embeds/streamtape';
 import { streamvidScraper } from './embeds/streamvid';
 import { vidCloudScraper } from './embeds/vidcloud';
 import { vidplayScraper } from './embeds/vidplay';
+import { jettScraper } from './embeds/vidsrcpro-jett';
+import { viperScraper } from './embeds/vidsrcpro-viper';
 import { voeScraper } from './embeds/voe';
 import { wootlyScraper } from './embeds/wootly';
 import { goojaraScraper } from './sources/goojara';
@@ -35,6 +37,7 @@ import { nepuScraper } from './sources/nepu';
 import { primewireScraper } from './sources/primewire';
 import { ridooMoviesScraper } from './sources/ridomovies';
 import { smashyStreamScraper } from './sources/smashystream';
+import { vidSrcProScraper } from './sources/vidsrcpro';
 import { vidSrcToScraper } from './sources/vidsrcto';
 
 export function gatherAllSources(): Array<Sourcerer> {
@@ -51,6 +54,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     smashyStreamScraper,
     ridooMoviesScraper,
     vidSrcToScraper,
+    vidSrcProScraper,
     nepuScraper,
     goojaraScraper,
     hdRezkaScraper,
@@ -82,5 +86,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     streamvidScraper,
     voeScraper,
     streamtapeScraper,
+    viperScraper,
+    jettScraper,
   ];
 }
