@@ -44,7 +44,7 @@ export const febboxMp4Scraper = makeEmbed({
         Object.keys(qualities).map(async (quality) => {
           const url = qualities[quality].url;
 
-          const { statusCode } = await ctx.proxiedFetcher.full(url, {
+          const { statusCode } = await ctx.fetcher.full(url, {
             method: 'HEAD',
           });
 
