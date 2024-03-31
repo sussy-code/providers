@@ -14,7 +14,7 @@ const server = await preview({
 let browser;
 try {
   browser = await puppeteer.launch({
-    headless: true,
+    headless: 'shell',
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   const page = await browser.newPage();
