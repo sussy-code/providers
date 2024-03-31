@@ -8,7 +8,7 @@ import { Stream } from '@/providers/streams';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 import { reorderOnIdList } from '@/utils/list';
-import { isValidStream } from '@/utils/valid';
+import { isValidStream, validatePlayableStream } from '@/utils/valid';
 
 export type RunOutput = {
   sourceId: string;
@@ -104,9 +104,11 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
 
     // return stream is there are any
     if (output.stream?.[0]) {
+      const playableStream = await validatePlayableStream(output.stream[0], ops);
+      if (!playableStream) throw new NotFoundError('No streams found');
       return {
         sourceId: source.id,
-        stream: output.stream[0],
+        stream: playableStream,
       };
     }
 
@@ -161,11 +163,13 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         ops.events?.update?.(updateParams);
         continue;
       }
+      const playableStream = await validatePlayableStream(embedOutput.stream[0], ops);
+      if (!playableStream) throw new NotFoundError('No streams found');
 
       return {
         sourceId: source.id,
         embedId: scraper.id,
-        stream: embedOutput.stream[0],
+        stream: playableStream,
       };
     }
   }
