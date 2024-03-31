@@ -151,6 +151,9 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         if (embedOutput.stream.length === 0) {
           throw new NotFoundError('No streams found');
         }
+        const playableStream = await validatePlayableStream(embedOutput.stream[0], ops);
+        if (!playableStream) throw new NotFoundError('No streams found');
+        embedOutput.stream = [playableStream];
       } catch (error) {
         const updateParams: UpdateEvent = {
           id: source.id,
@@ -163,13 +166,11 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         ops.events?.update?.(updateParams);
         continue;
       }
-      const playableStream = await validatePlayableStream(embedOutput.stream[0], ops);
-      if (!playableStream) throw new NotFoundError('No streams found');
 
       return {
         sourceId: source.id,
         embedId: scraper.id,
-        stream: playableStream,
+        stream: embedOutput.stream[0],
       };
     }
   }
