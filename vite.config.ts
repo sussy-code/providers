@@ -8,9 +8,9 @@ const shouldTestProviders = process.env.MW_TEST_PROVIDERS === 'true';
 let tests: string[] = ['src/__test__/standard/**/*.test.ts'];
 if (shouldTestProviders) tests = ['src/__test__/providers/**/*.test.ts'];
 
-export default defineConfig({
+export default defineConfig((env) => ({
   plugins: [
-    ...(process.env.NODE_ENV !== 'test' ? [eslintPlugin()] : []),
+    env.mode !== 'test' && eslintPlugin(),
     dts({
       rollupTypes: true,
     }),
@@ -39,4 +39,4 @@ export default defineConfig({
   test: {
     include: tests,
   },
-});
+}));
