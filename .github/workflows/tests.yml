@@ -27,7 +27,7 @@ jobs:
           cache: "pnpm"
 
       - name: Install packages
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile && node ./node_modules/puppeteer/install.mjs
         env:
           PUPPETEER_SKIP_DOWNLOAD: true
 
