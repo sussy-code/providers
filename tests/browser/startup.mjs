@@ -26,7 +26,11 @@ try {
   });
 } finally {
   server.httpServer.close();
-  await browser.close();
+  try {
+    await browser.close();
+  } catch (e) {
+    console.error('Failed to close browser:', e);
+  }
 }
 
 console.log('Success!');
