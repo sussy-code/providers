@@ -38,5 +38,12 @@ export default defineConfig({
   },
   test: {
     include: tests,
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
+    reporters: ['verbose', 'hanging-process'],
   },
 });
