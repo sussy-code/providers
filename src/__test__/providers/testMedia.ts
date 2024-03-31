@@ -1,4 +1,4 @@
-import { ScrapeMedia } from "@/entrypoint/utils/media";
+import { ScrapeMedia } from '@/entrypoint/utils/media';
 
 function makeMedia(media: ScrapeMedia): ScrapeMedia {
   return media;
@@ -6,9 +6,9 @@ function makeMedia(media: ScrapeMedia): ScrapeMedia {
 
 export const testMedia = {
   arcane: makeMedia({
-    type: "show",
-    title: "Arcane",
-    tmdbId: "94605",
+    type: 'show',
+    title: 'Arcane',
+    tmdbId: '94605',
     releaseYear: 2021,
     episode: {
       number: 1,
@@ -18,13 +18,13 @@ export const testMedia = {
       number: 1,
       tmdbId: '134187',
     },
-    imdbId: 'tt11126994'
+    imdbId: 'tt11126994',
   }),
   hamilton: makeMedia({
     type: 'movie',
     tmdbId: '556574',
     imdbId: 'tt8503618',
     releaseYear: 2020,
-    title: 'Hamilton'
-  })
-}
+    title: 'Hamilton',
+  }),
+};

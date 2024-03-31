@@ -1,2 +1,2 @@
-import '../../lib/index.mjs';
+import '../../lib/index.js';
 console.log('import successful!');
