@@ -10,7 +10,7 @@ if (shouldTestProviders) tests = ['src/__test__/providers/**/*.test.ts'];
 
 export default defineConfig({
   plugins: [
-    eslintPlugin({}),
+    ...(process.env.NODE_ENV !== 'test' ? [eslintPlugin()] : []),
     dts({
       rollupTypes: true,
     }),
@@ -38,12 +38,5 @@ export default defineConfig({
   },
   test: {
     include: tests,
-    pool: 'forks',
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
-    },
-    reporters: ['verbose', 'hanging-process'],
   },
 });
