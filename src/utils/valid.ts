@@ -22,26 +22,26 @@ export async function validatePlayableStream(
   stream: Stream,
   ops: ProviderRunnerOptions | IndividualEmbedRunnerOptions,
 ): Promise<Stream | null> {
-  const fetcher = stream.flags.length === 1 && stream.flags.includes('cors-allowed') ? ops.fetcher : ops.proxiedFetcher;
   if (stream.type === 'hls') {
-    const headResult = await fetcher.full(stream.playlist, {
-      method: 'HEAD',
+    const result = await ops.proxiedFetcher.full(stream.playlist, {
+      method: 'GET',
       headers: {
         ...stream.preferredHeaders,
         ...stream.headers,
       },
     });
-    if (headResult.statusCode !== 200) return null;
+    if (result.statusCode !== 200) return null;
     return stream;
   }
   if (stream.type === 'file') {
     const validQualitiesResults = await Promise.all(
       Object.values(stream.qualities).map((quality) =>
-        fetcher.full(quality.url, {
-          method: 'HEAD',
+        ops.proxiedFetcher.full(quality.url, {
+          method: 'GET',
           headers: {
             ...stream.preferredHeaders,
             ...stream.headers,
+            Range: 'bytes=0-1',
           },
         }),
       ),
@@ -49,7 +49,7 @@ export async function validatePlayableStream(
     // remove invalid qualities from the stream
     const validQualities = stream.qualities;
     Object.keys(stream.qualities).forEach((quality, index) => {
-      if (validQualitiesResults[index].statusCode !== 200) {
+      if (validQualitiesResults[index].statusCode < 200 || validQualitiesResults[index].statusCode >= 400) {
         delete validQualities[quality as keyof typeof stream.qualities];
       }
     });
