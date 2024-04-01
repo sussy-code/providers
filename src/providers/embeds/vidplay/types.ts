@@ -3,10 +3,10 @@ export type VidplaySourceResponse = {
     | {
         sources: {
           file: string;
-          tracks: {
-            file: string;
-            kind: string;
-          }[];
+        }[];
+        tracks: {
+          file: string;
+          kind: string;
         }[];
       }
     | number;
@@ -17,3 +17,8 @@ export type SubtitleResult = {
   label: string;
   kind: string;
 }[];
+
+export type ThumbnailTrack = {
+  type: 'vtt';
+  url: string;
+};
