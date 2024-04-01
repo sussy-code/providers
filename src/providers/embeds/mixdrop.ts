@@ -12,7 +12,13 @@ export const mixdropScraper = makeEmbed({
   async scrape(ctx) {
     // Example url: https://mixdrop.co/e/pkwrgp0pizgod0
     // Example url: https://mixdrop.vc/e/pkwrgp0pizgod0
-    const streamRes = await ctx.proxiedFetcher<string>(ctx.url);
+    const finalEmbedUrl = (await ctx.fetcher.full(ctx.url)).finalUrl;
+    const embedId = new URL(finalEmbedUrl).pathname.split('/')[2];
+    // constructing the url because many times mixdrop.co is returned which does not work
+    // this also handels the case where preview page urls are returned
+    // Example: https://mixdrop.vc/f/pkwrgp0pizgod0
+    // these don't have the packed code
+    const streamRes = await ctx.proxiedFetcher<string>(`https://mixdrop.si/e/${embedId}`);
     const packed = streamRes.match(packedRegex);
 
     // MixDrop uses a queue system for embeds
