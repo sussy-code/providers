@@ -92,7 +92,6 @@ export const goMoviesScraper = makeSourcerer({
       },
     });
 
-    // there's a better way to do this but I'm too lazy to do that
     const upcloudSource = await getSource(ctx, sources, 'upcloud');
     const vidcloudSource = await getSource(ctx, sources, 'vidcloud');
     const voeSource = await getSource(ctx, sources, 'voe');
@@ -175,7 +174,6 @@ export const goMoviesScraper = makeSourcerer({
       baseUrl: gomoviesBase,
     });
 
-    // there's a better way to do this but I'm too lazy to do that
     const upcloudSource = await getSource(ctx, sources, 'upcloud');
     const vidcloudSource = await getSource(ctx, sources, 'vidcloud');
     const voeSource = await getSource(ctx, sources, 'voe');

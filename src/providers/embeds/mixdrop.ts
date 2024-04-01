@@ -2,6 +2,7 @@ import * as unpacker from 'unpacker';
 
 import { makeEmbed } from '@/providers/base';
 
+const mixdropBase = 'https://mixdrop.ag';
 const packedRegex = /(eval\(function\(p,a,c,k,e,d\){.*{}\)\))/;
 const linkRegex = /MDCore\.wurl="(.*?)";/;
 
@@ -19,7 +20,6 @@ export const mixdropScraper = makeEmbed({
     // this also handels the case where preview page urls are returned
     // Example: https://mixdrop.vc/f/pkwrgp0pizgod0
     // these don't have the packed code
-    const mixdropBase = 'https://mixdrop.ag';
     const streamRes = await ctx.proxiedFetcher<string>(`/e/${embedId}`, {
       baseUrl: mixdropBase,
     });
