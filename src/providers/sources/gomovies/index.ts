@@ -103,32 +103,32 @@ export const goMoviesScraper = makeSourcerer({
     const embeds = [
       {
         embedId: upcloudScraper.id,
-        url: upcloudSource?.link ?? null,
+        url: upcloudSource?.link,
       },
       {
         embedId: vidCloudScraper.id,
-        url: vidcloudSource?.link ?? null,
+        url: vidcloudSource?.link,
       },
       {
         embedId: voeScraper.id,
-        url: voeSource?.link ?? null,
+        url: voeSource?.link,
       },
       {
         embedId: doodScraper.id,
-        url: doodSource?.link ?? null,
+        url: doodSource?.link,
       },
       {
         embedId: upstreamScraper.id,
-        url: upstreamSource?.link ?? null,
+        url: upstreamSource?.link,
       },
       {
         embedId: mixdropScraper.id,
-        url: mixdropSource?.link ?? null,
+        url: mixdropSource?.link,
       },
     ];
 
     const filteredEmbeds = embeds
-      .filter((embed) => embed.url !== null)
+      .filter((embed) => embed.url)
       .map((embed) => ({
         embedId: embed.embedId,
         url: embed.url as string,
@@ -186,32 +186,32 @@ export const goMoviesScraper = makeSourcerer({
     const embeds = [
       {
         embedId: upcloudScraper.id,
-        url: upcloudSource?.link ?? null,
+        url: upcloudSource?.link,
       },
       {
         embedId: vidCloudScraper.id,
-        url: vidcloudSource?.link ?? null,
+        url: vidcloudSource?.link,
       },
       {
         embedId: voeScraper.id,
-        url: voeSource?.link ?? null,
+        url: voeSource?.link,
       },
       {
         embedId: doodScraper.id,
-        url: doodSource?.link ?? null,
+        url: doodSource?.link,
       },
       {
         embedId: upstreamScraper.id,
-        url: upstreamSource?.link ?? null,
+        url: upstreamSource?.link,
       },
       {
         embedId: mixdropScraper.id,
-        url: mixdropSource?.link ?? null,
+        url: mixdropSource?.link,
       },
     ];
 
     const filteredEmbeds = embeds
-      .filter((embed) => embed.url !== null)
+      .filter((embed) => embed.url)
       .map((embed) => ({
         embedId: embed.embedId,
         url: embed.url as string,

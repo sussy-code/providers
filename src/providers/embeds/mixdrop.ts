@@ -18,7 +18,10 @@ export const mixdropScraper = makeEmbed({
     // this also handels the case where preview page urls are returned
     // Example: https://mixdrop.vc/f/pkwrgp0pizgod0
     // these don't have the packed code
-    const streamRes = await ctx.proxiedFetcher<string>(`https://mixdrop.si/e/${embedId}`);
+    const mixdropBase = 'https://mixdrop.ag';
+    const streamRes = await ctx.proxiedFetcher<string>(`/e/${embedId}`, {
+      baseUrl: mixdropBase,
+    });
     const packed = streamRes.match(packedRegex);
 
     // MixDrop uses a queue system for embeds
@@ -51,7 +54,7 @@ export const mixdropScraper = makeEmbed({
               url: url.startsWith('http') ? url : `https:${url}`, // URLs don't always start with the protocol
               headers: {
                 // MixDrop requires this header on all streams
-                Referer: 'https://mixdrop.co/',
+                Referer: mixdropBase,
               },
             },
           },
