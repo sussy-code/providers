@@ -3,7 +3,7 @@
   "version": "2.2.7",
   "description": "Package that contains all the providers of movie-web",
   "type": "module",
-  "main": "./lib/index.umd.js",
+  "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
     "./lib"
