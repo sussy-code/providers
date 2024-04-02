@@ -1,6 +1,6 @@
 {
   "name": "@movie-web/providers",
-  "version": "2.2.7",
+  "version": "2.2.8",
   "description": "Package that contains all the providers of movie-web",
   "type": "module",
   "main": "./lib/index.js",
