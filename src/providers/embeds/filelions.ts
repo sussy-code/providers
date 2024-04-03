@@ -10,7 +10,7 @@ export const filelionsScraper = makeEmbed({
   name: 'filelions',
   rank: 115,
   async scrape(ctx) {
-    const mainPageRes = await ctx.fetcher.full<string>(ctx.url, {
+    const mainPageRes = await ctx.proxiedFetcher.full<string>(ctx.url, {
       headers: {
         referer: ctx.url,
       },
@@ -32,15 +32,11 @@ export const filelionsScraper = makeEmbed({
           playlist,
           flags: [flags.IP_LOCKED, flags.CORS_ALLOWED],
           captions: [],
-          preferredHeaders: {
-            Referer: mainPageUrl.origin,
-            origin: mainPageUrl.origin,
-          },
           ...(thumbnailTrack
             ? {
                 thumbnailTrack: {
                   type: 'vtt',
-                  url: new URL(mainPageRes.finalUrl).origin + thumbnailTrack[1],
+                  url: mainPageUrl.origin + thumbnailTrack[1],
                 },
               }
             : {}),

@@ -14,7 +14,7 @@ export const vTubeScraper = makeEmbed({
   name: 'vTube',
   rank: 145,
   scrape: async (ctx) => {
-    const mainPageRes = await ctx.fetcher.full<string>(ctx.url, {
+    const mainPageRes = await ctx.proxiedFetcher.full<string>(ctx.url, {
       headers: {
         referer: ctx.url,
       },

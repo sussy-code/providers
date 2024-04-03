@@ -13,7 +13,7 @@ export const droploadScraper = makeEmbed({
   name: 'Dropload',
   rank: 120,
   scrape: async (ctx) => {
-    const mainPageRes = await ctx.fetcher.full<string>(ctx.url, {
+    const mainPageRes = await ctx.proxiedFetcher.full<string>(ctx.url, {
       headers: {
         referer: ctx.url,
       },
@@ -37,10 +37,6 @@ export const droploadScraper = makeEmbed({
           playlist: file[1],
           flags: [flags.IP_LOCKED, flags.CORS_ALLOWED],
           captions: [],
-          preferredHeaders: {
-            Referer: mainPageUrl.origin,
-            origin: mainPageUrl.origin,
-          },
           ...(thumbnailTrack
             ? {
                 thumbnailTrack: {
