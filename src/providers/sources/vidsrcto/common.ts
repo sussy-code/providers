@@ -1,7 +1,7 @@
 // This file is based on https://github.com/Ciarands/vidsrc-to-resolver/blob/dffa45e726a4b944cb9af0c9e7630476c93c0213/vidsrc.py#L16
 // Full credits to @Ciarands!
 
-const DECRYPTION_KEY = '8z5Ag5wgagfsOuhz';
+const DECRYPTION_KEY = 'WXrUARXb1aDLaZjI';
 
 export const decodeBase64UrlSafe = (str: string) => {
   const standardizedInput = str.replace(/_/g, '/').replace(/-/g, '+');
