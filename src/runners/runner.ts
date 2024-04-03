@@ -112,12 +112,13 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       };
     }
 
-    // filter disabled and run embed scrapers on listed embeds
+    // filter disabled, filter out duplicates, run embed scrapers on listed embeds
     const sortedEmbeds = output.embeds
       .filter((embed) => {
         const e = list.embeds.find((v) => v.id === embed.embedId);
         return e && !e.disabled;
       })
+      .filter((v, i, a) => a.findIndex((t) => t.embedId === v.embedId) === i)
       .sort((a, b) => embedIds.indexOf(a.embedId) - embedIds.indexOf(b.embedId));
 
     if (sortedEmbeds.length > 0) {

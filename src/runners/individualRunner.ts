@@ -59,12 +59,14 @@ export async function scrapeInvidualSource(
 
   if (!output) throw new Error('output is null');
 
-  // filter output with only valid embeds that are not disabled
-  output.embeds = output.embeds.filter((embed) => {
-    const e = list.embeds.find((v) => v.id === embed.embedId);
-    if (!e || e.disabled) return false;
-    return true;
-  });
+  // filter output with only valid embeds that are not disabled, and remove duplicates
+  output.embeds = output.embeds
+    .filter((embed) => {
+      const e = list.embeds.find((v) => v.id === embed.embedId);
+      if (!e || e.disabled) return false;
+      return true;
+    })
+    .filter((v, i, a) => a.findIndex((t) => t.embedId === v.embedId) === i);
 
   if ((!output.stream || output.stream.length === 0) && output.embeds.length === 0)
     throw new NotFoundError('No streams found');
