@@ -1,8 +1,6 @@
 import { load } from 'cheerio';
 import { unpack } from 'unpacker';
 
-import { flags } from '@/entrypoint/utils/targets';
-
 import { SubtitleResult } from './types';
 import { makeEmbed } from '../../base';
 import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '../../captions';
