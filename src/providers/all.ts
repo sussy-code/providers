@@ -1,7 +1,9 @@
 import { Embed, Sourcerer } from '@/providers/base';
 import { doodScraper } from '@/providers/embeds/dood';
+import { droploadScraper } from '@/providers/embeds/dropload';
 import { febboxHlsScraper } from '@/providers/embeds/febbox/hls';
 import { febboxMp4Scraper } from '@/providers/embeds/febbox/mp4';
+import { filelionsScraper } from '@/providers/embeds/filelions';
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
 import { mp4uploadScraper } from '@/providers/embeds/mp4upload';
 import { streambucketScraper } from '@/providers/embeds/streambucket';
@@ -9,6 +11,7 @@ import { streamsbScraper } from '@/providers/embeds/streamsb';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { upstreamScraper } from '@/providers/embeds/upstream';
 import { vidsrcembedScraper } from '@/providers/embeds/vidsrc';
+import { vTubeScraper } from '@/providers/embeds/vtube';
 import { flixhqScraper } from '@/providers/sources/flixhq/index';
 import { goMoviesScraper } from '@/providers/sources/gomovies/index';
 import { kissAsianScraper } from '@/providers/sources/kissasian/index';
@@ -82,5 +85,8 @@ export function gatherAllEmbeds(): Array<Embed> {
     streamvidScraper,
     voeScraper,
     streamtapeScraper,
+    droploadScraper,
+    filelionsScraper,
+    vTubeScraper,
   ];
 }
