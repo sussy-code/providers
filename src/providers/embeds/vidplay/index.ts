@@ -54,7 +54,7 @@ export const vidplayScraper = makeEmbed({
           id: 'primary',
           type: 'hls',
           playlist: source,
-          flags: [flags.CORS_ALLOWED],
+          flags: [flags.IP_LOCKED],
           captions,
           thumbnailTrack,
         },
