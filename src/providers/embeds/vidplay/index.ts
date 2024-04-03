@@ -29,7 +29,6 @@ export const vidplayScraper = makeEmbed({
     }
 
     const url = new URL(ctx.url);
-    console.log(url);
     const subtitlesLink = url.searchParams.get('sub.info');
     const captions: Caption[] = [];
     if (subtitlesLink) {
