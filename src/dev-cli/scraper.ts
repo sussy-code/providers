@@ -19,7 +19,7 @@ async function runBrowserScraping(
   source: MetaOutput,
   options: CommandLineArguments,
 ) {
-  if (!existsSync(join(__dirname, '../../lib/index.mjs')))
+  if (!existsSync(join(__dirname, '../../lib/index.js')))
     throw new Error('Please compile before running cli in browser mode');
   const config = getConfig();
   if (!config.proxyUrl)
@@ -37,13 +37,15 @@ async function runBrowserScraping(
       root,
     });
     browser = await puppeteer.launch({
-      headless: 'new',
+      headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
     // This is the dev cli, so we can use console.log
     // eslint-disable-next-line no-console
     page.on('console', (message) => console.log(`${message.type().slice(0, 3).toUpperCase()} ${message.text()}`));
+
+    if (!server.resolvedUrls?.local.length) throw new Error('Server did not start');
     await page.goto(server.resolvedUrls.local[0]);
     await page.waitForFunction('!!window.scrape', { timeout: 5000 });
 

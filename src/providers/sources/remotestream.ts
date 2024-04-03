@@ -11,7 +11,7 @@ export const remotestreamScraper = makeSourcerer({
   id: 'remotestream',
   name: 'Remote Stream',
   disabled: true,
-  rank: 55,
+  rank: 20,
   flags: [flags.CORS_ALLOWED],
   async scrapeShow(ctx) {
     const seasonNumber = ctx.media.season.number;

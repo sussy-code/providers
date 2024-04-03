@@ -179,7 +179,11 @@ async function runCommandLine() {
 }
 
 if (process.argv.length === 2) {
-  runQuestions().catch(() => console.error('Exited.'));
+  runQuestions()
+    .catch(() => console.error('Exited.'))
+    .finally(() => process.exit(0));
 } else {
-  runCommandLine().catch(() => console.error('Exited.'));
+  runCommandLine()
+    .catch(() => console.error('Exited.'))
+    .finally(() => process.exit(0));
 }

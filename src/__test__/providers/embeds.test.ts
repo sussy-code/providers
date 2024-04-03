@@ -1,13 +1,13 @@
 import dotenv from 'dotenv';
-import { febboxMp4Scraper } from "@/providers/embeds/febbox/mp4";
-import { testEmbed } from "./embedUtils";
-import { showboxScraper } from "@/providers/sources/showbox";
-import { testMedia } from "./testMedia";
-import { flixhqScraper } from "@/providers/sources/flixhq";
-import { upcloudScraper } from "@/providers/embeds/upcloud";
-import { goMoviesScraper } from "@/providers/sources/gomovies";
-import { smashyStreamScraper } from "@/providers/sources/smashystream";
-import { smashyStreamDScraper } from "@/providers/embeds/smashystream/dued";
+import { febboxMp4Scraper } from '@/providers/embeds/febbox/mp4';
+import { testEmbed } from './embedUtils';
+import { showboxScraper } from '@/providers/sources/showbox';
+import { testMedia } from './testMedia';
+import { flixhqScraper } from '@/providers/sources/flixhq';
+import { upcloudScraper } from '@/providers/embeds/upcloud';
+import { goMoviesScraper } from '@/providers/sources/gomovies';
+import { smashyStreamScraper } from '@/providers/sources/smashystream';
+import { smashyStreamDScraper } from '@/providers/embeds/smashystream/dued';
 import { vidsrcembedScraper } from '@/providers/embeds/vidsrc';
 import { vidsrcScraper } from '@/providers/sources/vidsrc';
 import { vidSrcToScraper } from '@/providers/sources/vidsrcto';
@@ -26,8 +26,8 @@ testEmbed({
   expect: {
     embeds: 1,
     streams: 1,
-  }
-})
+  },
+});
 
 testEmbed({
   embed: upcloudScraper,
@@ -37,8 +37,8 @@ testEmbed({
   expect: {
     embeds: 1,
     streams: 1,
-  }
-})
+  },
+});
 
 testEmbed({
   embed: upcloudScraper,
@@ -48,8 +48,8 @@ testEmbed({
   expect: {
     embeds: 1,
     streams: 1,
-  }
-})
+  },
+});
 
 testEmbed({
   embed: smashyStreamDScraper,
@@ -59,8 +59,8 @@ testEmbed({
   expect: {
     embeds: 1,
     streams: 1,
-  }
-})
+  },
+});
 
 testEmbed({
   embed: vidsrcembedScraper,
@@ -70,8 +70,8 @@ testEmbed({
   expect: {
     embeds: 1,
     streams: 1,
-  }
-})
+  },
+});
 
 testEmbed({
   embed: vidplayScraper,
@@ -81,8 +81,8 @@ testEmbed({
   expect: {
     embeds: 1,
     streams: 1,
-  }
-})
+  },
+});
 
 testEmbed({
   embed: fileMoonScraper,
@@ -92,8 +92,8 @@ testEmbed({
   expect: {
     embeds: 1,
     streams: 1,
-  }
-})
+  },
+});
 
 testEmbed({
   embed: upcloudScraper,
@@ -103,8 +103,8 @@ testEmbed({
   expect: {
     embeds: 2,
     streams: 1,
-  }
-})
+  },
+});
 
 testEmbed({
   embed: mixdropScraper,
@@ -114,5 +114,5 @@ testEmbed({
   expect: {
     embeds: 2,
     streams: 1,
-  }
-})
+  },
+});

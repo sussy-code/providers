@@ -1,3 +1,4 @@
+import { load } from 'cheerio';
 import { unpack } from 'unpacker';
 
 import { flags } from '@/entrypoint/utils/targets';
@@ -19,7 +20,8 @@ export const fileMoonScraper = makeEmbed({
         referer: ctx.url,
       },
     });
-    const evalCode = embedRes.match(evalCodeRegex);
+    const embedHtml = load(embedRes);
+    const evalCode = embedHtml('script').text().match(evalCodeRegex);
     if (!evalCode) throw new Error('Failed to find eval code');
     const unpacked = unpack(evalCode[1]);
     const file = fileRegex.exec(unpacked);

@@ -6,7 +6,7 @@ import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { ProviderList } from '@/providers/get';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
-import { isValidStream } from '@/utils/valid';
+import { isValidStream, validatePlayableStreams } from '@/utils/valid';
 
 export type IndividualSourceRunnerOptions = {
   features: FeatureMap;
@@ -68,6 +68,13 @@ export async function scrapeInvidualSource(
 
   if ((!output.stream || output.stream.length === 0) && output.embeds.length === 0)
     throw new NotFoundError('No streams found');
+
+  // only check for playable streams if there are streams, and if there are no embeds
+  if (output.stream && output.stream.length > 0 && output.embeds.length === 0) {
+    const playableStreams = await validatePlayableStreams(output.stream, ops);
+    if (playableStreams.length === 0) throw new NotFoundError('No playable streams found');
+    output.stream = playableStreams;
+  }
   return output;
 }
 
@@ -104,6 +111,10 @@ export async function scrapeIndividualEmbed(
     .filter((stream) => isValidStream(stream))
     .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
   if (output.stream.length === 0) throw new NotFoundError('No streams found');
+
+  const playableStreams = await validatePlayableStreams(output.stream, ops);
+  if (playableStreams.length === 0) throw new NotFoundError('No playable streams found');
+  output.stream = playableStreams;
 
   return output;
 }
