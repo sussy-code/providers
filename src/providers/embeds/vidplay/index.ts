@@ -1,4 +1,3 @@
-import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '@/providers/captions';
 
@@ -54,7 +53,7 @@ export const vidplayScraper = makeEmbed({
           id: 'primary',
           type: 'hls',
           playlist: source,
-          flags: [flags.IP_LOCKED],
+          flags: [],
           headers: {
             Referer: url.origin,
             Origin: url.origin,
