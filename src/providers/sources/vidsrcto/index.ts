@@ -78,6 +78,6 @@ export const vidSrcToScraper = makeSourcerer({
   name: 'VidSrcTo',
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
-  flags: [flags.CORS_ALLOWED],
+  flags: [flags.IP_LOCKED],
   rank: 130,
 });
