@@ -75,7 +75,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     vidsrcembedScraper,
     streambucketScraper,
     smashyStreamFScraper,
-    smashyStreamDScraper,
+    smashyStreamOScraper,
     ridooScraper,
     closeLoadScraper,
     fileMoonScraper,
