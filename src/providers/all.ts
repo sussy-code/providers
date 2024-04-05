@@ -24,7 +24,7 @@ import { zoechipScraper } from '@/providers/sources/zoechip';
 import { closeLoadScraper } from './embeds/closeload';
 import { fileMoonScraper } from './embeds/filemoon';
 import { ridooScraper } from './embeds/ridoo';
-import { smashyStreamDScraper } from './embeds/smashystream/dued';
+import { smashyStreamOScraper } from './embeds/smashystream/opstream';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
 import { streamtapeScraper } from './embeds/streamtape';
 import { streamvidScraper } from './embeds/streamvid';
@@ -75,7 +75,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     vidsrcembedScraper,
     streambucketScraper,
     smashyStreamFScraper,
-    smashyStreamDScraper,
+    smashyStreamOScraper,
     ridooScraper,
     closeLoadScraper,
     fileMoonScraper,
