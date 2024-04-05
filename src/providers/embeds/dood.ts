@@ -25,6 +25,7 @@ export const doodScraper = makeEmbed({
 
     const dataForLater = doodData.match(/\?token=([^&]+)&expiry=/)?.[1];
     const path = doodData.match(/\$\.get\('\/pass_md5([^']+)/)?.[1];
+    const thumbnailTrack = doodData.match(/thumbnails:\s\{\s*vtt:\s'([^']*)'/);
 
     const doodPage = await ctx.proxiedFetcher<string>(`/pass_md5${path}`, {
       headers: {
@@ -53,6 +54,14 @@ export const doodScraper = makeEmbed({
           headers: {
             Referer: baseUrl,
           },
+          ...(thumbnailTrack
+            ? {
+                thumbnailTrack: {
+                  type: 'vtt',
+                  url: `https:${thumbnailTrack[1]}`,
+                },
+              }
+            : {}),
         },
       ],
     };

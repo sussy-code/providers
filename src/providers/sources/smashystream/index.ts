@@ -1,56 +1,29 @@
-import { load } from 'cheerio';
-
 import { flags } from '@/entrypoint/utils/targets';
-import { SourcererEmbed, SourcererOutput, makeSourcerer } from '@/providers/base';
-import { smashyStreamDScraper } from '@/providers/embeds/smashystream/dued';
+import { SourcererOutput, makeSourcerer } from '@/providers/base';
+import { smashyStreamOScraper } from '@/providers/embeds/smashystream/opstream';
 import { smashyStreamFScraper } from '@/providers/embeds/smashystream/video1';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
-const smashyStreamBase = 'https://embed.smashystream.com';
-const referer = 'https://smashystream.com/';
-
 const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> => {
-  const mainPage = await ctx.proxiedFetcher<string>('/playere.php', {
-    query: {
-      tmdb: ctx.media.tmdbId,
-      ...(ctx.media.type === 'show' && {
-        season: ctx.media.season.number.toString(),
-        episode: ctx.media.episode.number.toString(),
-      }),
-    },
-    headers: {
-      Referer: referer,
-    },
-    baseUrl: smashyStreamBase,
-  });
-
-  ctx.progress(30);
-
-  const mainPage$ = load(mainPage);
-  const sourceUrls = mainPage$('.dropdown-menu a[data-url]')
-    .map((_, el) => mainPage$(el).attr('data-url'))
-    .get();
-
-  const embeds: SourcererEmbed[] = [];
-  for (const sourceUrl of sourceUrls) {
-    if (sourceUrl.includes('video1d.php')) {
-      embeds.push({
-        embedId: smashyStreamFScraper.id,
-        url: sourceUrl,
-      });
-    }
-    if (sourceUrl.includes('dued.php')) {
-      embeds.push({
-        embedId: smashyStreamDScraper.id,
-        url: sourceUrl,
-      });
-    }
-  }
-
-  ctx.progress(60);
+  // theres no point in fetching the player page
+  // because it too just calls the api with the tmdb id
+  // thats the only way to find out if the embed has any streams
+  const query =
+    ctx.media.type === 'movie'
+      ? `?tmdb=${ctx.media.tmdbId}`
+      : `?tmdbId=${ctx.media.tmdbId}&season=${ctx.media.season.number}&episode=${ctx.media.episode.number}`;
 
   return {
-    embeds,
+    embeds: [
+      {
+        embedId: smashyStreamFScraper.id,
+        url: `https://embed.smashystream.com/video1dn.php${query}`,
+      },
+      {
+        embedId: smashyStreamOScraper.id,
+        url: `https://embed.smashystream.com/videoop.php${query}`,
+      },
+    ],
   };
 };
 
@@ -59,7 +32,6 @@ export const smashyStreamScraper = makeSourcerer({
   name: 'SmashyStream',
   rank: 30,
   flags: [flags.CORS_ALLOWED],
-  disabled: true,
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
 });
