@@ -25,7 +25,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
     const fullSlug = movieEl.fullSlug;
     return { name, year, fullSlug };
   });
-  const targetMedia = mediaData.find((m) => m.name === ctx.media.title);
+  const targetMedia = mediaData.find((m) => m.name === ctx.media.title && m.year === ctx.media.releaseYear.toString());
   if (!targetMedia?.fullSlug) throw new NotFoundError('No watchable item found');
 
   let iframeSourceUrl = `/${targetMedia.fullSlug}/videos`;
