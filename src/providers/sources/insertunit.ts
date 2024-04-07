@@ -23,21 +23,23 @@ export const insertunitScraper = makeSourcerer({
     ctx.progress(60);
 
     const seasonTable = JSON.parse(seasonData[1]);
-    for (const season of seasonTable) {
-      if (season.season === ctx.media.season.number) {
-        if (season.episodes[ctx.media.episode.number] && season.episodes[ctx.media.episode.number].hls) {
-          return {
-            embeds: [],
-            stream: [
-              {
-                id: 'primary',
-                captions: [],
-                playlist: season.episodes[ctx.media.episode.number].hls,
-                type: 'hls',
-                flags: [flags.CORS_ALLOWED],
-              },
-            ],
-          };
+    for (const seasonElement of seasonTable) {
+      if (seasonElement.season === ctx.media.season.number) {
+        for (const episodeElement of seasonElement.episodes) {
+          if (episodeElement.episode.includes(ctx.media.episode.number)) {
+            return {
+              embeds: [],
+              stream: [
+                {
+                  id: 'primary',
+                  captions: [],
+                  playlist: episodeElement.hls,
+                  type: 'hls',
+                  flags: [flags.CORS_ALLOWED],
+                },
+              ],
+            };
+          }
         }
       }
     }
