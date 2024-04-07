@@ -19,13 +19,19 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
       q: ctx.media.title,
     },
   });
-  const show = searchResult.data.items[0];
-  if (!show) throw new NotFoundError('No watchable item found');
+  const mediaData = searchResult.data.items.map((movieEl) => {
+    const name = movieEl.title;
+    const year = movieEl.contentable.releaseYear;
+    const fullSlug = movieEl.fullSlug;
+    return { name, year, fullSlug };
+  });
+  const targetMedia = mediaData.find((m) => m.name === ctx.media.title && m.year === ctx.media.releaseYear.toString());
+  if (!targetMedia?.fullSlug) throw new NotFoundError('No watchable item found');
 
-  let iframeSourceUrl = `/${show.fullSlug}/videos`;
+  let iframeSourceUrl = `/${targetMedia.fullSlug}/videos`;
 
   if (ctx.media.type === 'show') {
-    const showPageResult = await ctx.proxiedFetcher<string>(`/${show.fullSlug}`, {
+    const showPageResult = await ctx.proxiedFetcher<string>(`/${targetMedia.fullSlug}`, {
       baseUrl: ridoMoviesBase,
     });
     const fullEpisodeSlug = `season-${ctx.media.season.number}/episode-${ctx.media.episode.number}`;
