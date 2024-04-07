@@ -1,5 +1,6 @@
 import * as unpacker from 'unpacker';
 
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 
 const mixdropBase = 'https://mixdrop.ag';
@@ -47,7 +48,7 @@ export const mixdropScraper = makeEmbed({
         {
           id: 'primary',
           type: 'file',
-          flags: [],
+          flags: [flags.IP_LOCKED],
           captions: [],
           qualities: {
             unknown: {

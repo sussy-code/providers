@@ -54,6 +54,15 @@ async function getStreams(title: string) {
         case 'dood.watch':
           embedId = 'dood';
           break;
+        case 'dropload.io':
+          embedId = 'dropload';
+          break;
+        case 'filelions.to':
+          embedId = 'filelions';
+          break;
+        case 'vtube.to':
+          embedId = 'vtube';
+          break;
         default:
           embedId = null;
       }
