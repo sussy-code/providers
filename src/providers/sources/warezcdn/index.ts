@@ -2,15 +2,12 @@ import { load } from 'cheerio';
 
 import { SourcererEmbed, SourcererOutput, makeSourcerer } from '@/providers/base';
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
+import { warezcdnembedHlsScraper } from '@/providers/embeds/warezcdn/hls';
+import { warezcdnembedMp4Scraper } from '@/providers/embeds/warezcdn/mp4';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 import { warezcdnApiBase, warezcdnBase } from './common';
-
-const embeds = {
-  warezcdn: mixdropScraper.id,
-  mixdrop: mixdropScraper.id,
-};
 
 const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => {
   if (!ctx.media.imdbId) throw new NotFoundError('This source requires IMDB id.');
@@ -24,43 +21,47 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
   });
   const $ = load(serversPage);
 
-  const servers = await Promise.all(
-    $('.hostList.active [data-load-embed]')
-      .filter((_index, element) => {
-        const embed = $(element).attr('data-load-embed-host');
-        return !!embed && !!embeds[embed as keyof typeof embeds];
-      })
-      .map(async (_index, element) => {
-        const embedHost = $(element).attr('data-load-embed-host');
-        const embedId = embeds[embedHost as keyof typeof embeds];
-        let embedUrl = $(element).attr('data-load-embed')!;
+  const embedsHost = $('.hostList.active [data-load-embed]').get();
 
-        if (embedHost === 'mixdrop') {
-          const params = new URLSearchParams({
-            id: embedUrl,
-            sv: 'mixdrop',
-          });
-          const realUrl = await ctx.proxiedFetcher(`/getPlay.php?${params}`, {
-            baseUrl: warezcdnApiBase,
-            headers: {
-              Referer: `${warezcdnApiBase}/getEmbed.php?${params}`,
-            },
-          });
+  const embeds: SourcererEmbed[] = [];
 
-          const realEmbedUrl = realUrl.match(/window\.location\.href="([^"]*)";/);
-          embedUrl = realEmbedUrl[1];
-        }
+  embedsHost.forEach(async (element) => {
+    const embedHost = $(element).attr('data-load-embed-host')!;
+    const embedUrl = $(element).attr('data-load-embed')!;
 
-        return {
-          embedId,
+    if (embedHost === 'mixdrop') {
+      const params = new URLSearchParams({
+        id: embedUrl,
+        sv: 'mixdrop',
+      });
+      const realUrl = await ctx.proxiedFetcher(`/getPlay.php?${params}`, {
+        baseUrl: warezcdnApiBase,
+        headers: {
+          Referer: `${warezcdnApiBase}/getEmbed.php?${params}`,
+        },
+      });
+
+      const realEmbedUrl = realUrl.match(/window\.location\.href="([^"]*)";/);
+      embeds.push({
+        embedId: mixdropScraper.id,
+        url: realEmbedUrl[1],
+      });
+    } else if (embedHost === 'warezcdn') {
+      embeds.push(
+        {
+          embedId: warezcdnembedHlsScraper.id,
           url: embedUrl,
-        } as SourcererEmbed;
-      })
-      .get(),
-  );
+        },
+        {
+          embedId: warezcdnembedMp4Scraper.id,
+          url: embedUrl,
+        },
+      );
+    }
+  });
 
   return {
-    embeds: servers,
+    embeds,
   } as SourcererOutput;
 };
 

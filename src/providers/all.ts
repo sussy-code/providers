@@ -31,7 +31,8 @@ import { streamvidScraper } from './embeds/streamvid';
 import { vidCloudScraper } from './embeds/vidcloud';
 import { vidplayScraper } from './embeds/vidplay';
 import { voeScraper } from './embeds/voe';
-import { warezcdnembedScraper } from './embeds/warezcdn';
+import { warezcdnembedHlsScraper } from './embeds/warezcdn/hls';
+import { warezcdnembedMp4Scraper } from './embeds/warezcdn/mp4';
 import { wootlyScraper } from './embeds/wootly';
 import { goojaraScraper } from './sources/goojara';
 import { hdRezkaScraper } from './sources/hdrezka';
@@ -91,6 +92,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     droploadScraper,
     filelionsScraper,
     vTubeScraper,
-    warezcdnembedScraper,
+    warezcdnembedHlsScraper,
+    warezcdnembedMp4Scraper,
   ];
 }
