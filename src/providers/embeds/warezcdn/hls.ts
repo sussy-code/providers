@@ -13,7 +13,7 @@ async function getVideowlUrlStream(ctx: EmbedScrapeContext, decryptedId: string)
 
   if (!videowlUrl) throw new NotFoundError('Failed to get videoOwlUrl');
 
-  return `${videowlUrl}/${btoa(decryptedId)}.m3u8?${new URLSearchParams({
+  return `${videowlUrl}/0p/${btoa(decryptedId)}.m3u8?${new URLSearchParams({
     double_encode: '1',
   })}`;
 }
