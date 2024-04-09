@@ -61,8 +61,8 @@ export const insertunitScraper = makeSourcerer({
         captions.push({
           id: subtitle.url,
           url: subtitle.url,
-          type: 'vtt',
           language,
+          type: 'vtt',
           hasCorsRestrictions: false,
         });
       }
@@ -122,14 +122,15 @@ export const insertunitScraper = makeSourcerer({
         captions.push({
           id: subtitle.url,
           url: subtitle.url,
-          type: 'vtt',
           language,
+          type: 'vtt',
           hasCorsRestrictions: false,
         });
       }
       captions = removeDuplicatedLanguages(captions);
     }
 
+    ctx.progress(90);
 
     return {
       embeds: [],
