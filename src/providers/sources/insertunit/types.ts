@@ -4,14 +4,14 @@ export interface Episode {
     videoKey: string;
     hls: string;
     audio: {
-        names: [];
-        order: [];
+        names: string[];
+        order: number[];
     }
-    cc: []
+    cc: Subtitle[];
     duration: number;
     title: string;
     download: string;
-    sections: []
+    sections: string[]
     poster: string;
     preview: {
         src: string;

@@ -2,6 +2,7 @@ import { flags } from '@/entrypoint/utils/targets';
 import { makeSourcerer } from '@/providers/base';
 import { Caption, removeDuplicatedLanguages } from '@/providers/captions';
 import { NotFoundError } from '@/utils/errors';
+import { getCaptions } from './captions';
 
 import { Season, Subtitle } from './types';
 
@@ -38,35 +39,16 @@ export const insertunitScraper = makeSourcerer({
     );
 
     if (!currentEpisode?.hls) throw new NotFoundError('No result found');
+    
+    let captions: Caption[] = []
 
-    let captions: Caption[] = [];
+    if (currentEpisode.cc != null) {
+      captions = await getCaptions(currentEpisode.cc)
+    }
 
     ctx.progress(80);
 
     if (currentEpisode.cc != null) {
-      let subtitle: Subtitle;
-      for (subtitle of currentEpisode.cc) {
-        let language = '';
-
-        if (subtitle.name.includes('Рус')) {
-          language = 'ru';
-        } else if (subtitle.name.includes('Укр')) {
-          language = 'uk';
-        } else if (subtitle.name.includes('Eng')) {
-          language = 'en';
-        } else {
-          continue;
-        }
-
-        captions.push({
-          id: subtitle.url,
-          url: subtitle.url,
-          language,
-          type: 'vtt',
-          hasCorsRestrictions: false,
-        });
-      }
-      captions = removeDuplicatedLanguages(captions);
     }
 
     ctx.progress(95);
@@ -105,29 +87,7 @@ export const insertunitScraper = makeSourcerer({
 
     if (subtitleJSONData != null && subtitleJSONData[1] != null) {
       const subtitleData = JSON.parse(subtitleJSONData[1]);
-      let subtitle: Subtitle;
-      for (subtitle of subtitleData as Subtitle[]) {
-        let language = '';
-
-        if (subtitle.name.includes('Рус')) {
-          language = 'ru';
-        } else if (subtitle.name.includes('Укр')) {
-          language = 'uk';
-        } else if (subtitle.name.includes('Eng')) {
-          language = 'en';
-        } else {
-          continue;
-        }
-
-        captions.push({
-          id: subtitle.url,
-          url: subtitle.url,
-          language,
-          type: 'vtt',
-          hasCorsRestrictions: false,
-        });
-      }
-      captions = removeDuplicatedLanguages(captions);
+      captions = await getCaptions(subtitleData)
     }
 
     ctx.progress(90);
