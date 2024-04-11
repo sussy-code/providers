@@ -21,7 +21,7 @@ async function getVideowlUrlStream(ctx: EmbedScrapeContext, decryptedId: string)
 export const warezcdnembedHlsScraper = makeEmbed({
   id: 'warezcdnembedhls', // WarezCDN is both a source and an embed host
   name: 'WarezCDN HLS',
-  rank: 82,
+  rank: 83,
   async scrape(ctx) {
     const decryptedId = await getDecryptedId(ctx);
 

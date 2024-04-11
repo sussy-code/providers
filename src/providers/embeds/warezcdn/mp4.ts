@@ -1,3 +1,4 @@
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { warezcdnWorkerProxy } from '@/providers/sources/warezcdn/common';
 import { EmbedScrapeContext } from '@/utils/context';
@@ -24,7 +25,7 @@ async function checkUrls(ctx: EmbedScrapeContext, fileId: string) {
 export const warezcdnembedMp4Scraper = makeEmbed({
   id: 'warezcdnembedmp4', // WarezCDN is both a source and an embed host
   name: 'WarezCDN MP4',
-  rank: 83,
+  rank: 82,
   disabled: false,
   async scrape(ctx) {
     const decryptedId = await getDecryptedId(ctx);
@@ -49,7 +50,7 @@ export const warezcdnembedMp4Scraper = makeEmbed({
             },
           },
           type: 'file',
-          flags: [],
+          flags: [flags.CORS_ALLOWED],
         },
       ],
     };
