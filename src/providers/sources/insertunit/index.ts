@@ -1,10 +1,10 @@
 import { flags } from '@/entrypoint/utils/targets';
 import { makeSourcerer } from '@/providers/base';
-import { Caption, removeDuplicatedLanguages } from '@/providers/captions';
+import { Caption } from '@/providers/captions';
 import { NotFoundError } from '@/utils/errors';
-import { getCaptions } from './captions';
 
-import { Season, Subtitle } from './types';
+import { getCaptions } from './captions';
+import { Season } from './types';
 
 const insertUnitBase = 'https://api.insertunit.ws/';
 
@@ -39,16 +39,11 @@ export const insertunitScraper = makeSourcerer({
     );
 
     if (!currentEpisode?.hls) throw new NotFoundError('No result found');
-    
-    let captions: Caption[] = []
+
+    let captions: Caption[] = [];
 
     if (currentEpisode.cc != null) {
-      captions = await getCaptions(currentEpisode.cc)
-    }
-
-    ctx.progress(80);
-
-    if (currentEpisode.cc != null) {
+      captions = await getCaptions(currentEpisode.cc);
     }
 
     ctx.progress(95);
@@ -87,7 +82,7 @@ export const insertunitScraper = makeSourcerer({
 
     if (subtitleJSONData != null && subtitleJSONData[1] != null) {
       const subtitleData = JSON.parse(subtitleJSONData[1]);
-      captions = await getCaptions(subtitleData)
+      captions = await getCaptions(subtitleData);
     }
 
     ctx.progress(90);
