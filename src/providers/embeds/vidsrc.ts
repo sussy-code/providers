@@ -1,5 +1,5 @@
-import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
+import { vidsrcRCPBase } from '@/providers/sources/vidsrc/common';
 
 const hlsURLRegex = /file:"(.*?)"/;
 const setPassRegex = /var pass_path = "(.*set_pass\.php.*)";/;
@@ -56,7 +56,11 @@ export const vidsrcembedScraper = makeEmbed({
           id: 'primary',
           type: 'hls',
           playlist: finalUrl,
-          flags: [flags.CORS_ALLOWED],
+          headers: {
+            Referer: vidsrcRCPBase,
+            Origin: vidsrcRCPBase,
+          },
+          flags: [],
           captions: [],
         },
       ],
