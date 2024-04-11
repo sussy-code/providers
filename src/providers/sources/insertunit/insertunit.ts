@@ -46,11 +46,6 @@ export const insertunitScraper = makeSourcerer({
       captions = await getCaptions(currentEpisode.cc)
     }
 
-    ctx.progress(80);
-
-    if (currentEpisode.cc != null) {
-    }
-
     ctx.progress(95);
 
     return {

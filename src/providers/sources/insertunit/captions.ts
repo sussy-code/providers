@@ -5,8 +5,7 @@ import { removeDuplicatedLanguages } from "@/providers/captions";
 
 export async function getCaptions(data: Subtitle[]) {
     let captions: Caption[] = [];
-    let subtitle: Subtitle;
-    for (subtitle of data) {
+    for (const subtitle of data) {
       let language = '';
 
       if (subtitle.name.includes('Рус')) {
