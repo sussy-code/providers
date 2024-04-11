@@ -38,6 +38,7 @@ import { nepuScraper } from './sources/nepu';
 import { primewireScraper } from './sources/primewire';
 import { ridooMoviesScraper } from './sources/ridomovies';
 import { smashyStreamScraper } from './sources/smashystream';
+import { soaperTvScraper } from './sources/soapertv';
 import { vidSrcToScraper } from './sources/vidsrcto';
 
 export function gatherAllSources(): Array<Sourcerer> {
@@ -58,6 +59,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     goojaraScraper,
     hdRezkaScraper,
     primewireScraper,
+    soaperTvScraper,
   ];
 }
 
