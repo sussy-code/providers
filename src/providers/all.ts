@@ -14,6 +14,7 @@ import { vidsrcembedScraper } from '@/providers/embeds/vidsrc';
 import { vTubeScraper } from '@/providers/embeds/vtube';
 import { flixhqScraper } from '@/providers/sources/flixhq/index';
 import { goMoviesScraper } from '@/providers/sources/gomovies/index';
+import { insertunitScraper } from '@/providers/sources/insertunit';
 import { kissAsianScraper } from '@/providers/sources/kissasian/index';
 import { lookmovieScraper } from '@/providers/sources/lookmovie';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
@@ -59,6 +60,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     goojaraScraper,
     hdRezkaScraper,
     primewireScraper,
+    insertunitScraper,
     soaperTvScraper,
   ];
 }
