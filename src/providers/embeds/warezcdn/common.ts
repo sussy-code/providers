@@ -35,7 +35,7 @@ export async function getDecryptedId(ctx: EmbedScrapeContext) {
   const allowanceKey = page.match(/let allowanceKey = "(.*?)";/)?.[1];
   if (!allowanceKey) throw new NotFoundError('Failed to get allowanceKey');
 
-  const streamData = await ctx.proxiedFetcher('/functions.php', {
+  const streamData = await ctx.proxiedFetcher<string>('/functions.php', {
     baseUrl: warezcdnPlayerBase,
     method: 'POST',
     body: new URLSearchParams({

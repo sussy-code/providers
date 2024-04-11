@@ -16,7 +16,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
   if (ctx.media.type === 'show')
     id = `serie/${ctx.media.imdbId}/${ctx.media.season.number}/${ctx.media.episode.number}`;
 
-  const serversPage = await ctx.proxiedFetcher(`/${id}`, {
+  const serversPage = await ctx.proxiedFetcher<string>(`/${id}`, {
     baseUrl: warezcdnBase,
   });
   const $ = load(serversPage);
@@ -34,7 +34,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
         id: embedUrl,
         sv: 'mixdrop',
       });
-      const realUrl = await ctx.proxiedFetcher(`/getPlay.php?${params}`, {
+      const realUrl = await ctx.proxiedFetcher<string>(`/getPlay.php?${params}`, {
         baseUrl: warezcdnApiBase,
         headers: {
           Referer: `${warezcdnApiBase}/getEmbed.php?${params}`,
@@ -42,6 +42,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
       });
 
       const realEmbedUrl = realUrl.match(/window\.location\.href="([^"]*)";/);
+      if (!realEmbedUrl) throw new Error('Could not find embed url');
       embeds.push({
         embedId: mixdropScraper.id,
         url: realEmbedUrl[1],

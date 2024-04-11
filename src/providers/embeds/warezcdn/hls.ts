@@ -7,7 +7,7 @@ import { getDecryptedId } from './common';
 
 // Method found by atpn
 async function getVideowlUrlStream(ctx: EmbedScrapeContext, decryptedId: string) {
-  const sharePage = await ctx.proxiedFetcher('https://cloud.mail.ru/public/uaRH/2PYWcJRpH');
+  const sharePage = await ctx.proxiedFetcher<string>('https://cloud.mail.ru/public/uaRH/2PYWcJRpH');
   const regex = /"videowl_view":\{"count":"(\d+)","url":"([^"]+)"\}/g;
   const videowlUrl = regex.exec(sharePage)?.[2];
 
