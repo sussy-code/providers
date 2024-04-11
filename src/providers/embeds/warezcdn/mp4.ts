@@ -1,8 +1,9 @@
 import { makeEmbed } from '@/providers/base';
+import { warezcdnWorkerProxy } from '@/providers/sources/warezcdn/common';
 import { EmbedScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-import { getDecryptedId, warezcdnWorkerProxy } from './common';
+import { getDecryptedId } from './common';
 
 const cdnListing = [50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64];
 

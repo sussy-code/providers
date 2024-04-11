@@ -1,6 +1,6 @@
 import { load } from 'cheerio';
 
-import { SourcererEmbed, SourcererOutput, makeSourcerer } from '@/providers/base';
+import { SourcererEmbed, makeSourcerer } from '@/providers/base';
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
 import { warezcdnembedHlsScraper } from '@/providers/embeds/warezcdn/hls';
 import { warezcdnembedMp4Scraper } from '@/providers/embeds/warezcdn/mp4';
@@ -30,15 +30,16 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
     const embedUrl = $(element).attr('data-load-embed')!;
 
     if (embedHost === 'mixdrop') {
-      const params = new URLSearchParams({
+      const params = {
         id: embedUrl,
         sv: 'mixdrop',
-      });
-      const realUrl = await ctx.proxiedFetcher<string>(`/getPlay.php?${params}`, {
+      };
+      const realUrl = await ctx.proxiedFetcher<string>(`/getPlay.php`, {
         baseUrl: warezcdnApiBase,
         headers: {
-          Referer: `${warezcdnApiBase}/getEmbed.php?${params}`,
+          Referer: `${warezcdnApiBase}/getEmbed.php?${new URLSearchParams(params)}`,
         },
+        query: params,
       });
 
       const realEmbedUrl = realUrl.match(/window\.location\.href="([^"]*)";/);
@@ -63,7 +64,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
 
   return {
     embeds,
-  } as SourcererOutput;
+  };
 };
 
 export const warezcdnScraper = makeSourcerer({

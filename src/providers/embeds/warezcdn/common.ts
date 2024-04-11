@@ -23,13 +23,16 @@ function decrypt(input: string) {
 }
 
 export async function getDecryptedId(ctx: EmbedScrapeContext) {
-  const page = await ctx.proxiedFetcher<string>(`/player.php?${new URLSearchParams({ id: ctx.url })}`, {
+  const page = await ctx.proxiedFetcher<string>(`/player.php`, {
     baseUrl: warezcdnPlayerBase,
     headers: {
       Referer: `${warezcdnPlayerBase}/getEmbed.php?${new URLSearchParams({
         id: ctx.url,
         sv: 'warezcdn',
       })}`,
+    },
+    query: {
+      id: ctx.url,
     },
   });
   const allowanceKey = page.match(/let allowanceKey = "(.*?)";/)?.[1];
@@ -53,5 +56,3 @@ export async function getDecryptedId(ctx: EmbedScrapeContext) {
 
   return decryptedId;
 }
-
-export const warezcdnWorkerProxy = 'https://workerproxy.warezcdn.workers.dev';
