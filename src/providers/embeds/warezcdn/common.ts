@@ -53,3 +53,5 @@ export async function getDecryptedId(ctx: EmbedScrapeContext) {
 
   return decryptedId;
 }
+
+export const warezcdnWorkerProxy = 'https://workerproxy.warezcdn.workers.dev';

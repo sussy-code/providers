@@ -2,7 +2,7 @@ import { makeEmbed } from '@/providers/base';
 import { EmbedScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-import { getDecryptedId } from './common';
+import { getDecryptedId, warezcdnWorkerProxy } from './common';
 
 const cdnListing = [50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64];
 
@@ -24,7 +24,7 @@ export const warezcdnembedMp4Scraper = makeEmbed({
   id: 'warezcdnembedmp4', // WarezCDN is both a source and an embed host
   name: 'WarezCDN MP4',
   rank: 83,
-  disabled: true, // crashes movie-web player, disabling for now
+  disabled: false,
   async scrape(ctx) {
     const decryptedId = await getDecryptedId(ctx);
 
@@ -42,15 +42,13 @@ export const warezcdnembedMp4Scraper = makeEmbed({
           qualities: {
             unknown: {
               type: 'mp4',
-              url: streamUrl,
+              url: `${warezcdnWorkerProxy}/?${new URLSearchParams({
+                url: streamUrl,
+              })}`,
             },
           },
           type: 'file',
           flags: [],
-          headers: {
-            Origin: 'https://cloud.mail.ru',
-            Referer: 'https://cloud.mail.ru/',
-          },
         },
       ],
     };
