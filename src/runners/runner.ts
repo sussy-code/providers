@@ -104,7 +104,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
 
     // return stream is there are any
     if (output.stream?.[0]) {
-      const playableStream = await validatePlayableStream(output.stream[0], ops);
+      const playableStream = await validatePlayableStream(output.stream[0], ops, source.id);
       if (!playableStream) throw new NotFoundError('No streams found');
       return {
         sourceId: source.id,
@@ -151,7 +151,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         if (embedOutput.stream.length === 0) {
           throw new NotFoundError('No streams found');
         }
-        const playableStream = await validatePlayableStream(embedOutput.stream[0], ops);
+        const playableStream = await validatePlayableStream(embedOutput.stream[0], ops, embed.embedId);
         if (!playableStream) throw new NotFoundError('No streams found');
         embedOutput.stream = [playableStream];
       } catch (error) {
