@@ -71,7 +71,7 @@ export async function scrapeInvidualSource(
 
   // only check for playable streams if there are streams, and if there are no embeds
   if (output.stream && output.stream.length > 0 && output.embeds.length === 0) {
-    const playableStreams = await validatePlayableStreams(output.stream, ops);
+    const playableStreams = await validatePlayableStreams(output.stream, ops, sourceScraper.id);
     if (playableStreams.length === 0) throw new NotFoundError('No playable streams found');
     output.stream = playableStreams;
   }
@@ -112,7 +112,7 @@ export async function scrapeIndividualEmbed(
     .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
   if (output.stream.length === 0) throw new NotFoundError('No streams found');
 
-  const playableStreams = await validatePlayableStreams(output.stream, ops);
+  const playableStreams = await validatePlayableStreams(output.stream, ops, embedScraper.id);
   if (playableStreams.length === 0) throw new NotFoundError('No playable streams found');
   output.stream = playableStreams;
 
