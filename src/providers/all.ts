@@ -14,6 +14,7 @@ import { vidsrcembedScraper } from '@/providers/embeds/vidsrc';
 import { vTubeScraper } from '@/providers/embeds/vtube';
 import { flixhqScraper } from '@/providers/sources/flixhq/index';
 import { goMoviesScraper } from '@/providers/sources/gomovies/index';
+import { insertunitScraper } from '@/providers/sources/insertunit';
 import { kissAsianScraper } from '@/providers/sources/kissasian/index';
 import { lookmovieScraper } from '@/providers/sources/lookmovie';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
@@ -31,6 +32,8 @@ import { streamvidScraper } from './embeds/streamvid';
 import { vidCloudScraper } from './embeds/vidcloud';
 import { vidplayScraper } from './embeds/vidplay';
 import { voeScraper } from './embeds/voe';
+import { warezcdnembedHlsScraper } from './embeds/warezcdn/hls';
+import { warezcdnembedMp4Scraper } from './embeds/warezcdn/mp4';
 import { wootlyScraper } from './embeds/wootly';
 import { goojaraScraper } from './sources/goojara';
 import { hdRezkaScraper } from './sources/hdrezka';
@@ -38,7 +41,9 @@ import { nepuScraper } from './sources/nepu';
 import { primewireScraper } from './sources/primewire';
 import { ridooMoviesScraper } from './sources/ridomovies';
 import { smashyStreamScraper } from './sources/smashystream';
+import { soaperTvScraper } from './sources/soapertv';
 import { vidSrcToScraper } from './sources/vidsrcto';
+import { warezcdnScraper } from './sources/warezcdn';
 
 export function gatherAllSources(): Array<Sourcerer> {
   // all sources are gathered here
@@ -58,6 +63,9 @@ export function gatherAllSources(): Array<Sourcerer> {
     goojaraScraper,
     hdRezkaScraper,
     primewireScraper,
+    warezcdnScraper,
+    insertunitScraper,
+    soaperTvScraper,
   ];
 }
 
@@ -88,5 +96,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     droploadScraper,
     filelionsScraper,
     vTubeScraper,
+    warezcdnembedHlsScraper,
+    warezcdnembedMp4Scraper,
   ];
 }
