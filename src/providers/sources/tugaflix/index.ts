@@ -10,7 +10,7 @@ import { baseUrl, parseSearch } from './common';
 export const tugaflixScraper = makeSourcerer({
   id: 'tugaflix',
   name: 'Tugaflix',
-  rank: 112,
+  rank: 73,
   flags: [flags.IP_LOCKED],
   scrapeMovie: async (ctx) => {
     const searchResults = parseSearch(
@@ -50,6 +50,8 @@ export const tugaflixScraper = makeSourcerer({
           embedId: 'streamtape',
           url: finalUrl,
         });
+        // found doodstream on a few shows, maybe movies use it too?
+        // the player 2 is just streamtape in a custom player
       } else if (finalUrl.includes('dood')) {
         embeds.push({
           embedId: 'dood',
@@ -84,7 +86,7 @@ export const tugaflixScraper = makeSourcerer({
     });
 
     const embedUrl = load(videoPage)('iframe[name="player"]').attr('src');
-    if (!embedUrl) throw new Error('Failed to find taprUrl');
+    if (!embedUrl) throw new Error('Failed to find iframe');
 
     const playerPage = await ctx.proxiedFetcher(embedUrl.startsWith('https:') ? embedUrl : `https:${embedUrl}`, {
       method: 'POST',
