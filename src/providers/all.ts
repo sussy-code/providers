@@ -19,6 +19,7 @@ import { kissAsianScraper } from '@/providers/sources/kissasian/index';
 import { lookmovieScraper } from '@/providers/sources/lookmovie';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
 import { showboxScraper } from '@/providers/sources/showbox/index';
+import { tugaflixScraper } from '@/providers/sources/tugaflix';
 import { vidsrcScraper } from '@/providers/sources/vidsrc/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
@@ -66,6 +67,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     warezcdnScraper,
     insertunitScraper,
     soaperTvScraper,
+    tugaflixScraper,
   ];
 }
 
