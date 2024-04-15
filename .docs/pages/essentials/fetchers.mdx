@@ -1,0 +1,74 @@
+# Fetchers
+
+When creating provider controls, a fetcher will need to be configured.
+Depending on your environment, this can come with some considerations:
+
+## Using `fetch()`
+In most cases, you can use the `fetch()` API. This will work in newer versions of Node.js (18 and above) and on the browser.
+
+```ts
+const fetcher = makeStandardFetcher(fetch);
+```
+
+If you using older version of Node.js. You can use the npm package `node-fetch` to polyfill fetch:
+
+```ts
+import fetch from "node-fetch";
+
+const fetcher = makeStandardFetcher(fetch);
+```
+
+## Using fetchers on the browser
+When using this library on a browser, you will need a proxy. Browsers restrict when a web request can be made. To bypass those restrictions, you will need a CORS proxy.
+
+The movie-web team has a proxy pre-made and pre-configured for you to use. For more information, check out [movie-web/simple-proxy](https://github.com/movie-web/simple-proxy). After installing, you can use this proxy like so:
+
+```ts
+const fetcher = makeSimpleProxyFetcher("https://your.proxy.workers.dev/", fetch);
+```
+
+If you aren't able to use this specific proxy and need to use a different one, you can make your own fetcher in the next section.
+
+## Making a derived fetcher
+
+In some rare cases, a custom fetcher is necessary. This can be quite difficult to make from scratch so it's recommended to base it off of an existing fetcher and building your own functionality around it.
+
+```ts
+export function makeCustomFetcher(): Fetcher {
+  const fetcher = makeStandardFetcher(f);
+  const customFetcher: Fetcher = (url, ops) => {
+    // Do something with the options and URL here
+    return fetcher(url, ops);
+  };
+
+  return customFetcher;
+}
+```
+
+If you need to make your own fetcher for a proxy, ensure you make it compatible with the following headers: `Set-Cookie`, `Cookie`, `Referer`, `Origin`. Proxied fetchers need to be able to write/read those headers when making a request.
+
+
+## Making a fetcher from scratch
+
+In some rare cases, you need to make a fetcher from scratch.
+This is the list of features it needs:
+ - Send/read every header
+ - Parse JSON, otherwise parse as text
+ - Send JSON, Formdata or normal strings
+ - get final destination URL
+
+It's not recommended to do this at all. If you have to, you can base your code on the original implementation of `makeStandardFetcher`. Check out the [source code for it here](https://github.com/movie-web/providers/blob/dev/src/fetchers/standardFetch.ts).
+
+Here is a basic template on how to make your own custom fetcher:
+
+```ts
+const myFetcher: Fetcher = (url, ops) => {
+  // Do some fetching
+  return {
+    body: {},
+    finalUrl: '',
+    headers: new Headers(), // should only contain headers from ops.readHeaders
+    statusCode: 200,
+  };
+}
+```

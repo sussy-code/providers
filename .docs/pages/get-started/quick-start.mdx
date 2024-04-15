@@ -1,0 +1,71 @@
+---
+title: 'Quick Start'
+---
+
+## Installation
+
+Let's get started with `@movie-web/providers`. First lets install the package.
+
+  ```sh npm2yarn
+  npm install @movie-web/providers
+  ```
+
+## Scrape your first item
+
+To get started with scraping on the **server**, first you have to make an instance of the providers.
+
+<Important>
+This snippet will only work on a **server**. For other environments, check out [Usage on X](/essentials/usage-on-x).
+</Important>
+
+```ts title="index.ts (server)" showLineNumbers
+import { makeProviders, makeStandardFetcher, targets } from '@movie-web/providers';
+
+// this is how the library will make http requests
+const myFetcher = makeStandardFetcher(fetch);
+
+// make an instance of the providers library
+const providers = makeProviders({
+  fetcher: myFetcher,
+
+  // will be played on a native video player
+  target: targets.NATIVE
+})
+```
+
+Perfect. You now have an instance of the providers you can reuse everywhere.
+Now let's scrape an item:
+
+```ts title="index.ts (server)" showLineNumbers
+import { ScrapeMedia, makeProviders, makeStandardFetcher, targets } from '@movie-web/providers';
+
+const myFetcher = makeStandardFetcher(fetch);
+
+const providers = makeProviders({
+  fetcher: myFetcher,
+  target: targets.NATIVE
+});
+
+const media: ScrapeMedia = {
+  type: 'movie',
+  title: "Oppenheimer",
+  releaseYear: 2023,
+  tmdbId: "872585"
+};
+  
+async function fetchData() {
+  try {
+    const output = await providers.runAll({
+      media: media,
+    });
+    console.log("Output:",output)
+  } catch (error) {
+    console.error('Error occurred:', error);
+  }
+}
+
+fetchData();
+```
+
+Now we have our stream in the output variable. (If the output is `null` then nothing could be found.)
+To find out how to use the streams, check out [Using streams](/essentials/using-streams).
