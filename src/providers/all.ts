@@ -23,6 +23,7 @@ import { tugaflixScraper } from '@/providers/sources/tugaflix';
 import { vidsrcScraper } from '@/providers/sources/vidsrc/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
+import { bflixScraper } from './embeds/bflix';
 import { closeLoadScraper } from './embeds/closeload';
 import { fileMoonScraper } from './embeds/filemoon';
 import { ridooScraper } from './embeds/ridoo';
@@ -39,6 +40,7 @@ import { wootlyScraper } from './embeds/wootly';
 import { goojaraScraper } from './sources/goojara';
 import { hdRezkaScraper } from './sources/hdrezka';
 import { nepuScraper } from './sources/nepu';
+import { nitesScraper } from './sources/nites';
 import { primewireScraper } from './sources/primewire';
 import { ridooMoviesScraper } from './sources/ridomovies';
 import { smashyStreamScraper } from './sources/smashystream';
@@ -66,6 +68,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     primewireScraper,
     warezcdnScraper,
     insertunitScraper,
+    nitesScraper,
     soaperTvScraper,
     tugaflixScraper,
   ];
@@ -100,5 +103,6 @@ export function gatherAllEmbeds(): Array<Embed> {
     vTubeScraper,
     warezcdnembedHlsScraper,
     warezcdnembedMp4Scraper,
+    bflixScraper,
   ];
 }
