@@ -72,7 +72,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const nitesScraper = makeSourcerer({
   id: 'nites',
   name: 'Nites',
-  rank: 113,
+  rank: 90,
   flags: [],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
