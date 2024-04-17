@@ -6,11 +6,13 @@ import {
   Hero,
 } from '@neato/guider/client';
 
+import { VERSION } from '../constants';
+
 export default function LandingPage() {
   return (
     <GuiderLayout meta={{ layout: 'page' }}>
       <Hero>
-        <Hero.Badge title="V2.3.0" to="/get-started/changelog">
+        <Hero.Badge title={VERSION} to="/get-started/changelog">
           See changelog for more
         </Hero.Badge>
         <Hero.Title>@movie-web/providers</Hero.Title>
