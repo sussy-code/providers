@@ -26,6 +26,7 @@ import { zoechipScraper } from '@/providers/sources/zoechip';
 import { bflixScraper } from './embeds/bflix';
 import { closeLoadScraper } from './embeds/closeload';
 import { fileMoonScraper } from './embeds/filemoon';
+import { fileMoonMp4Scraper } from './embeds/filemoon/mp4';
 import { ridooScraper } from './embeds/ridoo';
 import { smashyStreamOScraper } from './embeds/smashystream/opstream';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
@@ -92,6 +93,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     ridooScraper,
     closeLoadScraper,
     fileMoonScraper,
+    fileMoonMp4Scraper,
     vidplayScraper,
     wootlyScraper,
     doodScraper,

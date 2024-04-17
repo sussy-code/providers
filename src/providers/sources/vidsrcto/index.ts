@@ -60,10 +60,16 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
       const urlWithSubtitles = embedArr.find((v) => v.source === 'Vidplay' && v.url.includes('sub.info'))?.url;
       const subtitleUrl = urlWithSubtitles ? new URL(urlWithSubtitles).searchParams.get('sub.info') : null;
       if (subtitleUrl) fullUrl.searchParams.set('sub.info', subtitleUrl);
-      embeds.push({
-        embedId: 'filemoon',
-        url: fullUrl.toString(),
-      });
+      embeds.push(
+        {
+          embedId: 'filemoon',
+          url: fullUrl.toString(),
+        },
+        {
+          embedId: 'filemoon-mp4',
+          url: fullUrl.toString(),
+        },
+      );
     }
   }
 
