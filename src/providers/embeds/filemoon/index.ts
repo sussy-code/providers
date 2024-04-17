@@ -11,7 +11,7 @@ const fileRegex = /file:"(.*?)"/g;
 export const fileMoonScraper = makeEmbed({
   id: 'filemoon',
   name: 'Filemoon',
-  rank: 400,
+  rank: 300,
   scrape: async (ctx) => {
     const embedRes = await ctx.proxiedFetcher<string>(ctx.url, {
       headers: {
