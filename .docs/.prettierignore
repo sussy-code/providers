@@ -1,3 +1,0 @@
-# Ignore index due to prettier removing setext headers
-*.index.md
-.github/CODEOWNERS
