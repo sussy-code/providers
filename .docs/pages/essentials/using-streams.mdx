@@ -22,7 +22,7 @@ These streams have an extra property `Stream.playlist` which contains the m3u8 p
 Here is a code sample of how to use HLS streams in web context using hls.js
 
 ```html
-<script src="https ://cdn.jsdelivr.net/npm/hls.js@1"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
 
 <video id="video"></video>
 <script>
@@ -75,10 +75,10 @@ If your target is set to `BROWSER`, headers will never be required, as it's not 
 All streams have a list of captions at `Stream.captions`. The structure looks like this :
 ```ts
 type Caption = {
-  type : CaptionType; // Language type, either "srt" or "vtt"
-  id : string; // Unique per stream
-  url : string; // The URL pointing to the subtitle file
-  hasCorsRestrictions : boolean; // If true, you will need to proxy it if you're running in a browser
-  language : string; // Language code of the caption
+  type: CaptionType; // Language type, either "srt" or "vtt"
+  id: string; // Unique per stream
+  url: string; // The URL pointing to the subtitle file
+  hasCorsRestrictions: boolean; // If true, you will need to proxy it if you're running in a browser
+  language: string; // Language code of the caption
 };
 ```
