@@ -35,30 +35,40 @@ npm run cli
 
 For repeatability, it can be useful to specify the arguments one by one.
 To see all the arguments, you can run the help command:
-```sh 
+```sh npm2yarn
 npm run cli -- -h
 ```
 
 Then just run it with your arguments, for example:
-```sh 
+```sh npm2yarn
 npm run cli -- -sid showbox -tid 556574
 ```
 
 ### Examples
 
-```sh 
-# Spirited away - showbox
-npm run cli -- -sid showbox -tid 129
+<CodeGroup>
+  <CodeGroup.Code title="Example1">
+    ```sh npm2yarn title="Spirited away - showbox"
+    npm run cli -- -sid showbox -tid 129
+    ```
+  </CodeGroup.Code>
+  <CodeGroup.Code title="Example2">
+    ```sh npm2yarn title="Hamilton - flixhq"
+    npm run cli -- -sid flixhq -tid 556574
+    ```
+  </CodeGroup.Code>
+    <CodeGroup.Code title="Example3">
+    ```sh npm2yarn title="Arcane S1E1 - showbox"
+    npm run cli -- -sid zoechip -tid 94605 -s 1 -e 1
+    ```
+  </CodeGroup.Code>
+    <CodeGroup.Code title="Example4">
+    ```sh npm2yarn title="febbox mp4 - get streams from an embed (gotten from a source output)"
+    npm run cli -- -sid febbox-mp4 -u URL_HERE
+    ```
+  </CodeGroup.Code>
 
-# Hamilton - flixhq
-npm run cli -- -sid flixhq -tid 556574
-
-# Arcane S1E1 - showbox
-npm run cli -- -sid zoechip -tid 94605 -s 1 -e 1
-
-# febbox mp4 - get streams from an embed (gotten from a source output)
-npm run cli -- -sid febbox-mp4 -u URL_HERE
-```
+</CodeGroup>
 
 ### Fetcher options
 
