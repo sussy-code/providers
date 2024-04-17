@@ -7,7 +7,7 @@ import { fileMoonScraper } from './index';
 export const fileMoonMp4Scraper = makeEmbed({
   id: 'filemoon-mp4',
   name: 'Filemoon MP4',
-  rank: 500,
+  rank: 400,
   scrape: async (ctx) => {
     const result = await fileMoonScraper.scrape(ctx);
 
