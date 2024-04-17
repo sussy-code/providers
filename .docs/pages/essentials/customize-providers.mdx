@@ -1,0 +1,74 @@
+# Customize providers
+
+You make the provider controls in two ways. Either with `makeProviders()` (the simpler option) or with `buildProviders()` (more elaborate and extensive option).
+
+## `makeProviders()` (simple)
+
+To know what to set the configuration to, you can read [How to use on X](./0.usage-on-x.md) for a detailed guide on how to configure your controls.
+
+```ts
+const providers = makeProviders({
+  // fetcher, every web request gets called through here
+  fetcher: makeStandardFetcher(fetch),
+  
+  // proxied fetcher, if the scraper needs to access a CORS proxy. this fetcher will be called instead
+  // of the normal fetcher. Defaults to the normal fetcher.
+  proxiedFetcher: undefined;
+
+  // target of where the streams will be used
+  target: targets.NATIVE;
+
+  // Set this to true, if the requests will have the same IP as
+  // the device that the stream will be played on.
+  consistentIpForRequests: false;
+})
+
+```
+
+## `buildProviders()` (advanced)
+
+To know what to set the configuration to, you can read [How to use on X](./0.usage-on-x.md) for a detailed guide on how to configure your controls.
+
+### Standard setup
+
+```ts
+const providers = buildProviders()
+  .setTarget(targets.NATIVE) // target of where the streams will be used
+  .setFetcher(makeStandardFetcher(fetch)) // fetcher, every web request gets called through here
+  .addBuiltinProviders() // add all builtin providers, if this is not called, no providers will be added to the controls
+  .build();
+```
+
+### Adding only select few providers
+
+Not all providers are great quality, so you can make an instance of the controls with only the providers you want.
+
+```ts
+const providers = buildProviders()
+  .setTarget(targets.NATIVE) // target of where the streams will be used
+  .setFetcher(makeStandardFetcher(fetch)) // fetcher, every web request gets called through here
+  .addSource('showbox') // only add showbox source
+  .addEmbed('febbox-hls') // add febbox-hls embed, which is returned by showbox
+  .build();
+```
+
+
+### Adding your own scrapers to the providers
+
+If you have your own scraper and still want to use the nice utilities of the provider library or just want to add on to the built-in providers, you can add your own custom source.
+
+```ts
+const providers = buildProviders()
+  .setTarget(targets.NATIVE) // target of where the streams will be used
+  .setFetcher(makeStandardFetcher(fetch)) // fetcher, every web request gets called through here
+  .addSource({ // add your own source
+    id: 'my-scraper',
+    name: 'My scraper',
+    rank: 800,
+    flags: [],
+    scrapeMovie(ctx) {
+      throw new Error('Not implemented');
+    }
+  })
+  .build();
+```

@@ -1,0 +1,18 @@
+.logo {
+  border-radius: 5px;
+  margin-left: -0.5rem;
+  padding: 0.5rem;
+  transition: transform 100ms ease-in-out, background-color 100ms ease-in-out;
+}
+
+.logo > img {
+  height: 1.5rem;
+}
+
+.logo:hover {
+  background-color: rgba(var(--colors-bgLightest));
+}
+
+.logo:active {
+  transform: scale(1.05);
+}

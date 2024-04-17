@@ -1,0 +1,82 @@
+# Development / contributing
+
+<Warning>
+This page isn't quite done yet, stay tuned!
+</Warning>
+
+{/*  
+TODO
+- Development setup
+- How to make new sources/embeds (link to the page)
+- How to use the fetchers, when to use proxiedFetcher
+- How to use the context
+*/}
+
+## Testing using the CLI
+
+Testing can be quite difficult for this library, unit tests can't really be made because of the unreliable nature of scrapers.
+But manually testing by writing an entry-point is also really annoying.
+
+Our solution is to make a CLI that you can use to run the scrapers. For everything else there are unit tests.
+
+### Setup
+Make a `.env` file in the root of the repository and add a TMDB API key: `MOVIE_WEB_TMDB_API_KEY=KEY_HERE`.
+Then make sure you've run `npm i` to get all the dependencies.
+
+### Mode 1 - interactive
+
+To run the CLI without needing to learn all the arguments, simply run the following command and go with the flow.
+
+```sh npm2yarn
+npm run cli
+```
+
+### Mode 2 - arguments
+
+For repeatability, it can be useful to specify the arguments one by one.
+To see all the arguments, you can run the help command:
+```sh npm2yarn
+npm run cli -- -h
+```
+
+Then just run it with your arguments, for example:
+```sh npm2yarn
+npm run cli -- -sid showbox -tid 556574
+```
+
+### Examples
+
+<CodeGroup>
+  <CodeGroup.Code title="Example1">
+    ```sh npm2yarn title="Spirited away - showbox"
+    npm run cli -- -sid showbox -tid 129
+    ```
+  </CodeGroup.Code>
+  <CodeGroup.Code title="Example2">
+    ```sh npm2yarn title="Hamilton - flixhq"
+    npm run cli -- -sid flixhq -tid 556574
+    ```
+  </CodeGroup.Code>
+    <CodeGroup.Code title="Example3">
+    ```sh npm2yarn title="Arcane S1E1 - showbox"
+    npm run cli -- -sid zoechip -tid 94605 -s 1 -e 1
+    ```
+  </CodeGroup.Code>
+    <CodeGroup.Code title="Example4">
+    ```sh npm2yarn title="febbox mp4 - get streams from an embed (gotten from a source output)"
+    npm run cli -- -sid febbox-mp4 -u URL_HERE
+    ```
+  </CodeGroup.Code>
+
+</CodeGroup>
+
+### Fetcher options
+
+The CLI comes with a few built-in fetchers:
+ - `node-fetch` : Fetch using the "node-fetch" library.
+ - `native` : Use the new fetch built into Node.JS (undici).
+ - `browser` : Start up headless chrome, and run the library in that context using a proxied fetcher.
+
+<Warning>
+The browser fetcher will require you to run `npm run build` before running the CLI. Otherwise you will get outdated results.
+</Warning>

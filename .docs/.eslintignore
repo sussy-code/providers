@@ -1,4 +1,6 @@
 dist
 node_modules
 .output
-.nuxt
+public
+# Ignore index due to prettier removing setext headers
+*.index.md

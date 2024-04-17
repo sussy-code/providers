@@ -1,8 +1,6 @@
 module.exports = {
-  root: true,
-  extends: '@nuxt/eslint-config',
+  extends: ['next', 'plugin:prettier/recommended'],
   rules: {
-    'vue/max-attributes-per-line': 'off',
-    'vue/multi-word-component-names': 'off'
-  }
-}
+    '@next/next/no-img-element': 'off',
+  },
+};
