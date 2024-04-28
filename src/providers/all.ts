@@ -17,6 +17,7 @@ import { goMoviesScraper } from '@/providers/sources/gomovies/index';
 import { insertunitScraper } from '@/providers/sources/insertunit';
 import { kissAsianScraper } from '@/providers/sources/kissasian/index';
 import { lookmovieScraper } from '@/providers/sources/lookmovie';
+import { nsbxScraper } from '@/providers/sources/nsbx';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
 import { showboxScraper } from '@/providers/sources/showbox/index';
 import { tugaflixScraper } from '@/providers/sources/tugaflix';
@@ -27,6 +28,7 @@ import { bflixScraper } from './embeds/bflix';
 import { closeLoadScraper } from './embeds/closeload';
 import { fileMoonScraper } from './embeds/filemoon';
 import { fileMoonMp4Scraper } from './embeds/filemoon/mp4';
+import { deltaScraper } from './embeds/nsbx/delta';
 import { ridooScraper } from './embeds/ridoo';
 import { smashyStreamOScraper } from './embeds/smashystream/opstream';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
@@ -60,6 +62,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     zoechipScraper,
     vidsrcScraper,
     lookmovieScraper,
+    nsbxScraper,
     smashyStreamScraper,
     ridooMoviesScraper,
     vidSrcToScraper,
@@ -94,6 +97,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     closeLoadScraper,
     fileMoonScraper,
     fileMoonMp4Scraper,
+    deltaScraper,
     vidplayScraper,
     wootlyScraper,
     doodScraper,
