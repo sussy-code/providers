@@ -3,6 +3,11 @@ import { SourcererEmbed, SourcererOutput, makeSourcerer } from '@/providers/base
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
+export const headers = {
+  Origin: 'https://extension.works.again.with.nsbx',
+  Referer: 'https://extension.works.again.with.nsbx',
+};
+
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
   const query = {
     title: ctx.media.title,
@@ -19,7 +24,9 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     query.episode = ctx.media.episode.number.toString();
   }
 
-  const result = await ctx.fetcher(`https://api.nsbx.ru/search?query=${encodeURIComponent(JSON.stringify(query))}`);
+  const result = await ctx.fetcher(`https://api.nsbx.ru/search?query=${encodeURIComponent(JSON.stringify(query))}`, {
+    headers,
+  });
 
   if (result.embeds.length === 0) throw new NotFoundError('No watchable item found');
 
