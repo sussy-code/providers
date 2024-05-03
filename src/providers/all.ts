@@ -17,13 +17,18 @@ import { goMoviesScraper } from '@/providers/sources/gomovies/index';
 import { insertunitScraper } from '@/providers/sources/insertunit';
 import { kissAsianScraper } from '@/providers/sources/kissasian/index';
 import { lookmovieScraper } from '@/providers/sources/lookmovie';
+import { nsbxScraper } from '@/providers/sources/nsbx';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
 import { showboxScraper } from '@/providers/sources/showbox/index';
+import { tugaflixScraper } from '@/providers/sources/tugaflix';
 import { vidsrcScraper } from '@/providers/sources/vidsrc/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
+import { bflixScraper } from './embeds/bflix';
 import { closeLoadScraper } from './embeds/closeload';
 import { fileMoonScraper } from './embeds/filemoon';
+import { fileMoonMp4Scraper } from './embeds/filemoon/mp4';
+import { deltaScraper } from './embeds/nsbx/delta';
 import { ridooScraper } from './embeds/ridoo';
 import { smashyStreamOScraper } from './embeds/smashystream/opstream';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
@@ -38,6 +43,7 @@ import { wootlyScraper } from './embeds/wootly';
 import { goojaraScraper } from './sources/goojara';
 import { hdRezkaScraper } from './sources/hdrezka';
 import { nepuScraper } from './sources/nepu';
+import { nitesScraper } from './sources/nites';
 import { primewireScraper } from './sources/primewire';
 import { ridooMoviesScraper } from './sources/ridomovies';
 import { smashyStreamScraper } from './sources/smashystream';
@@ -56,6 +62,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     zoechipScraper,
     vidsrcScraper,
     lookmovieScraper,
+    nsbxScraper,
     smashyStreamScraper,
     ridooMoviesScraper,
     vidSrcToScraper,
@@ -65,7 +72,9 @@ export function gatherAllSources(): Array<Sourcerer> {
     primewireScraper,
     warezcdnScraper,
     insertunitScraper,
+    nitesScraper,
     soaperTvScraper,
+    tugaflixScraper,
   ];
 }
 
@@ -87,6 +96,8 @@ export function gatherAllEmbeds(): Array<Embed> {
     ridooScraper,
     closeLoadScraper,
     fileMoonScraper,
+    fileMoonMp4Scraper,
+    deltaScraper,
     vidplayScraper,
     wootlyScraper,
     doodScraper,
@@ -98,5 +109,6 @@ export function gatherAllEmbeds(): Array<Embed> {
     vTubeScraper,
     warezcdnembedHlsScraper,
     warezcdnembedMp4Scraper,
+    bflixScraper,
   ];
 }
