@@ -6,6 +6,7 @@ import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { ProviderList } from '@/providers/get';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
+import { addMissingCaptions } from '@/utils/opensubtitles';
 import { isValidStream, validatePlayableStreams } from '@/utils/valid';
 
 export type IndividualSourceRunnerOptions = {
@@ -66,6 +67,10 @@ export async function scrapeInvidualSource(
     return true;
   });
 
+  // opensubtitles
+  for (const embed of output.embeds)
+    embed.url = `${embed.url}${btoa('MEDIA=')}${btoa(`${ops.media.imdbId}${ops.media.type === 'show' ? `.${ops.media.season.number}.${ops.media.episode.number}` : ''}`)}`;
+
   if ((!output.stream || output.stream.length === 0) && output.embeds.length === 0)
     throw new NotFoundError('No streams found');
 
@@ -73,6 +78,17 @@ export async function scrapeInvidualSource(
   if (output.stream && output.stream.length > 0 && output.embeds.length === 0) {
     const playableStreams = await validatePlayableStreams(output.stream, ops, sourceScraper.id);
     if (playableStreams.length === 0) throw new NotFoundError('No playable streams found');
+
+    // opensubtitles
+    for (const playableStream of playableStreams) {
+      playableStream.captions = await addMissingCaptions(
+        playableStream.captions,
+        ops,
+        btoa(
+          `${ops.media.imdbId}${ops.media.type === 'show' ? `.${ops.media.season.number}.${ops.media.episode.number}` : ''}`,
+        ),
+      );
+    }
     output.stream = playableStreams;
   }
   return output;
@@ -94,10 +110,14 @@ export async function scrapeIndividualEmbed(
   const embedScraper = list.embeds.find((v) => ops.id === v.id);
   if (!embedScraper) throw new Error('Embed with ID not found');
 
+  let url = ops.url;
+  let media;
+  if (ops.url.includes(btoa('MEDIA='))) [url, media] = url.split(btoa('MEDIA='));
+
   const output = await embedScraper.scrape({
     fetcher: ops.fetcher,
     proxiedFetcher: ops.proxiedFetcher,
-    url: ops.url,
+    url,
     progress(val) {
       ops.events?.update?.({
         id: embedScraper.id,
@@ -114,6 +134,10 @@ export async function scrapeIndividualEmbed(
 
   const playableStreams = await validatePlayableStreams(output.stream, ops, embedScraper.id);
   if (playableStreams.length === 0) throw new NotFoundError('No playable streams found');
+
+  if (media)
+    for (const playableStream of playableStreams)
+      playableStream.captions = await addMissingCaptions(playableStream.captions, ops, media);
   output.stream = playableStreams;
 
   return output;

@@ -8,6 +8,7 @@ import { Stream } from '@/providers/streams';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 import { reorderOnIdList } from '@/utils/list';
+import { addMissingCaptions } from '@/utils/opensubtitles';
 import { isValidStream, validatePlayableStream } from '@/utils/valid';
 
 export type RunOutput = {
@@ -106,6 +107,16 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
     if (output.stream?.[0]) {
       const playableStream = await validatePlayableStream(output.stream[0], ops, source.id);
       if (!playableStream) throw new NotFoundError('No streams found');
+
+      // opensubtitles
+      playableStream.captions = await addMissingCaptions(
+        playableStream.captions,
+        ops,
+        btoa(
+          `${ops.media.imdbId}${ops.media.type === 'show' ? `.${ops.media.season.number}.${ops.media.episode.number}` : ''}`,
+        ),
+      );
+
       return {
         sourceId: source.id,
         stream: playableStream,
@@ -153,6 +164,15 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         }
         const playableStream = await validatePlayableStream(embedOutput.stream[0], ops, embed.embedId);
         if (!playableStream) throw new NotFoundError('No streams found');
+
+        // opensubtitles
+        playableStream.captions = await addMissingCaptions(
+          playableStream.captions,
+          ops,
+          btoa(
+            `${ops.media.imdbId}${ops.media.type === 'show' ? `.${ops.media.season.number}.${ops.media.episode.number}` : ''}`,
+          ),
+        );
         embedOutput.stream = [playableStream];
       } catch (error) {
         const updateParams: UpdateEvent = {
