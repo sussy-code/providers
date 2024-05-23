@@ -28,7 +28,7 @@ import { bflixScraper } from './embeds/bflix';
 import { closeLoadScraper } from './embeds/closeload';
 import { fileMoonScraper } from './embeds/filemoon';
 import { fileMoonMp4Scraper } from './embeds/filemoon/mp4';
-import { deltaScraper } from './embeds/nsbx/delta';
+import { alphaScraper, deltaScraper } from './embeds/nsbx';
 import { ridooScraper } from './embeds/ridoo';
 import { smashyStreamOScraper } from './embeds/smashystream/opstream';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
@@ -98,6 +98,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     fileMoonScraper,
     fileMoonMp4Scraper,
     deltaScraper,
+    alphaScraper,
     vidplayScraper,
     wootlyScraper,
     doodScraper,
