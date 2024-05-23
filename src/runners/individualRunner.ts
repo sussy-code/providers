@@ -6,7 +6,7 @@ import { EmbedOutput, SourcererOutput } from '@/providers/base';
 import { ProviderList } from '@/providers/get';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
-import { addMissingCaptions } from '@/utils/opensubtitles';
+import { addOpenSubtitlesCaptions } from '@/utils/opensubtitles';
 import { isValidStream, validatePlayableStreams } from '@/utils/valid';
 
 export type IndividualSourceRunnerOptions = {
@@ -81,7 +81,7 @@ export async function scrapeInvidualSource(
 
     // opensubtitles
     for (const playableStream of playableStreams) {
-      playableStream.captions = await addMissingCaptions(
+      playableStream.captions = await addOpenSubtitlesCaptions(
         playableStream.captions,
         ops,
         btoa(
@@ -137,7 +137,8 @@ export async function scrapeIndividualEmbed(
 
   if (media)
     for (const playableStream of playableStreams)
-      playableStream.captions = await addMissingCaptions(playableStream.captions, ops, media);
+      playableStream.captions = await addOpenSubtitlesCaptions(playableStream.captions, ops, media);
+
   output.stream = playableStreams;
 
   return output;

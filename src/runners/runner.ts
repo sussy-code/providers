@@ -8,7 +8,7 @@ import { Stream } from '@/providers/streams';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 import { reorderOnIdList } from '@/utils/list';
-import { addMissingCaptions } from '@/utils/opensubtitles';
+import { addOpenSubtitlesCaptions } from '@/utils/opensubtitles';
 import { isValidStream, validatePlayableStream } from '@/utils/valid';
 
 export type RunOutput = {
@@ -109,7 +109,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       if (!playableStream) throw new NotFoundError('No streams found');
 
       // opensubtitles
-      playableStream.captions = await addMissingCaptions(
+      playableStream.captions = await addOpenSubtitlesCaptions(
         playableStream.captions,
         ops,
         btoa(
@@ -166,7 +166,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         if (!playableStream) throw new NotFoundError('No streams found');
 
         // opensubtitles
-        playableStream.captions = await addMissingCaptions(
+        playableStream.captions = await addOpenSubtitlesCaptions(
           playableStream.captions,
           ops,
           btoa(

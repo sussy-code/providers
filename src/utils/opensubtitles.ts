@@ -2,7 +2,7 @@ import { Caption, labelToLanguageCode, removeDuplicatedLanguages } from '@/provi
 import { IndividualEmbedRunnerOptions } from '@/runners/individualRunner';
 import { ProviderRunnerOptions } from '@/runners/runner';
 
-export async function addMissingCaptions(
+export async function addOpenSubtitlesCaptions(
   captions: Caption[],
   ops: ProviderRunnerOptions | IndividualEmbedRunnerOptions,
   media: string,
@@ -21,25 +21,25 @@ export async function addMissingCaptions(
       },
     );
 
-    const Captions: Caption[] = [];
+    const openSubtilesCaptions: Caption[] = [];
     for (const caption of Res) {
       const url = caption.SubDownloadLink.replace('.gz', '').replace('download/', 'download/subencoding-utf8/');
       const language = labelToLanguageCode(caption.LanguageName);
       if (!url || !language) continue;
-
-      // check if the stream already has the language
-      const existingCaption = captions.find((x) => x.language === language);
-      if (existingCaption) Captions.push(existingCaption);
       else
-        Captions.push({
+        openSubtilesCaptions.push({
           id: url,
+          opensubtitles: true,
           url,
           type: caption.SubFormat || 'srt',
           hasCorsRestrictions: false,
           language,
         });
     }
-    return removeDuplicatedLanguages(Captions);
+    return {
+      ...captions,
+      ...removeDuplicatedLanguages(openSubtilesCaptions),
+    };
   } catch {
     return captions;
   }
