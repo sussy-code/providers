@@ -9,6 +9,7 @@ export type CaptionType = keyof typeof captionTypes;
 export type Caption = {
   type: CaptionType;
   id: string; // only unique per stream
+  opensubtitles?: boolean;
   url: string;
   hasCorsRestrictions: boolean;
   language: string;
