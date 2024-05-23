@@ -36,10 +36,10 @@ export async function addOpenSubtitlesCaptions(
           language,
         });
     }
-    return {
+    return [
       ...captions,
       ...removeDuplicatedLanguages(openSubtilesCaptions),
-    };
+    ];
   } catch {
     return captions;
   }
