@@ -1,8 +1,8 @@
-import ISO6391 from "iso-639-1";
+import ISO6391 from 'iso-639-1';
 
 export const captionTypes = {
-  srt: "srt",
-  vtt: "vtt",
+  srt: 'srt',
+  vtt: 'vtt',
 };
 export type CaptionType = keyof typeof captionTypes;
 
