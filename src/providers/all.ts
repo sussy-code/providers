@@ -28,7 +28,9 @@ import { bflixScraper } from './embeds/bflix';
 import { closeLoadScraper } from './embeds/closeload';
 import { fileMoonScraper } from './embeds/filemoon';
 import { fileMoonMp4Scraper } from './embeds/filemoon/mp4';
+import { hydraxScraper } from './embeds/hydrax';
 import { alphaScraper, deltaScraper } from './embeds/nsbx';
+import { playm4uNMScraper } from './embeds/playm4u/nm';
 import { ridooScraper } from './embeds/ridoo';
 import { smashyStreamOScraper } from './embeds/smashystream/opstream';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
@@ -42,6 +44,7 @@ import { warezcdnembedMp4Scraper } from './embeds/warezcdn/mp4';
 import { wootlyScraper } from './embeds/wootly';
 import { goojaraScraper } from './sources/goojara';
 import { hdRezkaScraper } from './sources/hdrezka';
+import { m4uScraper } from './sources/m4ufree';
 import { nepuScraper } from './sources/nepu';
 import { nitesScraper } from './sources/nites';
 import { primewireScraper } from './sources/primewire';
@@ -69,6 +72,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     nepuScraper,
     goojaraScraper,
     hdRezkaScraper,
+    m4uScraper,
     primewireScraper,
     warezcdnScraper,
     insertunitScraper,
@@ -111,5 +115,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     warezcdnembedHlsScraper,
     warezcdnembedMp4Scraper,
     bflixScraper,
+    playm4uNMScraper,
+    hydraxScraper,
   ];
 }

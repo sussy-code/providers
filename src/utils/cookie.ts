@@ -13,7 +13,8 @@ export function makeCookieHeader(cookies: Record<string, string>): string {
 }
 
 export function parseSetCookie(headerValue: string): Record<string, Cookie> {
-  const parsedCookies = setCookieParser.parse(headerValue, {
+  const splitHeaderValue = setCookieParser.splitCookiesString(headerValue);
+  const parsedCookies = setCookieParser.parse(splitHeaderValue, {
     map: true,
   });
   return parsedCookies;

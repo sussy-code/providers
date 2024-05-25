@@ -25,7 +25,7 @@ export function makeSimpleProxyFetcher(proxyUrl: string, f: FetchLike): Fetcher 
       Object.entries(responseHeaderMap).forEach((entry) => {
         const value = res.headers.get(entry[0]);
         if (!value) return;
-        res.extraHeaders?.set(entry[0].toLowerCase(), value);
+        res.extraHeaders?.set(entry[1].toLowerCase(), value);
       });
 
       // set correct final url

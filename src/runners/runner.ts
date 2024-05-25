@@ -180,7 +180,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         embedOutput.stream = [playableStream];
       } catch (error) {
         const updateParams: UpdateEvent = {
-          id: source.id,
+          id,
           percentage: 100,
           status: error instanceof NotFoundError ? 'notfound' : 'failure',
           reason: error instanceof NotFoundError ? error.message : undefined,
