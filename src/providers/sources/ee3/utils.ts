@@ -10,14 +10,20 @@ export async function login(
   pass: string,
   ctx: ShowScrapeContext | MovieScrapeContext,
 ): Promise<string | null> {
-  const req = await ctx.proxiedFetcher.full<string>('/login', {
-    baseUrl,
-    method: 'POST',
-    body: new URLSearchParams({ user, pass, action: 'login' }),
-    readHeaders: ['Set-Cookie'],
-  });
+  let req;
+  if (user && pass)
+    req = await ctx.proxiedFetcher.full<string>('/login', {
+      baseUrl,
+      method: 'POST',
+      body: new URLSearchParams({ user, pass, action: 'login' }),
+      readHeaders: ['Set-Cookie'],
+    });
 
-  const cookies = parseSetCookie(req.headers.get('Set-Cookie') || '');
+  const cookies = parseSetCookie(
+    req?.headers.get('Set-Cookie') ||
+      // we don't wan't our creds to be in the code
+      'PHPSESSID=phmje3cqeft42rckf8mj7illhc;',
+  );
 
   return cookies.PHPSESSID.value;
 }
