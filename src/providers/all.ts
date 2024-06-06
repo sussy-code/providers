@@ -25,11 +25,13 @@ import { tugaflixScraper } from '@/providers/sources/tugaflix';
 import { vidsrcScraper } from '@/providers/sources/vidsrc/index';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
-import { autoembedBenagaliScraper } from './embeds/autoembed/bengali';
-import { autoembedEnglishScraper } from './embeds/autoembed/english';
-import { autoembedHindiScraper } from './embeds/autoembed/hindi';
-import { autoembedTamilScraper } from './embeds/autoembed/tamil';
-import { autoembedTeluguScraper } from './embeds/autoembed/telugu';
+import {
+  autoembedBengaliScraper,
+  autoembedEnglishScraper,
+  autoembedHindiScraper,
+  autoembedTamilScraper,
+  autoembedTeluguScraper,
+} from './embeds/autoembed';
 import { bflixScraper } from './embeds/bflix';
 import { closeLoadScraper } from './embeds/closeload';
 import { fileMoonScraper } from './embeds/filemoon';
@@ -126,7 +128,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     hydraxScraper,
     autoembedEnglishScraper,
     autoembedHindiScraper,
-    autoembedBenagaliScraper,
+    autoembedBengaliScraper,
     autoembedTamilScraper,
     autoembedTeluguScraper,
   ];
