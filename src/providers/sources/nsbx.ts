@@ -5,11 +5,6 @@ import { NotFoundError } from '@/utils/errors';
 
 export const baseUrl = 'https://api.nsbx.ru';
 
-export const headers = {
-  Origin: 'https://extension.works.again.with.nsbx',
-  Referer: 'https://extension.works.again.with.nsbx',
-};
-
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
   const query = {
     title: ctx.media.title,
@@ -26,9 +21,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     query.episode = ctx.media.episode.number.toString();
   }
 
-  const res = await ctx.fetcher(`${baseUrl}/status`, {
-    headers,
-  });
+  const res = await ctx.proxiedFetcher(`${baseUrl}/status`);
 
   if (res.providers?.length === 0) {
     throw new NotFoundError('No providers available');
