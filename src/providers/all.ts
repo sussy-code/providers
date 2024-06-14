@@ -12,6 +12,7 @@ import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { upstreamScraper } from '@/providers/embeds/upstream';
 import { vidsrcembedScraper } from '@/providers/embeds/vidsrc';
 import { vTubeScraper } from '@/providers/embeds/vtube';
+import { autoembedScraper } from '@/providers/sources/autoembed';
 import { ee3Scraper } from '@/providers/sources/ee3';
 import { flixhqScraper } from '@/providers/sources/flixhq/index';
 import { goMoviesScraper } from '@/providers/sources/gomovies/index';
@@ -61,8 +62,6 @@ import { smashyStreamScraper } from './sources/smashystream';
 import { soaperTvScraper } from './sources/soapertv';
 import { vidSrcToScraper } from './sources/vidsrcto';
 import { warezcdnScraper } from './sources/warezcdn';
-
-import { autoembedScraper } from '@/providers/sources/autoembed';
 
 export function gatherAllSources(): Array<Sourcerer> {
   // all sources are gathered here
