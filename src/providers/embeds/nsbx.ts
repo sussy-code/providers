@@ -1,5 +1,5 @@
 import { EmbedOutput, makeEmbed } from '@/providers/base';
-import { baseUrl, headers } from '@/providers/sources/nsbx';
+import { baseUrl } from '@/providers/sources/nsbx';
 import { NotFoundError } from '@/utils/errors';
 
 const providers = [
@@ -20,9 +20,8 @@ function embed(provider: { id: string; rank: number }) {
     rank: provider.rank,
     disabled: false,
     async scrape(ctx) {
-      const search = await ctx.fetcher.full(
+      const search = await ctx.proxiedFetcher.full(
         `${baseUrl}/search?query=${encodeURIComponent(ctx.url)}&provider=${provider.id}`,
-        { headers },
       );
 
       if (search.statusCode === 429) {
@@ -33,11 +32,8 @@ function embed(provider: { id: string; rank: number }) {
 
       ctx.progress(50);
 
-      const result = await ctx.fetcher(
+      const result = await ctx.proxiedFetcher(
         `${baseUrl}/provider?resourceId=${encodeURIComponent(search.body.url)}&provider=${provider.id}`,
-        {
-          headers,
-        },
       );
 
       ctx.progress(100);
