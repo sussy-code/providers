@@ -22,6 +22,8 @@ export const turbovidScraper = makeEmbed({
     const baseUrl = new URL(ctx.url).origin;
     const embedPage = await ctx.proxiedFetcher(ctx.url);
 
+    ctx.progress(30);
+
     // the whitespace is for future-proofing the regex a bit
     const apkey = embedPage.match(/const\s+apkey\s*=\s*"(.*?)";/)?.[1];
     const xxid = embedPage.match(/const\s+xxid\s*=\s*"(.*?)";/)?.[1];
@@ -40,6 +42,8 @@ export const turbovidScraper = makeEmbed({
 
     if (!juiceKey) throw new Error('Failed to fetch the key');
 
+    ctx.progress(60);
+
     const data = JSON.parse(
       await ctx.proxiedFetcher('/api/cucked/the_juice/', {
         baseUrl,
@@ -53,6 +57,8 @@ export const turbovidScraper = makeEmbed({
     ).data;
 
     if (!data) throw new Error('Failed to fetch required data');
+
+    ctx.progress(90);
 
     const playlist = decrypt(data, juiceKey);
 

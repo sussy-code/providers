@@ -15,6 +15,8 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     },
   });
 
+  ctx.progress(40);
+
   const $search = load(searchPage);
   const searchResults: { title: string; year?: number | undefined; url: string }[] = [];
 
@@ -32,6 +34,8 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
   let watchPageUrl = searchResults.find((x) => x && compareMedia(ctx.media, x.title, x.year))?.url;
   if (!watchPageUrl) throw new NotFoundError('No watchable item found');
 
+  ctx.progress(60);
+
   if (ctx.media.type === 'show') {
     const match = watchPageUrl.match(/\/series\/([^/]+)\/?/);
     if (!match) throw new Error('Failed to parse watch page url');
@@ -43,8 +47,12 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
   const watchPage = load(await ctx.proxiedFetcher(watchPageUrl));
 
+  ctx.progress(80);
+
   const url = watchPage('iframe').first().attr('src'); // I couldn't think of a better way
   if (!url) throw new Error('Failed to find embed url');
+
+  ctx.progress(90);
 
   return {
     embeds: [
