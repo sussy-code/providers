@@ -42,13 +42,11 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   const contentPage$ = load(contentPage);
 
   const pass = contentPage$('#hId').attr('value');
-  const param = contentPage$('#divU').text();
 
-  if (!pass || !param) throw new NotFoundError('Content not found');
+  if (!pass) throw new NotFoundError('Content not found');
 
   const formData = new URLSearchParams();
   formData.append('pass', pass);
-  formData.append('param', param);
   formData.append('e2', '0');
   formData.append('server', '0');
 
@@ -91,7 +89,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
     stream: [
       {
         id: 'primary',
-        playlist: await convertPlaylistsToDataUrls(ctx.proxiedFetcher, streamResJson.val),
+        playlist: await convertPlaylistsToDataUrls(ctx.proxiedFetcher, `${baseUrl}/${streamResJson.val}`),
         type: 'hls',
         flags: [flags.CORS_ALLOWED],
         captions,
@@ -100,7 +98,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
         ? [
             {
               id: 'backup',
-              playlist: await convertPlaylistsToDataUrls(ctx.proxiedFetcher, streamResJson.val_bak),
+              playlist: await convertPlaylistsToDataUrls(ctx.proxiedFetcher, `${baseUrl}/${streamResJson.val_bak}`),
               type: 'hls' as const,
               flags: [flags.CORS_ALLOWED],
               captions,
