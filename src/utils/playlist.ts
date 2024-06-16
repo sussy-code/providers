@@ -12,11 +12,13 @@ export async function convertPlaylistsToDataUrls(
   const playlist = parse(playlistData);
 
   if (playlist.isMasterPlaylist) {
-    for (const variant of (playlist as MasterPlaylist).variants) {
-      const variantPlaylistData = await fetcher(variant.uri, { headers });
-      const variantPlaylist = parse(variantPlaylistData);
-      variant.uri = `data:application/vnd.apple.mpegurl;base64,${btoa(stringify(variantPlaylist))}`;
-    }
+    await Promise.all(
+      (playlist as MasterPlaylist).variants.map(async (variant) => {
+        const variantPlaylistData = await fetcher(variant.uri, { headers });
+        const variantPlaylist = parse(variantPlaylistData);
+        variant.uri = `data:application/vnd.apple.mpegurl;base64,${btoa(stringify(variantPlaylist))}`;
+      }),
+    );
   }
 
   return `data:application/vnd.apple.mpegurl;base64,${btoa(stringify(playlist))}`;
