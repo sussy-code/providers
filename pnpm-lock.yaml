@@ -17,6 +17,9 @@ dependencies:
   form-data:
     specifier: ^4.0.0
     version: 4.0.0
+  hls-parser:
+    specifier: ^0.13.2
+    version: 0.13.2
   iso-639-1:
     specifier: ^3.1.2
     version: 3.1.2
@@ -2530,6 +2533,10 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
     dev: true
+
+  /hls-parser@0.13.2:
+    resolution: {integrity: sha512-lKZitdq8Awcsb271BkbUCzXgBBZEhnMNcyAqre/cns2hItCV8nF3ucleT2QS37Ck+eUv7LwAD1t+F/1D/Vxkgg==}
+    dev: false
 
   /html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}

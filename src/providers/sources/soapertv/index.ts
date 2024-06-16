@@ -4,6 +4,7 @@ import { flags } from '@/entrypoint/utils/targets';
 import { Caption, labelToLanguageCode } from '@/providers/captions';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
+import { convertPlaylistsToDataUrls } from '@/utils/playlist';
 
 import { InfoResponse } from './types';
 import { SourcererOutput, makeSourcerer } from '../../base';
@@ -90,18 +91,18 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
     stream: [
       {
         id: 'primary',
-        playlist: streamResJson.val,
+        playlist: await convertPlaylistsToDataUrls(ctx.proxiedFetcher, streamResJson.val),
         type: 'hls',
-        flags: [flags.IP_LOCKED],
+        flags: [flags.CORS_ALLOWED],
         captions,
       },
       ...(streamResJson.val_bak
         ? [
             {
               id: 'backup',
-              playlist: streamResJson.val_bak,
+              playlist: await convertPlaylistsToDataUrls(ctx.proxiedFetcher, streamResJson.val_bak),
               type: 'hls' as const,
-              flags: [flags.IP_LOCKED],
+              flags: [flags.CORS_ALLOWED],
               captions,
             },
           ]
