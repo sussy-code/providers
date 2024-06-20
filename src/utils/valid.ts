@@ -30,6 +30,9 @@ export async function validatePlayableStream(
   if (SKIP_VALIDATION_CHECK_IDS.includes(sourcererId)) return stream;
 
   if (stream.type === 'hls') {
+    // dirty temp fix for base64 urls to prep for fmhy poll
+    if (stream.playlist.startsWith('data:')) return stream;
+
     const result = await ops.proxiedFetcher.full(stream.playlist, {
       method: 'GET',
       headers: {
