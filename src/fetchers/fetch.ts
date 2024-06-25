@@ -7,6 +7,7 @@ export type FetchOps = {
   headers: Record<string, string>;
   method: string;
   body: any;
+  credentials?: 'include' | 'same-origin' | 'omit';
 };
 
 export type FetchHeaders = {

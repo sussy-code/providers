@@ -7,6 +7,7 @@ export type FetcherOptions = {
   method?: 'HEAD' | 'GET' | 'POST';
   readHeaders?: string[];
   body?: Record<string, any> | string | FormData | URLSearchParams;
+  credentials?: 'include' | 'same-origin' | 'omit';
 };
 
 // Version of the options that always has the defaults set
@@ -18,6 +19,7 @@ export type DefaultedFetcherOptions = {
   query: Record<string, string>;
   readHeaders: string[];
   method: 'HEAD' | 'GET' | 'POST';
+  credentials?: 'include' | 'same-origin' | 'omit';
 };
 
 export type FetcherResponse<T = any> = {
