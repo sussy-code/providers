@@ -21,7 +21,7 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
       },
       {
         embedId: smashyStreamOScraper.id,
-        url: `https://embed.smashystream.com/videopihimo.php${query}`,
+        url: `https://embed.smashystream.com/shortmoviec.php${query}`,
       },
     ],
   };
