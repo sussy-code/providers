@@ -17,11 +17,11 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
     embeds: [
       {
         embedId: smashyStreamFScraper.id,
-        url: `https://embed.smashystream.com/video1dn.php${query}`,
+        url: `https://embed.smashystream.com/videofeee.php${query}`,
       },
       {
         embedId: smashyStreamOScraper.id,
-        url: `https://embed.smashystream.com/videoop.php${query}`,
+        url: `https://embed.smashystream.com/videopihimo.php${query}`,
       },
     ],
   };
