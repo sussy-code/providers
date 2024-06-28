@@ -11,7 +11,7 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
   const query =
     ctx.media.type === 'movie'
       ? `?tmdb=${ctx.media.tmdbId}`
-      : `?tmdbId=${ctx.media.tmdbId}&season=${ctx.media.season.number}&episode=${ctx.media.episode.number}`;
+      : `?tmdb=${ctx.media.tmdbId}&season=${ctx.media.season.number}&episode=${ctx.media.episode.number}`;
 
   return {
     embeds: [
