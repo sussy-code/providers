@@ -1,5 +1,4 @@
 import { EmbedOutput, makeEmbed } from '@/providers/base';
-import { baseUrl } from '@/providers/sources/nsbx';
 import { NotFoundError } from '@/utils/errors';
 
 const providers = [
@@ -20,21 +19,30 @@ function embed(provider: { id: string; rank: number }) {
     rank: provider.rank,
     disabled: false,
     async scrape(ctx) {
-      const search = await ctx.proxiedFetcher.full(
-        `${baseUrl}/search?query=${encodeURIComponent(ctx.url)}&provider=${provider.id}`,
-      );
+      const [query, baseUrl] = ctx.url.split('.');
 
-      if (search.statusCode === 429) {
-        throw new Error('Rate limited');
-      } else if (search.statusCode !== 200) {
-        throw new NotFoundError('Failed to search');
-      }
+      const search = await ctx.fetcher.full('/search', {
+        query: {
+          query: encodeURIComponent(query),
+          provider: provider.id,
+        },
+        credentials: 'include',
+        baseUrl,
+      });
+
+      if (search.statusCode === 429) throw new Error('Rate limited');
+      if (search.statusCode !== 200) throw new NotFoundError('Failed to search');
 
       ctx.progress(50);
 
-      const result = await ctx.proxiedFetcher(
-        `${baseUrl}/provider?resourceId=${encodeURIComponent(search.body.url)}&provider=${provider.id}`,
-      );
+      const result = await ctx.fetcher('/provider', {
+        query: {
+          resourceId: encodeURIComponent(search.body.url),
+          provider: provider.id,
+        },
+        credentials: 'include',
+        baseUrl,
+      });
 
       ctx.progress(100);
 

@@ -3,8 +3,6 @@ import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-export const baseUrl = 'https://api.nsbx.ru';
-
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
   const query = {
     title: ctx.media.title,
@@ -12,25 +10,21 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     tmdbId: ctx.media.tmdbId,
     imdbId: ctx.media.imdbId,
     type: ctx.media.type,
-    season: '',
-    episode: '',
+    ...(ctx.media.type === 'show' && {
+      season: ctx.media.season.number.toString(),
+      episode: ctx.media.episode.number.toString(),
+    }),
   };
 
-  if (ctx.media.type === 'show') {
-    query.season = ctx.media.season.number.toString();
-    query.episode = ctx.media.episode.number.toString();
-  }
+  const res: { providers: string[]; endpoint: string } = await ctx.fetcher('https://api.nsbx.ru/status');
 
-  const res = await ctx.proxiedFetcher(`${baseUrl}/status`);
-
-  if (res.providers?.length === 0) {
-    throw new NotFoundError('No providers available');
-  }
+  if (res.providers?.length === 0) throw new NotFoundError('No providers available');
+  if (!res.endpoint) throw new Error('No endpoint returned');
 
   const embeds = res.providers.map((provider: string) => {
     return {
       embedId: provider,
-      url: JSON.stringify(query),
+      url: `${JSON.stringify(query)}.${res.endpoint}`,
     };
   });
 

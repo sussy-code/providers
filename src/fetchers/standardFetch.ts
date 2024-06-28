@@ -28,6 +28,7 @@ export function makeStandardFetcher(f: FetchLike): Fetcher {
         ...ops.headers,
       },
       body: seralizedBody.body,
+      credentials: ops.credentials,
     });
 
     let body: any;
