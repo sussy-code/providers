@@ -8,11 +8,13 @@ import { mixdropScraper } from '@/providers/embeds/mixdrop';
 import { mp4uploadScraper } from '@/providers/embeds/mp4upload';
 import { streambucketScraper } from '@/providers/embeds/streambucket';
 import { streamsbScraper } from '@/providers/embeds/streamsb';
+import { turbovidScraper } from '@/providers/embeds/turbovid';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { upstreamScraper } from '@/providers/embeds/upstream';
 import { vidsrcembedScraper } from '@/providers/embeds/vidsrc';
 import { vTubeScraper } from '@/providers/embeds/vtube';
 import { autoembedScraper } from '@/providers/sources/autoembed';
+import { catflixScraper } from '@/providers/sources/catflix';
 import { flixhqScraper } from '@/providers/sources/flixhq/index';
 import { goMoviesScraper } from '@/providers/sources/gomovies/index';
 import { insertunitScraper } from '@/providers/sources/insertunit';
@@ -65,6 +67,7 @@ import { warezcdnScraper } from './sources/warezcdn';
 export function gatherAllSources(): Array<Sourcerer> {
   // all sources are gathered here
   return [
+    catflixScraper,
     flixhqScraper,
     remotestreamScraper,
     kissAsianScraper,
@@ -131,5 +134,6 @@ export function gatherAllEmbeds(): Array<Embed> {
     autoembedBengaliScraper,
     autoembedTamilScraper,
     autoembedTeluguScraper,
+    turbovidScraper,
   ];
 }
