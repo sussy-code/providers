@@ -14,6 +14,7 @@ export interface ProviderControlsInput {
   features: FeatureMap;
   sources: Sourcerer[];
   embeds: Embed[];
+  proxyStreams?: boolean; // temporary
 }
 
 export interface RunnerOptions {
@@ -30,6 +31,8 @@ export interface RunnerOptions {
 
   // the media you want to see sources from
   media: ScrapeMedia;
+
+  proxyStreams?: boolean; // temporary
 }
 
 export interface SourceRunnerOptions {
@@ -41,6 +44,8 @@ export interface SourceRunnerOptions {
 
   // id of the source scraper you want to scrape from
   id: string;
+
+  proxyStreams?: boolean; // temporary
 }
 
 export interface EmbedRunnerOptions {
@@ -52,6 +57,8 @@ export interface EmbedRunnerOptions {
 
   // id of the embed scraper you want to scrape from
   id: string;
+
+  proxyStreams?: boolean; // temporary
 }
 
 export interface ProviderControls {
@@ -85,6 +92,7 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
     features: ops.features,
     fetcher: makeFetcher(ops.fetcher),
     proxiedFetcher: makeFetcher(ops.proxiedFetcher ?? ops.fetcher),
+    proxyStreams: ops.proxyStreams,
   };
 
   return {
