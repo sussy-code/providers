@@ -9,6 +9,7 @@ import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 import { reorderOnIdList } from '@/utils/list';
 import { addOpenSubtitlesCaptions } from '@/utils/opensubtitles';
+import { requiresProxy, setupProxy } from '@/utils/proxy';
 import { isValidStream, validatePlayableStream } from '@/utils/valid';
 
 export type RunOutput = {
@@ -36,6 +37,7 @@ export type ProviderRunnerOptions = {
   embedOrder?: string[];
   events?: FullScraperEvents;
   media: ScrapeMedia;
+  proxyStreams?: boolean; // temporary
 };
 
 export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOptions): Promise<RunOutput | null> {
@@ -85,6 +87,10 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         output.stream = (output.stream ?? [])
           .filter(isValidStream)
           .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
+
+        output.stream = output.stream.map((stream) =>
+          requiresProxy(stream) && ops.proxyStreams ? setupProxy(stream) : stream,
+        );
       }
       if (!output || (!output.stream?.length && !output.embeds.length)) {
         throw new NotFoundError('No streams found');
@@ -161,6 +167,9 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         embedOutput.stream = embedOutput.stream
           .filter(isValidStream)
           .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
+        embedOutput.stream = embedOutput.stream.map((stream) =>
+          requiresProxy(stream) && ops.proxyStreams ? setupProxy(stream) : stream,
+        );
         if (embedOutput.stream.length === 0) {
           throw new NotFoundError('No streams found');
         }

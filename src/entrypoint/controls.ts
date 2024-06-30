@@ -31,8 +31,6 @@ export interface RunnerOptions {
 
   // the media you want to see sources from
   media: ScrapeMedia;
-
-  proxyStreams?: boolean; // temporary
 }
 
 export interface SourceRunnerOptions {
@@ -44,8 +42,6 @@ export interface SourceRunnerOptions {
 
   // id of the source scraper you want to scrape from
   id: string;
-
-  proxyStreams?: boolean; // temporary
 }
 
 export interface EmbedRunnerOptions {
@@ -57,8 +53,6 @@ export interface EmbedRunnerOptions {
 
   // id of the embed scraper you want to scrape from
   id: string;
-
-  proxyStreams?: boolean; // temporary
 }
 
 export interface ProviderControls {
