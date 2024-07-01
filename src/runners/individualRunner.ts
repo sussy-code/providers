@@ -7,6 +7,7 @@ import { ProviderList } from '@/providers/get';
 import { ScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 import { addOpenSubtitlesCaptions } from '@/utils/opensubtitles';
+import { requiresProxy, setupProxy } from '@/utils/proxy';
 import { isValidStream, validatePlayableStreams } from '@/utils/valid';
 
 export type IndividualSourceRunnerOptions = {
@@ -16,6 +17,7 @@ export type IndividualSourceRunnerOptions = {
   media: ScrapeMedia;
   id: string;
   events?: IndividualScraperEvents;
+  proxyStreams?: boolean; // temporary
 };
 
 export async function scrapeInvidualSource(
@@ -56,6 +58,10 @@ export async function scrapeInvidualSource(
     output.stream = output.stream
       .filter((stream) => isValidStream(stream))
       .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
+
+    output.stream = output.stream.map((stream) =>
+      requiresProxy(stream) && ops.proxyStreams ? setupProxy(stream) : stream,
+    );
   }
 
   if (!output) throw new Error('output is null');
@@ -107,6 +113,7 @@ export type IndividualEmbedRunnerOptions = {
   url: string;
   id: string;
   events?: IndividualScraperEvents;
+  proxyStreams?: boolean; // temporary
 };
 
 export async function scrapeIndividualEmbed(
@@ -137,6 +144,10 @@ export async function scrapeIndividualEmbed(
     .filter((stream) => isValidStream(stream))
     .filter((stream) => flagsAllowedInFeatures(ops.features, stream.flags));
   if (output.stream.length === 0) throw new NotFoundError('No streams found');
+
+  output.stream = output.stream.map((stream) =>
+    requiresProxy(stream) && ops.proxyStreams ? setupProxy(stream) : stream,
+  );
 
   const playableStreams = await validatePlayableStreams(output.stream, ops, embedScraper.id);
   if (playableStreams.length === 0) throw new NotFoundError('No playable streams found');

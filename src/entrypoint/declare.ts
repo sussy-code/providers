@@ -18,10 +18,13 @@ export interface ProviderMakerOptions {
   // Set this to true, if the requests will have the same IP as
   // the device that the stream will be played on
   consistentIpForRequests?: boolean;
+
+  // This is temporary
+  proxyStreams?: boolean;
 }
 
 export function makeProviders(ops: ProviderMakerOptions) {
-  const features = getTargetFeatures(ops.target, ops.consistentIpForRequests ?? false);
+  const features = getTargetFeatures(ops.proxyStreams ? 'any' : ops.target, ops.consistentIpForRequests ?? false);
   const list = getProviders(features, {
     embeds: getBuiltinEmbeds(),
     sources: getBuiltinSources(),
@@ -33,5 +36,6 @@ export function makeProviders(ops: ProviderMakerOptions) {
     features,
     fetcher: ops.fetcher,
     proxiedFetcher: ops.proxiedFetcher,
+    proxyStreams: ops.proxyStreams,
   });
 }

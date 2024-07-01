@@ -14,6 +14,7 @@ export interface ProviderControlsInput {
   features: FeatureMap;
   sources: Sourcerer[];
   embeds: Embed[];
+  proxyStreams?: boolean; // temporary
 }
 
 export interface RunnerOptions {
@@ -85,6 +86,7 @@ export function makeControls(ops: ProviderControlsInput): ProviderControls {
     features: ops.features,
     fetcher: makeFetcher(ops.fetcher),
     proxiedFetcher: makeFetcher(ops.proxiedFetcher ?? ops.fetcher),
+    proxyStreams: ops.proxyStreams,
   };
 
   return {
