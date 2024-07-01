@@ -14,7 +14,7 @@ export function setupProxy(stream: Stream): Stream {
       : null;
 
   if (stream.type === 'hls')
-    stream.playlist = `https://busty.prawnhub.ru/proxy/${encodeURIComponent(stream.playlist)}/${headers}`;
+    stream.playlist = `https://swallow.prawnhub.ru/${encodeURIComponent(stream.playlist)}/${headers}`;
 
   if (stream.type === 'file')
     Object.entries(stream.qualities).forEach((entry) => {
