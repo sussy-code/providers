@@ -22,6 +22,7 @@ import { lookmovieScraper } from '@/providers/sources/lookmovie';
 import { nsbxScraper } from '@/providers/sources/nsbx';
 import { remotestreamScraper } from '@/providers/sources/remotestream';
 import { showboxScraper } from '@/providers/sources/showbox/index';
+import { superembedScraper } from '@/providers/sources/superembed';
 import { tugaflixScraper } from '@/providers/sources/tugaflix';
 import { vidsrcScraper } from '@/providers/sources/vidsrc/index';
 import { whvxScraper } from '@/providers/sources/whvx';
@@ -76,6 +77,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     vidsrcScraper,
     lookmovieScraper,
     nsbxScraper,
+    superembedScraper,
     smashyStreamScraper,
     ridooMoviesScraper,
     vidSrcToScraper,
