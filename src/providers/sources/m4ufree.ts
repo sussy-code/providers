@@ -8,7 +8,7 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { makeCookieHeader, parseSetCookie } from '@/utils/cookie';
 import { NotFoundError } from '@/utils/errors';
 
-let baseUrl = 'https://m4ufree.tv';
+let baseUrl = 'https://m4uhd.tv';
 
 const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => {
   // this redirects to ww1.m4ufree.tv or ww2.m4ufree.tv
@@ -149,7 +149,8 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => 
 export const m4uScraper = makeSourcerer({
   id: 'm4ufree',
   name: 'M4UFree',
-  rank: 125,
+  rank: 130,
+  disabled: true,
   flags: [],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
