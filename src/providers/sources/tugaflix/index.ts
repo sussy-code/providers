@@ -11,6 +11,7 @@ export const tugaflixScraper = makeSourcerer({
   id: 'tugaflix',
   name: 'Tugaflix',
   rank: 73,
+  disabled: true,
   flags: [flags.IP_LOCKED],
   scrapeMovie: async (ctx) => {
     const searchResults = parseSearch(

@@ -68,6 +68,7 @@ export const catflixScraper = makeSourcerer({
   id: 'catflix',
   name: 'Catflix',
   rank: 122,
+  disabled: true,
   flags: [],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,

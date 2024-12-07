@@ -73,6 +73,7 @@ export const nitesScraper = makeSourcerer({
   id: 'nites',
   name: 'Nites',
   rank: 90,
+  disabled: true,
   flags: [],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
