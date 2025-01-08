@@ -59,12 +59,10 @@ export async function getFlixhqShowSources(ctx: ScrapeContext, media: ShowMedia,
   const seasonDoc = load(seasonData);
   const episode = seasonDoc('.nav-item > a')
     .toArray()
-    .map((el) => {
-      return {
-        id: seasonDoc(el).attr('data-id'),
-        title: seasonDoc(el).attr('title'),
-      };
-    })
+    .map((el) => ({
+      id: seasonDoc(el).attr('data-id'),
+      title: seasonDoc(el).attr('title'),
+    }))
     .find((e) => e.title?.startsWith(`Eps ${media.episode.number}`))?.id;
 
   if (!episode) throw new NotFoundError('episode not found');

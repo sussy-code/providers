@@ -37,9 +37,7 @@ const sources = [...sourceScrapers, ...embedScrapers];
 function joinMediaTypes(mediaTypes: string[] | undefined) {
   if (mediaTypes) {
     const formatted = mediaTypes
-      .map((type: string) => {
-        return `${type[0].toUpperCase() + type.substring(1).toLowerCase()}s`;
-      })
+      .map((type: string) => `${type[0].toUpperCase() + type.substring(1).toLowerCase()}s`)
       .join(' / ');
 
     return `(${formatted})`;

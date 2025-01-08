@@ -11,7 +11,7 @@ import { EmbedScrapeContext } from '@/utils/context';
 async function fetchCaptchaToken(ctx: EmbedScrapeContext, domain: string, recaptchaKey: string) {
   const domainHash = Base64.stringify(Utf8.parse(domain)).replace(/=/g, '.');
 
-  const recaptchaRender = await ctx.proxiedFetcher<string>(`https://www.google.com/recaptcha/api.js`, {
+  const recaptchaRender = await ctx.proxiedFetcher<string>('https://www.google.com/recaptcha/api.js', {
     query: {
       render: recaptchaKey,
     },
@@ -23,7 +23,7 @@ async function fetchCaptchaToken(ctx: EmbedScrapeContext, domain: string, recapt
   );
 
   const recaptchaAnchor = await ctx.proxiedFetcher<string>(
-    `https://www.google.com/recaptcha/api2/anchor?cb=1&hl=en&size=invisible&cb=flicklax`,
+    'https://www.google.com/recaptcha/api2/anchor?cb=1&hl=en&size=invisible&cb=flicklax',
     {
       query: {
         k: recaptchaKey,
@@ -36,7 +36,7 @@ async function fetchCaptchaToken(ctx: EmbedScrapeContext, domain: string, recapt
   const cToken = load(recaptchaAnchor)('#recaptcha-token').attr('value');
   if (!cToken) throw new Error('Unable to find cToken');
 
-  const tokenData = await ctx.proxiedFetcher<string>(`https://www.google.com/recaptcha/api2/reload`, {
+  const tokenData = await ctx.proxiedFetcher<string>('https://www.google.com/recaptcha/api2/reload', {
     query: {
       v: vToken,
       reason: 'q',
@@ -107,7 +107,7 @@ export const streamsbScraper = makeEmbed({
           hash: dl.parameters[2],
         };
 
-        const getDownload = await ctx.proxiedFetcher<string>(`/dl`, {
+        const getDownload = await ctx.proxiedFetcher<string>('/dl', {
           query,
           baseUrl: parsedUrl.origin,
         });
@@ -127,7 +127,7 @@ export const streamsbScraper = makeEmbed({
         dlForm.append('hash', dl.parameters[2]);
         dlForm.append('g-recaptcha-response', captchaToken);
 
-        const download = await ctx.proxiedFetcher<string>(`/dl`, {
+        const download = await ctx.proxiedFetcher<string>('/dl', {
           method: 'POST',
           baseUrl: parsedUrl.origin,
           body: dlForm,

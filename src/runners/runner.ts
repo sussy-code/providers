@@ -74,16 +74,17 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
     // run source scrapers
     let output: SourcererOutput | null = null;
     try {
-      if (ops.media.type === 'movie' && source.scrapeMovie)
+      if (ops.media.type === 'movie' && source.scrapeMovie) {
         output = await source.scrapeMovie({
           ...contextBase,
           media: ops.media,
         });
-      else if (ops.media.type === 'show' && source.scrapeShow)
+      } else if (ops.media.type === 'show' && source.scrapeShow) {
         output = await source.scrapeShow({
           ...contextBase,
           media: ops.media,
         });
+      }
       if (output) {
         output.stream = (output.stream ?? [])
           .filter(isValidStream)
@@ -116,7 +117,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
       if (!playableStream) throw new NotFoundError('No streams found');
 
       // opensubtitles
-      if (!ops.disableOpensubtitles)
+      if (!ops.disableOpensubtitles) {
         playableStream.captions = await addOpenSubtitlesCaptions(
           playableStream.captions,
           ops,
@@ -126,6 +127,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
             }`,
           ),
         );
+      }
 
       return {
         sourceId: source.id,
@@ -179,7 +181,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
         if (!playableStream) throw new NotFoundError('No streams found');
 
         // opensubtitles
-        if (!ops.disableOpensubtitles)
+        if (!ops.disableOpensubtitles) {
           playableStream.captions = await addOpenSubtitlesCaptions(
             playableStream.captions,
             ops,
@@ -189,6 +191,7 @@ export async function runAllProviders(list: ProviderList, ops: ProviderRunnerOpt
               }`,
             ),
           );
+        }
         embedOutput.stream = [playableStream];
       } catch (error) {
         const updateParams: UpdateEvent = {

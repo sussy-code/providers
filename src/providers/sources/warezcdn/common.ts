@@ -10,7 +10,7 @@ export async function getExternalPlayerUrl(ctx: ScrapeContext, embedId: string, 
     id: embedUrl,
     sv: embedId,
   };
-  const realUrl = await ctx.proxiedFetcher<string>(`/getPlay.php`, {
+  const realUrl = await ctx.proxiedFetcher<string>('/getPlay.php', {
     baseUrl: warezcdnApiBase,
     headers: {
       Referer: `${warezcdnApiBase}/getEmbed.php?${new URLSearchParams(params)}`,

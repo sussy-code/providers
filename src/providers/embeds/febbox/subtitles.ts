@@ -50,9 +50,7 @@ export async function getSubtitles(
     const subtitleFilePath = subtitle.file_path
       .replace(captionsDomains[0], captionsDomains[1])
       .replace(/\s/g, '+')
-      .replace(/[()]/g, (c) => {
-        return `%${c.charCodeAt(0).toString(16)}`;
-      });
+      .replace(/[()]/g, (c) => `%${c.charCodeAt(0).toString(16)}`);
 
     const subtitleType = getCaptionTypeFromUrl(subtitleFilePath);
     if (!subtitleType) return;

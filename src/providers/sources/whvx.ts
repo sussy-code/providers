@@ -22,12 +22,10 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
   if (res.providers?.length === 0) throw new NotFoundError('No providers available');
 
-  const embeds = res.providers.map((provider: string) => {
-    return {
-      embedId: provider,
-      url: JSON.stringify(query),
-    };
-  });
+  const embeds = res.providers.map((provider: string) => ({
+    embedId: provider,
+    url: JSON.stringify(query),
+  }));
 
   return {
     embeds,

@@ -1,6 +1,6 @@
 import { MediaTypes } from '@/entrypoint/utils/media';
 
-export const febBoxBase = `https://www.febbox.com`;
+export const febBoxBase = 'https://www.febbox.com';
 
 export interface FebboxFileList {
   file_name: string;

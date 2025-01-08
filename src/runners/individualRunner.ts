@@ -43,16 +43,17 @@ export async function scrapeInvidualSource(
   };
 
   let output: SourcererOutput | null = null;
-  if (ops.media.type === 'movie' && sourceScraper.scrapeMovie)
+  if (ops.media.type === 'movie' && sourceScraper.scrapeMovie) {
     output = await sourceScraper.scrapeMovie({
       ...contextBase,
       media: ops.media,
     });
-  else if (ops.media.type === 'show' && sourceScraper.scrapeShow)
+  } else if (ops.media.type === 'show' && sourceScraper.scrapeShow) {
     output = await sourceScraper.scrapeShow({
       ...contextBase,
       media: ops.media,
     });
+  }
 
   // filter output with only valid streams
   if (output?.stream) {
@@ -75,13 +76,15 @@ export async function scrapeInvidualSource(
   });
 
   // opensubtitles
-  if (!ops.disableOpensubtitles)
-    for (const embed of output.embeds)
+  if (!ops.disableOpensubtitles) {
+    for (const embed of output.embeds) {
       embed.url = `${embed.url}${btoa('MEDIA=')}${btoa(
         `${ops.media.imdbId}${
           ops.media.type === 'show' ? `.${ops.media.season.number}.${ops.media.episode.number}` : ''
         }`,
       )}`;
+    }
+  }
 
   if ((!output.stream || output.stream.length === 0) && output.embeds.length === 0)
     throw new NotFoundError('No streams found');
@@ -92,7 +95,7 @@ export async function scrapeInvidualSource(
     if (playableStreams.length === 0) throw new NotFoundError('No playable streams found');
 
     // opensubtitles
-    if (!ops.disableOpensubtitles)
+    if (!ops.disableOpensubtitles) {
       for (const playableStream of playableStreams) {
         playableStream.captions = await addOpenSubtitlesCaptions(
           playableStream.captions,
@@ -104,6 +107,7 @@ export async function scrapeInvidualSource(
           ),
         );
       }
+    }
     output.stream = playableStreams;
   }
   return output;

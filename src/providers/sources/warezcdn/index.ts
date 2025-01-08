@@ -13,7 +13,7 @@ async function getEmbeds(id: string, servers: string, ctx: ScrapeContext): Promi
   const embeds: SourcererEmbed[] = [];
 
   for (const server of servers.split(',')) {
-    await ctx.proxiedFetcher<string>(`/getEmbed.php`, {
+    await ctx.proxiedFetcher<string>('/getEmbed.php', {
       baseUrl: warezcdnBase,
       headers: {
         Referer: `${warezcdnBase}/getEmbed.php?${new URLSearchParams({ id, sv: server })}`,
@@ -22,7 +22,7 @@ async function getEmbeds(id: string, servers: string, ctx: ScrapeContext): Promi
       query: { id, sv: server },
     });
 
-    const embedPage = await ctx.proxiedFetcher<string>(`/getPlay.php`, {
+    const embedPage = await ctx.proxiedFetcher<string>('/getPlay.php', {
       baseUrl: warezcdnBase,
       headers: {
         Referer: `${warezcdnBase}/getEmbed.php?${new URLSearchParams({ id, sv: server })}`,

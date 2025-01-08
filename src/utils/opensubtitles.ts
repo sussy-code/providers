@@ -32,7 +32,7 @@ export async function addOpenSubtitlesCaptions(
       const url = caption.SubDownloadLink.replace('.gz', '').replace('download/', 'download/subencoding-utf8/');
       const language = labelToLanguageCode(caption.LanguageName);
       if (!url || !language) continue;
-      else
+      else {
         openSubtilesCaptions.push({
           id: url,
           opensubtitles: true,
@@ -41,6 +41,7 @@ export async function addOpenSubtitlesCaptions(
           hasCorsRestrictions: false,
           language,
         });
+      }
     }
     return [...captions, ...removeDuplicatedLanguages(openSubtilesCaptions)];
   } catch {

@@ -31,6 +31,7 @@ import { remotestreamScraper } from '@/providers/sources/remotestream';
 import { showboxScraper } from '@/providers/sources/showbox/index';
 import { tugaflixScraper } from '@/providers/sources/tugaflix';
 import { vidsrcScraper } from '@/providers/sources/vidsrc/index';
+import { vidsrcsuScraper } from '@/providers/sources/vidsrcsu';
 import { whvxScraper } from '@/providers/sources/whvx';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
@@ -104,6 +105,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     fsharetvScraper,
     redStarScraper,
     bombtheirishScraper,
+    vidsrcsuScraper,
   ];
 }
 

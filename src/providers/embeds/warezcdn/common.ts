@@ -23,7 +23,7 @@ function decrypt(input: string) {
 }
 
 export async function getDecryptedId(ctx: EmbedScrapeContext) {
-  const page = await ctx.proxiedFetcher<string>(`/player.php`, {
+  const page = await ctx.proxiedFetcher<string>('/player.php', {
     baseUrl: warezcdnPlayerBase,
     headers: {
       Referer: `${warezcdnPlayerBase}/getEmbed.php?${new URLSearchParams({

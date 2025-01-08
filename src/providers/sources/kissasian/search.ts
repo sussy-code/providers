@@ -18,10 +18,8 @@ export async function search(ctx: ScrapeContext, title: string, seasonNumber?: n
 
   const searchPage = load(searchResults);
 
-  return Array.from(searchPage('a')).map((drama) => {
-    return {
-      name: searchPage(drama).text(),
-      url: drama.attribs.href,
-    };
-  });
+  return Array.from(searchPage('a')).map((drama) => ({
+    name: searchPage(drama).text(),
+    url: drama.attribs.href,
+  }));
 }

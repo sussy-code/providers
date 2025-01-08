@@ -12,7 +12,8 @@ let data;
 
 // The cookie for this headerData doesn't matter, Goojara just checks it's there.
 const headersData = {
-  cookie: `aGooz=t9pmkdtef1b3lg3pmo1u2re816; bd9aa48e=0d7b89e8c79844e9df07a2; _b414=2151C6B12E2A88379AFF2C0DD65AC8298DEC2BF4; 9d287aaa=8f32ad589e1c4288fe152f`,
+  cookie:
+    'aGooz=t9pmkdtef1b3lg3pmo1u2re816; bd9aa48e=0d7b89e8c79844e9df07a2; _b414=2151C6B12E2A88379AFF2C0DD65AC8298DEC2BF4; 9d287aaa=8f32ad589e1c4288fe152f',
   Referer: 'https://www.goojara.to/',
 };
 
@@ -20,7 +21,7 @@ export async function searchAndFindMedia(
   ctx: ScrapeContext,
   media: MovieMedia | ShowMedia,
 ): Promise<Result | undefined> {
-  data = await ctx.fetcher<string>(`/xhrr.php`, {
+  data = await ctx.fetcher<string>('/xhrr.php', {
     baseUrl,
     headers: headersData,
     method: 'POST',
@@ -44,7 +45,12 @@ export async function searchAndFindMedia(
     if (!slug) throw new NotFoundError('Not found');
 
     if (media.type === type) {
-      results.push({ title, year, slug, type });
+      results.push({
+        title,
+        year,
+        slug,
+        type,
+      });
     }
   });
 

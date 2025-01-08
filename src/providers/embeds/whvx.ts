@@ -58,7 +58,7 @@ function embed(provider: { id: string; rank: number; disabled?: boolean }) {
         ctx.progress(100);
 
         return result as EmbedOutput;
-      } catch (error) {
+      } catch {
         clearInterval(interval);
         ctx.progress(100);
         throw new NotFoundError('Failed to search');

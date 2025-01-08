@@ -17,8 +17,8 @@ export async function getEmbeds(ctx: ScrapeContext, id: string): Promise<EmbedsR
   });
 
   const cookies = parseSetCookie(data.headers.get('Set-Cookie') || '');
-  const RandomCookieName = data.body.split(`_3chk('`)[1].split(`'`)[0];
-  const RandomCookieValue = data.body.split(`_3chk('`)[1].split(`'`)[2];
+  const RandomCookieName = data.body.split("_3chk('")[1].split("'")[0];
+  const RandomCookieValue = data.body.split("_3chk('")[1].split("'")[2];
 
   let aGoozCookie = '';
   let cookie = '';

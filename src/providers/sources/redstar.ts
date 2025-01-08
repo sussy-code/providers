@@ -5,7 +5,7 @@ import { NotFoundError } from '@/utils/errors';
 
 const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> => {
   try {
-    const res = await ctx.fetcher.full(`https://red-star.ningai.workers.dev/scrape/showbox`, {
+    const res = await ctx.fetcher.full('https://red-star.ningai.workers.dev/scrape/showbox', {
       query: {
         type: ctx.media.type,
         title: ctx.media.title,

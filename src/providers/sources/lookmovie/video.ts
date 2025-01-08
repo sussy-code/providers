@@ -14,9 +14,9 @@ export async function getVideoSources(
 
   let path = '';
   if (media.type === 'show') {
-    path = `/v1/episodes/view`;
+    path = '/v1/episodes/view';
   } else if (media.type === 'movie') {
-    path = `/v1/movies/view`;
+    path = '/v1/movies/view';
   }
   const data = await ctx.fetcher<StreamsDataResult>(path, {
     baseUrl,

@@ -41,7 +41,7 @@ export function testSource(ops: TestSourceOptions) {
           let hasError = false;
           let streamCount = 0;
           let embedCount = 0;
-          let embeds = [];
+          const embeds = [];
           try {
             const result = await providers.runSourceScraper({
               id: ops.source.id,

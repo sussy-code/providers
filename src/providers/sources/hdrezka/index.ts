@@ -16,7 +16,7 @@ async function searchAndFindMediaId(ctx: ShowScrapeContext | MovieScrapeContext)
   const itemRegexPattern = /<a href="([^"]+)"><span class="enty">([^<]+)<\/span> \(([^)]+)\)/g;
   const idRegexPattern = /\/(\d+)-[^/]+\.html$/;
 
-  const searchData = await ctx.proxiedFetcher<string>(`/engine/ajax/search.php`, {
+  const searchData = await ctx.proxiedFetcher<string>('/engine/ajax/search.php', {
     baseUrl: rezkaBase,
     headers: baseHeaders,
     query: { q: ctx.media.title },
@@ -32,7 +32,12 @@ async function searchAndFindMediaId(ctx: ShowScrapeContext | MovieScrapeContext)
     if (result !== null) {
       const id = url.match(idRegexPattern)?.[1] || null;
 
-      movieData.push({ id: id ?? '', year: result.year ?? 0, type: ctx.media.type, url });
+      movieData.push({
+        id: id ?? '',
+        year: result.year ?? 0,
+        type: ctx.media.type,
+        url,
+      });
     }
   }
 
@@ -82,7 +87,7 @@ async function getTranslatorId(
   });
 
   // Translator ID 238 represents the Original + subtitles player.
-  if (response.includes(`data-translator_id="238"`)) return '238';
+  if (response.includes('data-translator_id="238"')) return '238';
 
   const functionName = ctx.media.type === 'movie' ? 'initCDNMoviesEvents' : 'initCDNSeriesEvents';
   const regexPattern = new RegExp(`sof\\.tv\\.${functionName}\\(${id}, ([^,]+)`, 'i');

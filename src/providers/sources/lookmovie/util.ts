@@ -13,7 +13,7 @@ export async function searchAndFindMedia(
   media: MovieMedia | ShowMedia,
 ): Promise<ResultItem | undefined> {
   if (media.type === 'show') {
-    const searchRes = await ctx.fetcher<Result>(`/v1/shows`, {
+    const searchRes = await ctx.fetcher<Result>('/v1/shows', {
       baseUrl,
       query: { 'filters[q]': media.title },
     });
@@ -24,7 +24,7 @@ export async function searchAndFindMedia(
     return result;
   }
   if (media.type === 'movie') {
-    const searchRes = await ctx.fetcher<Result>(`/v1/movies`, {
+    const searchRes = await ctx.fetcher<Result>('/v1/movies', {
       baseUrl,
       query: { 'filters[q]': media.title },
     });
@@ -41,14 +41,15 @@ export async function scrape(ctx: ScrapeContext, media: MovieMedia | ShowMedia, 
   if (media.type === 'movie') {
     id = result.id_movie;
   } else if (media.type === 'show') {
-    const data = await ctx.fetcher<ShowDataResult>(`/v1/shows`, {
+    const data = await ctx.fetcher<ShowDataResult>('/v1/shows', {
       baseUrl,
       query: { expand: 'episodes', id: result.id_show },
     });
 
-    const episode = data.episodes?.find((v: episodeObj) => {
-      return Number(v.season) === Number(media.season.number) && Number(v.episode) === Number(media.episode.number);
-    });
+    const episode = data.episodes?.find(
+      (v: episodeObj) =>
+        Number(v.season) === Number(media.season.number) && Number(v.episode) === Number(media.episode.number),
+    );
 
     if (episode) id = episode.id;
   }

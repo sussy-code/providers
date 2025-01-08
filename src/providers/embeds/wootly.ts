@@ -52,7 +52,7 @@ export const wootlyScraper = makeEmbed({
 
     if (!tk || !vd) throw new Error('wootly source not found');
 
-    const url = await ctx.proxiedFetcher<string>(`/grabd`, {
+    const url = await ctx.proxiedFetcher<string>('/grabd', {
       baseUrl,
       query: { t: tk, id: vd },
       method: 'GET',

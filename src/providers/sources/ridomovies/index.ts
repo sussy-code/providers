@@ -8,7 +8,7 @@ import { NotFoundError } from '@/utils/errors';
 
 import { IframeSourceResult, SearchResult } from './types';
 
-const ridoMoviesBase = `https://ridomovies.tv`;
+const ridoMoviesBase = 'https://ridomovies.tv';
 const ridoMoviesApiBase = `${ridoMoviesBase}/core/api`;
 
 const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext) => {

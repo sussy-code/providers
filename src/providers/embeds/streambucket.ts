@@ -26,12 +26,14 @@ function decodeHunter(encoded: string, mask: string, charCodeOffset: number, del
     .map((chunk) => {
       // Chunks are in reverse order. 'reduceRight' removes the
       // need to 'reverse' the array first
-      const charCode = chunk.split('').reduceRight((c, value, index) => {
-        // Calculate the character code for each character in the chunk.
-        // This involves finding the index of 'value' in the 'mask' and
-        // multiplying it by (delimiterOffset^position).
-        return c + mask.indexOf(value) * delimiterOffset ** (chunk.length - 1 - index);
-      }, 0);
+      const charCode = chunk.split('').reduceRight(
+        (c, value, index) =>
+          // Calculate the character code for each character in the chunk.
+          // This involves finding the index of 'value' in the 'mask' and
+          // multiplying it by (delimiterOffset^position).
+          c + mask.indexOf(value) * delimiterOffset ** (chunk.length - 1 - index),
+        0,
+      );
 
       // The actual character code is offset by the given amount
       return String.fromCharCode(charCode - charCodeOffset);

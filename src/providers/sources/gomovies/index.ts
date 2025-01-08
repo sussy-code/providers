@@ -12,7 +12,7 @@ import { NotFoundError } from '@/utils/errors';
 
 import { getSource } from './source';
 
-export const gomoviesBase = `https://gomovies.sx`;
+export const gomoviesBase = 'https://gomovies.sx';
 
 export const goMoviesScraper = makeSourcerer({
   id: 'gomovies',
