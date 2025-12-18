@@ -40,7 +40,7 @@ const PROXY_URLS = [
   'https://c719dda0-simple-proxy.sylaxx95.workers.dev',
 ];
 
-const SHOWBOX_BASE = 'https://www.showbox.lat';
+const SHOWBOX_BASE = 'https://www.showbox.media';
 const FEBBOX_BASE = 'https://www.febbox.com';
 const MEDIA_PROXY_API = 'https://media-proxy.oct-cdn.co/api/fetchMp4';
 
