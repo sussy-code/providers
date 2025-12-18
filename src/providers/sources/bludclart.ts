@@ -391,7 +391,7 @@ export const bludclartScraper = makeSourcerer({
   id: 'bludclart',
   name: 'Bludclart 🤝',
   rank: 202,
-  disabled: true,
+  disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
