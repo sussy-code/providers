@@ -41,7 +41,7 @@ const PROXY_URLS = [
   'https://bruh.jerry5890.workers.dev',
   'https://c719dda0-simple-proxy.sylaxx95.workers.dev',
 **/
-  ];
+];
 
 const SHOWBOX_BASE = 'https://www.showbox.media';
 const FEBBOX_BASE = 'https://www.febbox.com';
@@ -321,6 +321,9 @@ async function getStreamUrl(
       );
 
       if (sources.length === 0) return null;
+
+      const autoQuality = sources.find((s) => s.quality.toUpperCase() === 'AUTO');
+      if (autoQuality) return autoQuality.download_url;
 
       // Sort by quality ranking
       const qualityRank = (q: string): number => {
