@@ -170,6 +170,7 @@ async function getShowboxId(
         return showId || null;
       }
 
+      // Fallback: extract from URL
       const match = targetUrl.match(/-(\d+)$/);
       if (match) {
         return match[1];
@@ -390,7 +391,7 @@ export const bludclartScraper = makeSourcerer({
   id: 'bludclart',
   name: 'Bludclart 🤝',
   rank: 202,
-  disabled: false,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
