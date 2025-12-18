@@ -6,8 +6,6 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 const PROXY_URLS = [
-  "https://simple-proxy.asteral-ss2.workers.dev",
-  /**
   'https://pcors.shipwr3ck.workers.dev',
   'https://pstream-proxy.katelyn-boreham.workers.dev',
   'https://simple-proxy-pstream.mohamdaimn.workers.dev',
@@ -40,10 +38,9 @@ const PROXY_URLS = [
   'https://simple-proxyyy.thinner-life-void.workers.dev',
   'https://bruh.jerry5890.workers.dev',
   'https://c719dda0-simple-proxy.sylaxx95.workers.dev',
-**/
-  ];
+];
 
-const SHOWBOX_BASE = 'https://www.showbox.media';
+const SHOWBOX_BASE = 'https://www.showbox.lat';
 const FEBBOX_BASE = 'https://www.febbox.com';
 const MEDIA_PROXY_API = 'https://media-proxy.oct-cdn.co/api/fetchMp4';
 
@@ -65,23 +62,18 @@ function proxyUrl(url: string): string {
 }
 
 async function customFetcher(ctx: ShowScrapeContext | MovieScrapeContext, url: string, options?: any): Promise<any> {
+  // Try up to 3 different proxies before falling back to direct access
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const proxiedUrl = proxyUrl(url);
-      const response = await ctx.fetcher(proxiedUrl, options);
-
-      // ✅ Detect Cloudflare "Just a moment..." challenge
-      if (typeof response === 'string' && response.includes('<title>Just a moment')) {
-        throw new Error('Cloudflare challenge');
-      }
-
-      return response;
+      return await ctx.fetcher(proxiedUrl, options);
     } catch (error) {
+      // If it's a 520 error (Cloudflare issue), try next proxy
       if (attempt < 2) continue;
+      // On last proxy attempt failure, try direct access
       return ctx.proxiedFetcher(url, options);
     }
   }
-  throw new Error('All fetch attempts failed');
 }
 
 async function getShareKey(
@@ -100,16 +92,20 @@ async function getShareKey(
     const data = response;
 
     if (typeof data === 'object' && data !== null) {
+      // Check for nested data
       if ('data' in data && typeof data.data === 'object' && data.data !== null && 'link' in data.data) {
         return (data.data as any).link.split('/').pop();
       }
+
       if ('link' in data) {
+        // Maybe it returns a febbox link? https://www.febbox.com/share/KEY
         return (data as any).link.split('/').pop();
       }
       if ('key' in data) {
         return (data as any).key;
       }
       if ('data' in data) {
+        // generic data field
         const val = (data as any).data;
         if (typeof val === 'string' && val.includes('febbox.com')) {
           return val.split('/').pop() || null;
@@ -137,9 +133,12 @@ async function getShowboxId(
     });
 
     const $ = load(response);
+
     const results = $('.film-poster-ahref');
 
-    if (results.length === 0) return null;
+    if (results.length === 0) {
+      return null;
+    }
 
     let targetUrl: string | null = null;
     for (const result of results.toArray()) {
@@ -171,6 +170,7 @@ async function getShowboxId(
         return showId || null;
       }
 
+      // Fallback: extract from URL
       const match = targetUrl.match(/-(\d+)$/);
       if (match) {
         return match[1];
@@ -188,10 +188,13 @@ async function getFebboxFileList(
   shareKey: string,
   parentId: number = 0,
 ): Promise<any> {
-  const listUrl = `${FEBBOX_BASE}/file/file_share_list?share_key=${shareKey}&pwd=&parent_id=${parentId}`;
+  const pidStr = parentId.toString();
+  const listUrl = `${FEBBOX_BASE}/file/file_share_list?share_key=${shareKey}&pwd=&parent_id=${pidStr}`;
+
   const response = await customFetcher(ctx, listUrl, {
     headers: REQUEST_HEADERS,
   });
+
   return response;
 }
 
@@ -203,34 +206,36 @@ async function findFileFid(
   episode?: number,
 ): Promise<number | null> {
   const rootData = await getFebboxFileList(ctx, shareKey);
-  if (!rootData?.data?.file_list) return null;
+  if (!rootData || !rootData.data || !rootData.data.file_list) {
+    return null;
+  }
 
   const files = rootData.data.file_list;
 
   if (mediaType === 'movie') {
-    const videoFiles = files.filter((f: any) =>
-      f.ext && ['mp4', 'mkv', 'avi', 'm3u8'].includes(f.ext.toLowerCase())
-    );
-    if (videoFiles.length === 0) return null;
+    const videoFiles = files.filter((f: any) => f.ext && ['mp4', 'mkv', 'avi'].includes(f.ext.toLowerCase()));
+    if (videoFiles.length === 0) {
+      return null;
+    }
 
     videoFiles.sort(
-      (a: any, b: any) => parseInt(b.file_size_bytes || '0', 10) - parseInt(a.file_size_bytes || '0', 10)
+      (a: any, b: any) => parseInt(b.file_size_bytes || '0', 10) - parseInt(a.file_size_bytes || '0', 10),
     );
     return videoFiles[0].fid;
   }
 
-  if (mediaType === 'tv' && season != null && episode != null) {
-    const seasonNames = [
-      `Season ${season}`,
-      `Season ${season.toString().padStart(2, '0')}`,
-      `S${season.toString().padStart(2, '0')}`,
-    ];
+  if (mediaType === 'tv' && season && episode) {
+    const seasonFolderName = `Season ${season}`;
+    const seasonFolderNamePad = `Season ${season.toString().padStart(2, '0')}`;
 
     let seasonFid: number | null = null;
     for (const f of files) {
       if (f.is_dir === 1) {
         const fname = f.file_name.trim();
-        if (seasonNames.some(sn => fname.toLowerCase() === sn.toLowerCase())) {
+        if (
+          fname.toLowerCase() === seasonFolderName.toLowerCase() ||
+          fname.toLowerCase() === seasonFolderNamePad.toLowerCase()
+        ) {
           seasonFid = f.fid;
           break;
         }
@@ -238,40 +243,47 @@ async function findFileFid(
     }
 
     if (!seasonFid) {
-      const seasonRegex = new RegExp(`\\b[Ss]?0?${season}\\b`, 'i');
       for (const f of files) {
-        if (f.is_dir === 1 && seasonRegex.test(f.file_name)) {
-          seasonFid = f.fid;
-          break;
+        if (f.is_dir === 1) {
+          const fname = f.file_name.trim();
+          const seasonRegex = new RegExp(`S0?${season}\\b`, 'i');
+          const seasonOnlyRegex = new RegExp(`\\b${season}\\b.*season`, 'i');
+          if (seasonRegex.test(fname) && !seasonOnlyRegex.test(fname)) {
+            seasonFid = f.fid;
+            break;
+          }
         }
       }
     }
 
-    if (!seasonFid) return null;
+    if (!seasonFid) {
+      return null;
+    }
 
     const seasonData = await getFebboxFileList(ctx, shareKey, seasonFid);
-    if (!seasonData?.data?.file_list) return null;
+    if (!seasonData || !seasonData.data || !seasonData.data.file_list) {
+      return null;
+    }
 
-    const episodeFiles = seasonData.data.file_list.filter(
-      (f: any) => f.is_dir === 0 && f.ext && ['mp4', 'mkv', 'avi', 'm3u8'].includes(f.ext.toLowerCase())
-    );
+    const episodeFiles = seasonData.data.file_list;
 
-    const epStr = episode.toString().padStart(2, '0');
-    const sStr = season.toString().padStart(2, '0');
-    const patterns = [
-      new RegExp(`[Ss]${sStr}[Ee]${epStr}`, 'i'),
-      new RegExp(`${season}x${epStr}`, 'i'),
-      new RegExp(`[Ee]${epStr}\\b`, 'i'),
+    const episodePatterns = [
+      new RegExp(`S0?${season}E0?${episode}\\b`, 'i'),
+      new RegExp(`${season}x0?${episode}\\b`, 'i'),
+      new RegExp(`E0?${episode}\\b`, 'i'),
+      new RegExp(`\\b${episode}\\b`, 'i'), // Risky, might match other numbers
     ];
 
     for (const f of episodeFiles) {
-      const name = f.file_name;
-      if (patterns.some(p => p.test(name))) {
-        return f.fid;
+      if (f.is_dir === 0 && f.ext && ['mp4', 'mkv', 'avi'].includes(f.ext.toLowerCase())) {
+        const fname = f.file_name;
+        for (const pattern of episodePatterns) {
+          if (pattern.test(fname)) {
+            return f.fid;
+          }
+        }
       }
     }
-
-    if (episodeFiles.length === 1) return episodeFiles[0].fid;
   }
 
   return null;
@@ -298,29 +310,22 @@ async function getStreamUrl(
       body: JSON.stringify(payload),
     });
 
-    if (response?.sources?.length) {
-      const sources = [...response.sources];
+    if (response && response.sources && response.sources.length > 0) {
+      const sources = response.sources;
 
-      // ✅ Sort by quality
+      // Sort by quality ranking
       const qualityRank = (q: string): number => {
-        const Q = q.toUpperCase();
-        if (Q.includes('1080')) return 100;
-        if (Q.includes('720')) return 80;
-        if (Q === 'ORG') return 60;
-        if (Q.includes('480')) return 40;
-        if (Q.includes('360')) return 20;
+        const quality = q.toUpperCase();
+        if (quality.includes('1080')) return 100;
+        if (quality.includes('720')) return 80;
+        if (quality === 'ORG') return 60;
+        if (quality.includes('480')) return 40;
+        if (quality.includes('360')) return 20;
         return 0;
       };
 
       sources.sort((a: any, b: any) => qualityRank(b.quality) - qualityRank(a.quality));
-
-      // ✅ CRITICAL FIX: Prefer .m3u8 URLs for HLS playback
-      const hlsSource = sources.find(
-        (s: any) => (s.url || s.download_url)?.endsWith('.m3u8')
-      );
-
-      const best = hlsSource || sources[0];
-      return best.url || best.download_url;
+      return sources[0].download_url;
     }
 
     return null;
@@ -361,6 +366,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
   ctx.progress(50);
 
   const streamUrl = await getStreamUrl(ctx, fid, shareKey);
+
   if (!streamUrl) {
     throw new NotFoundError('No stream found');
   }
@@ -372,7 +378,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     stream: [
       {
         id: 'primary',
-        type: 'hls',
+        type: 'hls' as const,
         playlist: streamUrl,
         flags: [flags.CORS_ALLOWED],
         captions: [],
@@ -385,7 +391,7 @@ export const bludclartScraper = makeSourcerer({
   id: 'bludclart',
   name: 'Bludclart 🤝',
   rank: 202,
-  disabled: false,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
