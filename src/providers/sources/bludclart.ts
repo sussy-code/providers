@@ -170,7 +170,6 @@ async function getShowboxId(
         return showId || null;
       }
 
-      // Fallback: extract from URL
       const match = targetUrl.match(/-(\d+)$/);
       if (match) {
         return match[1];
