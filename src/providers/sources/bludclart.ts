@@ -10,7 +10,6 @@ const PROXY_URLS = [
   'https://pcors.shipwr3ck.workers.dev',
   'https://pstream-proxy.katelyn-boreham.workers.dev',
   'https://simple-proxy-pstream.mohamdaimn.workers.dev',
-  'https://proxy2.pstream.mov',
 /**'https://simple-proxy.adzel.workers.dev',
   'https://simple-proxy.agenteg1000.workers.dev',
   'https://simple-proxy.bmk77778888.workers.dev',
