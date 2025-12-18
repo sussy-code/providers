@@ -7,7 +7,6 @@ import { NotFoundError } from '@/utils/errors';
 
 const PROXY_URLS = [
   "https://simple-proxy.asteral-ss2.workers.dev",
-  /**
   'https://pcors.shipwr3ck.workers.dev',
   'https://pstream-proxy.katelyn-boreham.workers.dev',
   'https://simple-proxy-pstream.mohamdaimn.workers.dev',
@@ -40,7 +39,6 @@ const PROXY_URLS = [
   'https://simple-proxyyy.thinner-life-void.workers.dev',
   'https://bruh.jerry5890.workers.dev',
   'https://c719dda0-simple-proxy.sylaxx95.workers.dev',
-**/
 ];
 
 const SHOWBOX_BASE = 'https://www.showbox.media';
@@ -65,15 +63,12 @@ function proxyUrl(url: string): string {
 }
 
 async function customFetcher(ctx: ShowScrapeContext | MovieScrapeContext, url: string, options?: any): Promise<any> {
-  // Try up to 3 different proxies before falling back to direct access
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const proxiedUrl = proxyUrl(url);
       return await ctx.fetcher(proxiedUrl, options);
     } catch (error) {
-      // If it's a 520 error (Cloudflare issue), try next proxy
       if (attempt < 2) continue;
-      // On last proxy attempt failure, try direct access
       return ctx.proxiedFetcher(url, options);
     }
   }
@@ -95,20 +90,17 @@ async function getShareKey(
     const data = response;
 
     if (typeof data === 'object' && data !== null) {
-      // Check for nested data
       if ('data' in data && typeof data.data === 'object' && data.data !== null && 'link' in data.data) {
         return (data.data as any).link.split('/').pop();
       }
 
       if ('link' in data) {
-        // Maybe it returns a febbox link? https://www.febbox.com/share/KEY
         return (data as any).link.split('/').pop();
       }
       if ('key' in data) {
         return (data as any).key;
       }
       if ('data' in data) {
-        // generic data field
         const val = (data as any).data;
         if (typeof val === 'string' && val.includes('febbox.com')) {
           return val.split('/').pop() || null;
@@ -173,7 +165,6 @@ async function getShowboxId(
         return showId || null;
       }
 
-      // Fallback: extract from URL
       const match = targetUrl.match(/-(\d+)$/);
       if (match) {
         return match[1];
@@ -274,7 +265,7 @@ async function findFileFid(
       new RegExp(`S0?${season}E0?${episode}\\b`, 'i'),
       new RegExp(`${season}x0?${episode}\\b`, 'i'),
       new RegExp(`E0?${episode}\\b`, 'i'),
-      new RegExp(`\\b${episode}\\b`, 'i'), // Risky, might match other numbers
+      new RegExp(`\\b${episode}\\b`, 'i'),
     ];
 
     for (const f of episodeFiles) {
@@ -325,7 +316,6 @@ async function getStreamUrl(
       const autoQuality = sources.find((s) => s.quality.toUpperCase() === 'AUTO');
       if (autoQuality) return autoQuality.download_url;
 
-      // Sort by quality ranking
       const qualityRank = (q: string): number => {
         const quality = q.toUpperCase();
         if (quality.includes('1080')) return 100;
