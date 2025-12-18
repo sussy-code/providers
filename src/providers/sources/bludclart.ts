@@ -6,6 +6,8 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 const PROXY_URLS = [
+  "https://simple-proxy.asteral-ss2.workers.dev",
+  /**
   'https://pcors.shipwr3ck.workers.dev',
   'https://pstream-proxy.katelyn-boreham.workers.dev',
   'https://simple-proxy-pstream.mohamdaimn.workers.dev',
@@ -38,7 +40,8 @@ const PROXY_URLS = [
   'https://simple-proxyyy.thinner-life-void.workers.dev',
   'https://bruh.jerry5890.workers.dev',
   'https://c719dda0-simple-proxy.sylaxx95.workers.dev',
-];
+**/
+  ];
 
 const SHOWBOX_BASE = 'https://www.showbox.media';
 const FEBBOX_BASE = 'https://www.febbox.com';
@@ -311,7 +314,13 @@ async function getStreamUrl(
     });
 
     if (response && response.sources && response.sources.length > 0) {
-      const sources = response.sources;
+      let sources = response.sources as { download_url: string; quality: string }[];
+
+      sources = sources.filter(
+        (s) => s.download_url.includes('.m3u8') && s.download_url.includes('hls.shegu.net'),
+      );
+
+      if (sources.length === 0) return null;
 
       // Sort by quality ranking
       const qualityRank = (q: string): number => {
@@ -382,6 +391,9 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
         playlist: streamUrl,
         flags: [flags.CORS_ALLOWED],
         captions: [],
+        headers: {
+          Referer: FEBBOX_BASE,
+        },
       },
     ],
   };
