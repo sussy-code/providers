@@ -6,6 +6,7 @@ import { serverMirrorEmbed } from '@/providers/embeds/server-mirrors';
 import { turbovidScraper } from '@/providers/embeds/turbovid';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { autoembedScraper } from '@/providers/sources/autoembed';
+import { bludclartScraper } from '@/providers/sources/bludclart';
 import { dopeboxEmbeds, dopeboxScraper } from '@/providers/sources/dopebox/index';
 import { ee3Scraper } from '@/providers/sources/ee3';
 import { fsharetvScraper } from '@/providers/sources/fsharetv';
@@ -101,6 +102,7 @@ export function gatherAllSources(): Array<Sourcerer> {
   return [
     fsOnlineScraper,
     dopeboxScraper,
+    bludclartScraper,
     cuevana3Scraper,
     ridooMoviesScraper,
     hdRezkaScraper,
