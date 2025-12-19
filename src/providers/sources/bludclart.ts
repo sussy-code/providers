@@ -8,7 +8,7 @@ import { NotFoundError } from '@/utils/errors';
 const PROXY_URLS = [
   "https://simple-proxy.asteral-ss2.workers.dev",
   'https://pcors.shipwr3ck.workers.dev',
-  'https://pstream-proxy.katelyn-boreham.workers.dev',
+  'https://pstream-proxy.katelyn-boreham.workers.dev',/**
   'https://simple-proxy-pstream.mohamdaimn.workers.dev',
   'https://simple-proxy.adzel.workers.dev',
   'https://simple-proxy.agenteg1000.workers.dev',
@@ -38,7 +38,7 @@ const PROXY_URLS = [
   'https://simple-proxy2.tonyvu4913.workers.dev',
   'https://simple-proxyyy.thinner-life-void.workers.dev',
   'https://bruh.jerry5890.workers.dev',
-  'https://c719dda0-simple-proxy.sylaxx95.workers.dev',
+  'https://c719dda0-simple-proxy.sylaxx95.workers.dev',**/
   ];
 
 const SHOWBOX_BASE = 'https://www.showbox.media';
