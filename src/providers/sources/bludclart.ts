@@ -7,8 +7,8 @@ import { NotFoundError } from '@/utils/errors';
 
 const PROXY_URLS = [
   "https://simple-proxy.asteral-ss2.workers.dev",
-  'https://pcors.shipwr3ck.workers.dev',
-  'https://pstream-proxy.katelyn-boreham.workers.dev',/**
+/**  'https://pcors.shipwr3ck.workers.dev',
+  'https://pstream-proxy.katelyn-boreham.workers.dev',
   'https://simple-proxy-pstream.mohamdaimn.workers.dev',
   'https://simple-proxy.adzel.workers.dev',
   'https://simple-proxy.agenteg1000.workers.dev',
