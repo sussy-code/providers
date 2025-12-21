@@ -6,7 +6,7 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 const PROXY_URLS = [
-'https://sky-simple-proxy.netlify.app',
+  'https://sky-simple-proxy.netlify.app',
   'https://simple-proxy.asteral-ss2.workers.dev',
   'https://pcors.shipwr3ck.workers.dev',
   'https://pstream-proxy.katelyn-boreham.workers.dev',
@@ -40,9 +40,9 @@ const PROXY_URLS = [
   'https://simple-proxyyy.thinner-life-void.workers.dev',
   'https://bruh.jerry5890.workers.dev',
   'https://c719dda0-simple-proxy.sylaxx95.workers.dev',
-].map((url) => url.trim());
+].map(url => url.trim());
 
-const SHOWBOX_BASE = 'https://www.showbox.lat';
+const SHOWBOX_BASE = 'https://lookmovie2.biz';
 const FEBBOX_BASE = 'https://www.febbox.com';
 const MEDIA_PROXY_API = 'https://media-proxy.oct-cdn.co/api/fetchMp4';
 
@@ -89,11 +89,11 @@ async function customFetcher(
 
   for (let i = 0; i < shuffled.length; i += maxConcurrent) {
     const batch = shuffled.slice(i, i + maxConcurrent);
-    const promises = batch.map((proxy) => fetchWithTimeout(proxy).catch(() => null));
+    const promises = batch.map(proxy => fetchWithTimeout(proxy).catch(() => null));
 
     try {
       const winner = await Promise.race(
-        promises.map((p) => p.then((res) => (res !== null ? res : new Promise(() => {})))),
+        promises.map(p => p.then(res => (res !== null ? res : new Promise(() => {})))),
       );
       if (winner !== undefined) return winner;
     } catch {}
@@ -243,7 +243,7 @@ async function findFileFid(
     for (const f of epFiles) {
       if (f.is_dir === 0 && f.ext && ['mp4', 'mkv', 'avi'].includes(f.ext.toLowerCase())) {
         const name = f.file_name;
-        if (patterns.some((p) => p.test(name))) return f.fid;
+        if (patterns.some(p => p.test(name))) return f.fid;
       }
     }
   }
