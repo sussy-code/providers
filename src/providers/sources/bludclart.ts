@@ -6,8 +6,8 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 const PROXY_URLS = [
-  "https://simple-proxy.asteral-ss2.workers.dev",
-  'https://pcors.shipwr3ck.workers.dev',
+  'https://simple-proxy.asteral-ss2.workers.dev',
+  /**  'https://pcors.shipwr3ck.workers.dev',
   'https://pstream-proxy.katelyn-boreham.workers.dev',
   'https://simple-proxy-pstream.mohamdaimn.workers.dev',
   'https://simple-proxy.adzel.workers.dev',
@@ -38,10 +38,15 @@ const PROXY_URLS = [
   'https://simple-proxy2.tonyvu4913.workers.dev',
   'https://simple-proxyyy.thinner-life-void.workers.dev',
   'https://bruh.jerry5890.workers.dev',
-  'https://c719dda0-simple-proxy.sylaxx95.workers.dev',
-  ];
+  'https://c719dda0-simple-proxy.sylaxx95.workers.dev',**/
+];
 
-const SHOWBOX_BASE = 'https://www.showbox.media';
+const SHOWBOX_FREE_DOMAINS = [
+  'https://www.showbox.media',
+  'https://www.showbox.lat',
+  // showbox.mn is paid
+];
+
 const FEBBOX_BASE = 'https://www.febbox.com';
 const MEDIA_PROXY_API = 'https://media-proxy.oct-cdn.co/api/fetchMp4';
 
@@ -63,27 +68,26 @@ function proxyUrl(url: string): string {
 }
 
 async function customFetcher(ctx: ShowScrapeContext | MovieScrapeContext, url: string, options?: any): Promise<any> {
-  // Try up to 3 different proxies before falling back to direct access
-  for (let attempt = 0; attempt < 3; attempt++) {
+  const shuffledProxies = [...PROXY_URLS].sort(() => 0.5 - Math.random());
+
+  for (const proxy of shuffledProxies) {
     try {
-      const proxiedUrl = proxyUrl(url);
+      const proxiedUrl = `${proxy}/?destination=${encodeURIComponent(url)}`;
       return await ctx.fetcher(proxiedUrl, options);
-    } catch (error) {
-      // If it's a 520 error (Cloudflare issue), try next proxy
-      if (attempt < 2) continue;
-      // On last proxy attempt failure, try direct access
-      return ctx.proxiedFetcher(url, options);
-    }
+    } catch (error) {}
   }
+
+  throw new Error('All proxies failed');
 }
 
 async function getShareKey(
   ctx: ShowScrapeContext | MovieScrapeContext,
   showboxId: string,
   mediaType: string,
+  baseUrl: string,
 ): Promise<string | null> {
   const typeCode = mediaType === 'tv' ? '2' : '1';
-  const shareLinkUrl = `${SHOWBOX_BASE}/index/share_link?id=${showboxId}&type=${typeCode}`;
+  const shareLinkUrl = `${baseUrl}/index/share_link?id=${showboxId}&type=${typeCode}`;
 
   try {
     const response = await customFetcher(ctx, shareLinkUrl, {
@@ -93,20 +97,17 @@ async function getShareKey(
     const data = response;
 
     if (typeof data === 'object' && data !== null) {
-      // Check for nested data
       if ('data' in data && typeof data.data === 'object' && data.data !== null && 'link' in data.data) {
         return (data.data as any).link.split('/').pop();
       }
 
       if ('link' in data) {
-        // Maybe it returns a febbox link? https://www.febbox.com/share/KEY
         return (data as any).link.split('/').pop();
       }
       if ('key' in data) {
         return (data as any).key;
       }
       if ('data' in data) {
-        // generic data field
         const val = (data as any).data;
         if (typeof val === 'string' && val.includes('febbox.com')) {
           return val.split('/').pop() || null;
@@ -125,63 +126,70 @@ async function getShowboxId(
   ctx: ShowScrapeContext | MovieScrapeContext,
   query: string,
   _mediaType: string,
-): Promise<string | null> {
-  const searchUrl = `${SHOWBOX_BASE}/search?keyword=${encodeURIComponent(query)}`;
+): Promise<{ id: string | null; baseUrl: string }> {
+  const queryLower = query.toLowerCase();
 
-  try {
-    const response = await customFetcher(ctx, searchUrl, {
-      headers: REQUEST_HEADERS,
-    });
+  for (const baseUrl of SHOWBOX_FREE_DOMAINS) {
+    const searchUrl = `${baseUrl}/search?keyword=${encodeURIComponent(query)}`;
 
-    const $ = load(response);
-
-    const results = $('.film-poster-ahref');
-
-    if (results.length === 0) {
-      return null;
-    }
-
-    let targetUrl: string | null = null;
-    for (const result of results.toArray()) {
-      const title = $(result).attr('title')?.trim();
-      const href = $(result).attr('href');
-
-      if (title?.toLowerCase() === query.toLowerCase()) {
-        targetUrl = `${SHOWBOX_BASE}${href}`;
-        break;
-      }
-    }
-
-    if (!targetUrl && results.length > 0) {
-      const href = $(results[0]).attr('href');
-      targetUrl = `${SHOWBOX_BASE}${href}`;
-    }
-
-    if (targetUrl) {
-      const detailResponse = await customFetcher(ctx, targetUrl, {
+    try {
+      const response = await customFetcher(ctx, searchUrl, {
         headers: REQUEST_HEADERS,
       });
 
-      const detail$ = load(detailResponse);
-      const headingLink = detail$('h2.heading-name a');
+      const $ = load(response);
+      const results = $('.film-poster-ahref');
 
-      if (headingLink.length > 0) {
-        const href = headingLink.attr('href');
-        const showId = href?.split('/').pop();
-        return showId || null;
+      if (results.length === 0) continue;
+
+      let exactMatch: string | null = null;
+      let startsWithMatch: string | null = null;
+      let firstResult: string | null = null;
+
+      if (results.length > 0) {
+        firstResult = `${baseUrl}${$(results[0]).attr('href')}`;
       }
 
-      // Fallback: extract from URL
-      const match = targetUrl.match(/-(\d+)$/);
-      if (match) {
-        return match[1];
-      }
-    }
+      for (const result of results.toArray()) {
+        const title = $(result).attr('title')?.trim()?.toLowerCase();
+        const href = $(result).attr('href');
 
-    return null;
-  } catch (error) {
-    return null;
+        if (title === queryLower) {
+          exactMatch = `${baseUrl}${href}`;
+          break;
+        }
+        if (!startsWithMatch && title?.startsWith(queryLower)) {
+          startsWithMatch = `${baseUrl}${href}`;
+        }
+      }
+
+      const targetUrl = exactMatch || startsWithMatch || firstResult;
+
+      if (targetUrl) {
+        const detailResponse = await customFetcher(ctx, targetUrl, {
+          headers: REQUEST_HEADERS,
+        });
+
+        const detail$ = load(detailResponse);
+        const headingLink = detail$('h2.heading-name a');
+
+        if (headingLink.length > 0) {
+          const href = headingLink.attr('href');
+          const showId = href?.split('/').pop();
+          if (showId) {
+            return { id: showId, baseUrl };
+          }
+        }
+
+        const match = targetUrl.match(/-(\d+)$/);
+        if (match) {
+          return { id: match[1], baseUrl };
+        }
+      }
+    } catch (error) {}
   }
+
+  return { id: null, baseUrl: SHOWBOX_FREE_DOMAINS[0] };
 }
 
 async function getFebboxFileList(
@@ -272,7 +280,7 @@ async function findFileFid(
       new RegExp(`S0?${season}E0?${episode}\\b`, 'i'),
       new RegExp(`${season}x0?${episode}\\b`, 'i'),
       new RegExp(`E0?${episode}\\b`, 'i'),
-      new RegExp(`\\b${episode}\\b`, 'i'), // Risky, might match other numbers
+      new RegExp(`\\b${episode}\\b`, 'i'),
     ];
 
     for (const f of episodeFiles) {
@@ -314,16 +322,13 @@ async function getStreamUrl(
     if (response && response.sources && response.sources.length > 0) {
       let sources = response.sources as { download_url: string; quality: string }[];
 
-      sources = sources.filter(
-        (s) => s.download_url.includes('.m3u8') && s.download_url.includes('hls.shegu.net'),
-      );
+      sources = sources.filter((s) => s.download_url.includes('.m3u8') && s.download_url.includes('hls.shegu.net'));
 
       if (sources.length === 0) return null;
 
       const autoQuality = sources.find((s) => s.quality.toUpperCase() === 'AUTO');
       if (autoQuality) return autoQuality.download_url;
 
-      // Sort by quality ranking
       const qualityRank = (q: string): number => {
         const quality = q.toUpperCase();
         if (quality.includes('1080')) return 100;
@@ -351,12 +356,12 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
   const mediaType = isShow ? 'tv' : 'movie';
   const queryName = (ctx.media.title || '').replace('and', '&');
 
-  const showboxId = await getShowboxId(ctx, queryName, mediaType);
+  const { id: showboxId, baseUrl } = await getShowboxId(ctx, queryName, mediaType);
   if (!showboxId) {
-    throw new NotFoundError('Could not find Showbox ID');
+    throw new NotFoundError('Could not find Showbox ID on any free domain');
   }
 
-  const shareKey = await getShareKey(ctx, showboxId, mediaType);
+  const shareKey = await getShareKey(ctx, showboxId, mediaType, baseUrl);
   if (!shareKey) {
     throw new NotFoundError('Could not get Share Key');
   }
@@ -388,8 +393,8 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     stream: [
       {
         id: 'primary',
-        type: 'hls' as const,
-        playlist: proxyUrl(streamUrl),
+        type: 'hls',
+        playlist: streamUrl,
         flags: [flags.CORS_ALLOWED],
         captions: [],
         headers: {
