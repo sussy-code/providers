@@ -6,13 +6,10 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 const PROXY_URLS = [
-<<<<<<< HEAD
   'https://simple-proxy.asteral-ss2.workers.dev',
-  /**  'https://pcors.shipwr3ck.workers.dev',
-=======
+
   "https://simple-proxy.asteral-ss2.workers.dev",
-/**  'https://pcors.shipwr3ck.workers.dev',
->>>>>>> 58ecb0bfff6ed3d71028d6b31dfe09a4230aff15
+/**'https://pcors.shipwr3ck.workers.dev',
   'https://pstream-proxy.katelyn-boreham.workers.dev',
   'https://simple-proxy-pstream.mohamdaimn.workers.dev',
   'https://simple-proxy.adzel.workers.dev',
@@ -43,13 +40,8 @@ const PROXY_URLS = [
   'https://simple-proxy2.tonyvu4913.workers.dev',
   'https://simple-proxyyy.thinner-life-void.workers.dev',
   'https://bruh.jerry5890.workers.dev',
-<<<<<<< HEAD
   'https://c719dda0-simple-proxy.sylaxx95.workers.dev',**/
 ];
-=======
-  'https://c719dda0-simple-proxy.sylaxx95.workers.dev',
-];**/
->>>>>>> 58ecb0bfff6ed3d71028d6b31dfe09a4230aff15
 
 const SHOWBOX_FREE_DOMAINS = [
   'https://www.showbox.media',
@@ -84,12 +76,8 @@ async function customFetcher(ctx: ShowScrapeContext | MovieScrapeContext, url: s
     try {
       const proxiedUrl = `${proxy}/?destination=${encodeURIComponent(url)}`;
       return await ctx.fetcher(proxiedUrl, options);
-<<<<<<< HEAD
-    } catch (error) {}
-=======
     } catch (error) {
     }
->>>>>>> 58ecb0bfff6ed3d71028d6b31dfe09a4230aff15
   }
 
   throw new Error('All proxies failed');
@@ -201,13 +189,8 @@ async function getShowboxId(
           return { id: match[1], baseUrl };
         }
       }
-<<<<<<< HEAD
-    } catch (error) {}
-=======
     } catch (error) {
-      // Try next domain
     }
->>>>>>> 58ecb0bfff6ed3d71028d6b31dfe09a4230aff15
   }
 
   return { id: null, baseUrl: SHOWBOX_FREE_DOMAINS[0] };
