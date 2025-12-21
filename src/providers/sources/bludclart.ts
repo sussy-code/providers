@@ -8,8 +8,8 @@ import { NotFoundError } from '@/utils/errors';
 const PROXY_URLS = [
   'https://simple-proxy.asteral-ss2.workers.dev',
 
-  "https://simple-proxy.asteral-ss2.workers.dev",
-/**'https://pcors.shipwr3ck.workers.dev',
+  'https://simple-proxy.asteral-ss2.workers.dev',
+  /**'https://pcors.shipwr3ck.workers.dev',
   'https://pstream-proxy.katelyn-boreham.workers.dev',
   'https://simple-proxy-pstream.mohamdaimn.workers.dev',
   'https://simple-proxy.adzel.workers.dev',
@@ -76,8 +76,7 @@ async function customFetcher(ctx: ShowScrapeContext | MovieScrapeContext, url: s
     try {
       const proxiedUrl = `${proxy}/?destination=${encodeURIComponent(url)}`;
       return await ctx.fetcher(proxiedUrl, options);
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   throw new Error('All proxies failed');
@@ -189,8 +188,7 @@ async function getShowboxId(
           return { id: match[1], baseUrl };
         }
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   return { id: null, baseUrl: SHOWBOX_FREE_DOMAINS[0] };
