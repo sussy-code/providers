@@ -6,6 +6,7 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 const PROXY_URLS = [
+  'https://sky-simple-proxy.netlify.app',
   'https://simple-proxy.asteral-ss2.workers.dev',
   'https://pcors.shipwr3ck.workers.dev',
   'https://pstream-proxy.katelyn-boreham.workers.dev',
