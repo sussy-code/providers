@@ -40,279 +40,149 @@ const PROXY_URLS = [
   'https://simple-proxyyy.thinner-life-void.workers.dev',
   'https://bruh.jerry5890.workers.dev',
   'https://c719dda0-simple-proxy.sylaxx95.workers.dev',
-].map(url => url.trim());
+].map((url) => url.trim());
 
-const SHOWBOX_BASE = 'https://lookmovie2.biz';
-const FEBBOX_BASE = 'https://www.febbox.com';
-const MEDIA_PROXY_API = 'https://media-proxy.oct-cdn.co/api/fetchMp4';
+const LOOKMOVIE_BASE = 'https://lookmovie2.biz';
 
-const REQUEST_HEADERS = {
-  'user-agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:145.0) Gecko/20100101 Firefox/145.0',
-  accept: 'application/json, text/plain, */*',
-  'accept-language': 'en-US,en;q=0.5',
+const BROWSER_HEADERS = {
+  'user-agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+  accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+  'accept-language': 'en-US,en;q=0.9',
   'accept-encoding': 'gzip, deflate, br, zstd',
-  origin: 'https://watch.rose.stream',
-  referer: 'https://watch.rose.stream/',
-  'sec-fetch-dest': 'empty',
-  'sec-fetch-mode': 'cors',
-  'sec-fetch-site': 'cross-site',
+  'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+  'sec-ch-ua-mobile': '?0',
+  'sec-ch-ua-platform': '"Windows"',
+  'sec-fetch-dest': 'document',
+  'sec-fetch-mode': 'navigate',
+  'sec-fetch-site': 'same-origin',
+  'upgrade-insecure-requests': '1',
 };
 
-async function customFetcher(
-  ctx: ShowScrapeContext | MovieScrapeContext,
-  url: string,
-  options: any = {},
-  maxConcurrent = 4,
-  timeoutMs = 7000,
-): Promise<any> {
+async function fetchWithProxies(ctx: any, url: string): Promise<string> {
   const shuffled = [...PROXY_URLS].sort(() => 0.5 - Math.random());
   const ac = new AbortController();
 
-  const fetchWithTimeout = async (proxy: string) => {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeoutMs);
-
+  const tryOne = async (proxy: string) => {
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 7000);
     try {
-      const proxied = `${proxy}/?destination=${encodeURIComponent(url)}`;
-      const res = await ctx.fetcher(proxied, {
-        ...options,
-        signal: controller.signal,
+      const res = await ctx.fetcher(`${proxy}/?destination=${encodeURIComponent(url)}`, {
+        headers: BROWSER_HEADERS,
+        signal: ctrl.signal,
       });
-      clearTimeout(id);
+      const text = await res.text();
+      clearTimeout(to);
       ac.abort();
-      return res;
-    } catch (err) {
-      clearTimeout(id);
-      throw err;
+      return text;
+    } catch {
+      clearTimeout(to);
+      throw new Error('fail');
     }
   };
 
-  for (let i = 0; i < shuffled.length; i += maxConcurrent) {
-    const batch = shuffled.slice(i, i + maxConcurrent);
-    const promises = batch.map(proxy => fetchWithTimeout(proxy).catch(() => null));
-
+  for (let i = 0; i < shuffled.length; i += 4) {
+    const batch = shuffled.slice(i, i + 4);
+    const promises = batch.map((p) => tryOne(p).catch(() => null));
     try {
-      const winner = await Promise.race(
-        promises.map(p => p.then(res => (res !== null ? res : new Promise(() => {})))),
-      );
-      if (winner !== undefined) return winner;
+      const winner = await Promise.race(promises.map((p) => p.then((r) => (r ? r : new Promise(() => {})))));
+      if (winner) return winner;
     } catch {}
   }
-
   throw new Error('All proxies failed');
 }
 
-async function getShowboxId(
-  ctx: ShowScrapeContext | MovieScrapeContext,
-  query: string,
-  _mediaType: string,
-): Promise<string | null> {
-  const searchUrl = `${SHOWBOX_BASE}/search?keyword=${encodeURIComponent(query)}`;
+async function getStreamFromEmbed(ctx: MovieScrapeContext, embedUrl: string): Promise<string | null> {
   try {
-    const response = await customFetcher(ctx, searchUrl, { headers: REQUEST_HEADERS });
-    const $ = load(response);
-    const results = $('.film-poster-ahref');
-    if (results.length === 0) return null;
+    const html = await fetchWithProxies(ctx, embedUrl);
+    const $ = load(html);
 
-    let exactMatch: string | null = null;
-    let startsWithMatch: string | null = null;
-    let firstResult: string | null = `${SHOWBOX_BASE}${$(results[0]).attr('href')}`;
+    let id: string | null = null;
+    const match = embedUrl.match(/(?:embed-|\/e\/|id=)([a-zA-Z0-9]+)/);
+    if (match) id = match[1];
 
-    const queryLower = query.toLowerCase();
-    for (const result of results.toArray()) {
-      const title = $(result).attr('title')?.trim()?.toLowerCase();
-      const href = $(result).attr('href');
-      if (title === queryLower) {
-        exactMatch = `${SHOWBOX_BASE}${href}`;
-        break;
-      }
-      if (!startsWithMatch && title?.startsWith(queryLower)) {
-        startsWithMatch = `${SHOWBOX_BASE}${href}`;
+    if (!id) {
+      id = $('body').attr('data-id') || null;
+      if (!id) {
+        const scriptText = $('script').text();
+        const m = scriptText.match(/video_id["']?\s*[:=]\s*["']?([a-zA-Z0-9]+)/);
+        if (m) id = m[1];
       }
     }
 
-    const targetUrl = exactMatch || startsWithMatch || firstResult;
-    if (targetUrl) {
-      const detailResponse = await customFetcher(ctx, targetUrl, { headers: REQUEST_HEADERS });
-      const detail$ = load(detailResponse);
-      const headingLink = detail$('h2.heading-name a');
-      if (headingLink.length > 0) {
-        return headingLink.attr('href')?.split('/').pop() || null;
-      }
-      const match = targetUrl.match(/-(\d+)$/);
-      return match ? match[1] : null;
-    }
-  } catch {}
-  return null;
-}
+    if (!id) return null;
 
-async function getShareKey(
-  ctx: ShowScrapeContext | MovieScrapeContext,
-  showboxId: string,
-  mediaType: string,
-): Promise<string | null> {
-  const typeCode = mediaType === 'tv' ? '2' : '1';
-  const shareLinkUrl = `${SHOWBOX_BASE}/index/share_link?id=${showboxId}&type=${typeCode}`;
-  try {
-    const response = await customFetcher(ctx, shareLinkUrl, { headers: REQUEST_HEADERS });
-    if (typeof response === 'object' && response !== null) {
-      if ('data' in response && response.data && 'link' in response.data) {
-        return (response.data as any).link.split('/').pop();
-      }
-      if ('link' in response) return (response as any).link.split('/').pop();
-      if ('key' in response) return (response as any).key;
-      if ('data' in response) {
-        const val = (response as any).data;
-        if (typeof val === 'string' && val.includes('febbox.com')) {
-          return val.split('/').pop() || null;
+    const infoUrl = `https://vidcloud.lol/api/videos/info/${id}`;
+    const apiHeaders = {
+      'user-agent': BROWSER_HEADERS['user-agent'],
+      accept: 'application/json',
+      origin: 'https://vidcloud.lol',
+      referer: embedUrl,
+    };
+
+    const shuffled = [...PROXY_URLS].sort(() => 0.5 - Math.random());
+    for (const proxy of shuffled) {
+      try {
+        const res = await ctx.fetcher(`${proxy}/?destination=${encodeURIComponent(infoUrl)}`, {
+          headers: apiHeaders,
+        });
+        const data = await res.json();
+        if (data?.sources?.length) {
+          const hls = data.sources.find((s: any) => typeof s.file === 'string' && s.file.endsWith('.m3u8'));
+          if (hls?.file) return hls.file;
         }
-        return String(val);
-      }
+        if (typeof data?.hls === 'string') return data.hls;
+      } catch {}
     }
-    return String(response);
+
+    return null;
   } catch {
     return null;
   }
 }
 
-async function getFebboxFileList(ctx: any, shareKey: string, parentId = 0) {
-  const url = `${FEBBOX_BASE}/file/file_share_list?share_key=${shareKey}&pwd=&parent_id=${parentId}`;
-  return await customFetcher(ctx, url, { headers: REQUEST_HEADERS });
-}
-
-async function findFileFid(
-  ctx: ShowScrapeContext | MovieScrapeContext,
-  shareKey: string,
-  mediaType: string,
-  season?: number,
-  episode?: number,
-): Promise<number | null> {
-  const rootData = await getFebboxFileList(ctx, shareKey);
-  if (!rootData?.data?.file_list) return null;
-  const files = rootData.data.file_list;
-
-  if (mediaType === 'movie') {
-    const videoFiles = files.filter((f: any) => f.ext && ['mp4', 'mkv', 'avi'].includes(f.ext.toLowerCase()));
-    if (videoFiles.length === 0) return null;
-    videoFiles.sort(
-      (a: any, b: any) => parseInt(b.file_size_bytes || '0', 10) - parseInt(a.file_size_bytes || '0', 10),
-    );
-    return videoFiles[0].fid;
-  }
-
-  if (mediaType === 'tv' && season && episode) {
-    const seasonStr = `Season ${season}`;
-    const seasonPad = `Season ${season.toString().padStart(2, '0')}`;
-    let seasonFid: number | null = null;
-
-    for (const f of files) {
-      if (f.is_dir === 1) {
-        const name = f.file_name.trim();
-        if (name.toLowerCase() === seasonStr.toLowerCase() || name.toLowerCase() === seasonPad.toLowerCase()) {
-          seasonFid = f.fid;
-          break;
-        }
-      }
-    }
-
-    if (!seasonFid) {
-      const seasonRegex = new RegExp(`S0?${season}\\b`, 'i');
-      for (const f of files) {
-        if (f.is_dir === 1) {
-          const name = f.file_name.trim();
-          if (seasonRegex.test(name) && !/\b\d+\b.*season/i.test(name)) {
-            seasonFid = f.fid;
-            break;
-          }
-        }
-      }
-    }
-
-    if (!seasonFid) return null;
-    const seasonData = await getFebboxFileList(ctx, shareKey, seasonFid);
-    if (!seasonData?.data?.file_list) return null;
-
-    const epFiles = seasonData.data.file_list;
-    const patterns = [
-      new RegExp(`S0?${season}E0?${episode}\\b`, 'i'),
-      new RegExp(`${season}x0?${episode}\\b`, 'i'),
-      new RegExp(`E0?${episode}\\b`, 'i'),
-      new RegExp(`\\b${episode}\\b`, 'i'),
-    ];
-
-    for (const f of epFiles) {
-      if (f.is_dir === 0 && f.ext && ['mp4', 'mkv', 'avi'].includes(f.ext.toLowerCase())) {
-        const name = f.file_name;
-        if (patterns.some(p => p.test(name))) return f.fid;
-      }
-    }
-  }
-  return null;
-}
-
-async function getStreamUrl(
-  ctx: ShowScrapeContext | MovieScrapeContext,
-  fid: number,
-  shareKey: string,
-): Promise<string | null> {
-  const payload = { fid, share_key: shareKey, user_token: null };
-  try {
-    const response = await customFetcher(ctx, MEDIA_PROXY_API, {
-      method: 'POST',
-      headers: { ...REQUEST_HEADERS, 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    if (response?.sources?.length) {
-      let sources = response.sources.filter(
-        (s: any) => s.download_url.includes('.m3u8') && s.download_url.includes('hls.shegu.net'),
-      );
-      if (sources.length === 0) return null;
-
-      const auto = sources.find((s: any) => s.quality.toUpperCase() === 'AUTO');
-      if (auto) return auto.download_url;
-
-      const rank = (q: string) => {
-        const u = q.toUpperCase();
-        if (u.includes('1080')) return 100;
-        if (u.includes('720')) return 80;
-        if (u === 'ORG') return 60;
-        if (u.includes('480')) return 40;
-        if (u.includes('360')) return 20;
-        return 0;
-      };
-
-      sources.sort((a: any, b: any) => rank(b.quality) - rank(a.quality));
-      return sources[0].download_url;
-    }
-  } catch {}
-  return null;
-}
-
 async function scraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
   ctx.progress(10);
-  const isShow = ctx.media.type === 'show';
-  const mediaType = isShow ? 'tv' : 'movie';
-  const queryName = (ctx.media.title || '').replace(/and/gi, '&');
 
-  const showboxId = await getShowboxId(ctx, queryName, mediaType);
-  if (!showboxId) throw new NotFoundError('Showbox ID not found');
-
-  const shareKey = await getShareKey(ctx, showboxId, mediaType);
-  if (!shareKey) throw new NotFoundError('Share key not found');
-
-  let fid: number | null;
-  if (isShow) {
-    const showCtx = ctx as ShowScrapeContext;
-    fid = await findFileFid(ctx, shareKey, mediaType, showCtx.media.season.number, showCtx.media.episode.number);
-  } else {
-    fid = await findFileFid(ctx, shareKey, mediaType);
+  if (ctx.media.type !== 'movie') {
+    throw new NotFoundError('LookMovie2 only supports movies');
   }
-  if (!fid) throw new NotFoundError('File ID not found');
+
+  const query = ctx.media.title || '';
+  const searchUrl = `${LOOKMOVIE_BASE}/?s=${encodeURIComponent(query)}`;
+  const searchHtml = await fetchWithProxies(ctx, searchUrl);
+  const $ = load(searchHtml);
+
+  const detailUrl =
+    $('.result-item a').first().attr('href') ||
+    $('article a').first().attr('href') ||
+    $('.title a').first().attr('href') ||
+    null;
+
+  if (!detailUrl) throw new NotFoundError('No result');
+
+  ctx.progress(30);
+
+  const detailHtml = await fetchWithProxies(ctx, detailUrl);
+  const detail$ = load(detailHtml);
+
+  const iframeSrc = detail$('iframe').first().attr('src') || null;
+  if (!iframeSrc) throw new NotFoundError('No iframe found');
+
+  let embedUrl: string;
+  if (iframeSrc.startsWith('http')) {
+    embedUrl = iframeSrc;
+  } else if (iframeSrc.startsWith('//')) {
+    embedUrl = `https:${iframeSrc}`;
+  } else {
+    embedUrl = new URL(iframeSrc, detailUrl).href;
+  }
 
   ctx.progress(50);
-  const streamUrl = await getStreamUrl(ctx, fid, shareKey);
-  if (!streamUrl) throw new NotFoundError('No stream found');
+
+  const streamUrl = await getStreamFromEmbed(ctx as MovieScrapeContext, embedUrl);
+  if (!streamUrl) throw new NotFoundError('No stream resolved');
+
   ctx.progress(90);
 
   return {
@@ -325,7 +195,7 @@ async function scraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<Sou
         flags: [flags.CORS_ALLOWED],
         captions: [],
         headers: {
-          Referer: FEBBOX_BASE,
+          Referer: embedUrl,
         },
       },
     ],
@@ -339,5 +209,5 @@ export const roseScraper = makeSourcerer({
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: scraper,
-  scrapeShow: scraper,
+  scrapeShow: () => Promise.reject(new NotFoundError('LookMovie2 only supports movies')),
 });
