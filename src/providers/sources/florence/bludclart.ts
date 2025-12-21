@@ -79,7 +79,7 @@ async function customFetcher(
         signal: controller.signal,
       });
       clearTimeout(id);
-      ac.abort(); 
+      ac.abort();
       return res;
     } catch (err) {
       clearTimeout(id);
@@ -96,7 +96,9 @@ async function customFetcher(
         promises.map((p) => p.then((res) => (res !== null ? res : new Promise(() => {})))),
       );
       if (winner !== undefined) return winner;
-    } catch {}
+    } catch {
+      // ignore
+    }
   }
 
   throw new Error('All proxies failed');
@@ -116,7 +118,7 @@ async function getShowboxId(
 
     let exactMatch: string | null = null;
     let startsWithMatch: string | null = null;
-    let firstResult: string | null = `${SHOWBOX_BASE}${$(results[0]).attr('href')}`;
+    const firstResult = `${SHOWBOX_BASE}${$(results[0]).attr('href') || ''}`;
 
     const queryLower = query.toLowerCase();
     for (const result of results.toArray()) {
@@ -142,7 +144,9 @@ async function getShowboxId(
       const match = targetUrl.match(/-(\d+)$/);
       return match ? match[1] : null;
     }
-  } catch {}
+  } catch {
+    // ignore
+  }
   return null;
 }
 
@@ -171,8 +175,9 @@ async function getShareKey(
     }
     return String(response);
   } catch {
-    return null;
+    // ignore
   }
+  return null;
 }
 
 async function getFebboxFileList(ctx: any, shareKey: string, parentId = 0) {
@@ -264,7 +269,7 @@ async function getStreamUrl(
     });
 
     if (response?.sources?.length) {
-      let sources = response.sources.filter(
+      const sources = response.sources.filter(
         (s: any) => s.download_url.includes('.m3u8') && s.download_url.includes('hls.shegu.net'),
       );
       if (sources.length === 0) return null;
@@ -285,7 +290,9 @@ async function getStreamUrl(
       sources.sort((a: any, b: any) => rank(b.quality) - rank(a.quality));
       return sources[0].download_url;
     }
-  } catch {}
+  } catch {
+    // ignore
+  }
   return null;
 }
 

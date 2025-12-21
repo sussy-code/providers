@@ -45,8 +45,7 @@ const PROXY_URLS = [
 const LOOKMOVIE_BASE = 'https://lookmovie2.biz';
 
 const BROWSER_HEADERS = {
-  'user-agent':
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+  'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
   accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
   'accept-language': 'en-US,en;q=0.9',
   'accept-encoding': 'gzip, deflate, br, zstd',
@@ -85,9 +84,13 @@ async function fetchWithProxies(ctx: any, url: string): Promise<string> {
     const batch = shuffled.slice(i, i + 4);
     const promises = batch.map((p) => tryOne(p).catch(() => null));
     try {
-      const winner = await Promise.race(promises.map((p) => p.then((r) => (r ? r : new Promise(() => {})))));
+      const winner = await Promise.race(
+        promises.map((p) => p.then((r) => (r ? r : new Promise(() => {})))),
+      );
       if (winner) return winner;
-    } catch {}
+    } catch {
+      // ignore
+    }
   }
   throw new Error('All proxies failed');
 }
@@ -106,7 +109,7 @@ async function getStreamFromEmbed(ctx: MovieScrapeContext, embedUrl: string): Pr
       if (!id) {
         const scriptText = $('script').text();
         const m = scriptText.match(/video_id["']?\s*[:=]\s*["']?([a-zA-Z0-9]+)/);
-        if (m) id = m[1];
+        id = m ? m[1] : null;
       }
     }
 
@@ -132,13 +135,16 @@ async function getStreamFromEmbed(ctx: MovieScrapeContext, embedUrl: string): Pr
           if (hls?.file) return hls.file;
         }
         if (typeof data?.hls === 'string') return data.hls;
-      } catch {}
+      } catch {
+        // ignore
+      }
     }
 
     return null;
   } catch {
-    return null;
+    // ignore
   }
+  return null;
 }
 
 async function scraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
@@ -204,7 +210,7 @@ async function scraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<Sou
 
 export const roseScraper = makeSourcerer({
   id: 'rose',
-  name: 'Rosé 🌹',
+  name: 'Rose 🌹',
   rank: 203,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
