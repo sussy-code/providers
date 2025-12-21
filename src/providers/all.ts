@@ -6,7 +6,8 @@ import { serverMirrorEmbed } from '@/providers/embeds/server-mirrors';
 import { turbovidScraper } from '@/providers/embeds/turbovid';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { autoembedScraper } from '@/providers/sources/autoembed';
-import { bludclartScraper } from '@/providers/sources/bludclart';
+import { bludclartScraper } from '@/providers/sources/florence/bludclart';
+import { roseScraper } from '@/providers/sources/florence/rose';
 import { dopeboxEmbeds, dopeboxScraper } from '@/providers/sources/dopebox/index';
 import { ee3Scraper } from '@/providers/sources/ee3';
 import { fsharetvScraper } from '@/providers/sources/fsharetv';
@@ -98,11 +99,11 @@ import { wecimaScraper } from './sources/wecima';
 import { zunimeScraper } from './sources/zunime';
 
 export function gatherAllSources(): Array<Sourcerer> {
-  // all sources are gathered here
   return [
     fsOnlineScraper,
     dopeboxScraper,
     bludclartScraper,
+    roseScraper,
     cuevana3Scraper,
     ridooMoviesScraper,
     hdRezkaScraper,
@@ -144,7 +145,6 @@ export function gatherAllSources(): Array<Sourcerer> {
 }
 
 export function gatherAllEmbeds(): Array<Embed> {
-  // all embeds are gathered here
   return [
     ...fsOnlineEmbeds,
     ...dopeboxEmbeds,
