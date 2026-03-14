@@ -15,41 +15,37 @@ export default defineConfig((env) => ({
       rollupTypes: true,
     }),
   ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
   css: {
     postcss: {
       plugins: [],
     },
   },
-  build: {
-    target: 'node18',            // Node-only target
-    minify: false,
-    outDir: 'lib',
-    lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
-      name: 'index',
-      fileName: 'index',
-      formats: ['cjs', 'es'],    // Node-friendly formats
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
     },
+  },
+  build: {
+    minify: false,
     rollupOptions: {
       external: [
         ...Object.keys(pkg.dependencies),
         'puppeteer',
         '@puppeteer/browsers',
-        'proxy-agent',
-        'node:http',
-        'node:https',
-        'node:url',
+        'proxy-agent'
       ],
       output: {
         globals: Object.fromEntries(
           Object.keys(pkg.dependencies).map((v) => [v, v])
         ),
       },
+    },
+    outDir: 'lib',
+    lib: {
+      entry: path.resolve(__dirname, 'src/index.ts'),
+      name: 'index',
+      fileName: 'index',
+      formats: ['umd', 'es'],
     },
   },
   test: {
