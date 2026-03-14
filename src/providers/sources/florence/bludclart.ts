@@ -5,12 +5,7 @@ import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-const SHOWBOX_BASE = 'https://www.showbox.media';
-const FEBBOX_BASE = 'https://www.febbox.com';
-const MEDIA_PROXY_API = 'https://media-proxy.oct-cdn.co/api/fetchMp4';
-
 const PROXY_URLS = [
-  'https://simple-proxy.asteral-ss2.workers.dev',
   'https://pcors.shipwr3ck.workers.dev',
   'https://pstream-proxy.katelyn-boreham.workers.dev',
   'https://simple-proxy-pstream.mohamdaimn.workers.dev',
@@ -31,6 +26,7 @@ const PROXY_URLS = [
   'https://simple-proxy.quantality.workers.dev',
   'https://simple-proxy.ratshrabies.workers.dev',
   'https://simple-proxy.remuxbay.workers.dev',
+  'https://simple-proxy.six666666666666666666-6-6-6-6-6-6-6-6-6-6.workers.dev',
   'https://simple-proxy.spencerjamesdeal.workers.dev',
   'https://simple-proxy.starseekerdude.workers.dev',
   'https://simple-proxy.subhashgottumukkala17.workers.dev',
@@ -39,15 +35,25 @@ const PROXY_URLS = [
   'https://simple-proxy.valdezmarcjoshua.workers.dev',
   'https://simple-proxy.ytonlyamit.workers.dev',
   'https://simple-proxy2.tonyvu4913.workers.dev',
+  'https://simple-proxyyy.thinner-life-void.workers.dev',
   'https://bruh.jerry5890.workers.dev',
   'https://c719dda0-simple-proxy.sylaxx95.workers.dev',
 ];
 
+const SHOWBOX_BASE = 'https://www.showbox.media';
+const FEBBOX_BASE = 'https://www.febbox.com';
+const MEDIA_PROXY_API = 'https://media-proxy.oct-cdn.co/api/fetchMp4';
+
 const REQUEST_HEADERS = {
-  'user-agent':
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+  'user-agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:145.0) Gecko/20100101 Firefox/145.0',
+  accept: 'application/json, text/plain, */*',
   'accept-language': 'en-US,en;q=0.5',
+  'accept-encoding': 'gzip, deflate, br, zstd',
+  origin: 'https://watch.bludclart.com',
+  referer: 'https://watch.bludclart.com/',
+  'sec-fetch-dest': 'empty',
+  'sec-fetch-mode': 'cors',
+  'sec-fetch-site': 'cross-site',
 };
 
 function proxyUrl(url: string): string {
@@ -55,120 +61,327 @@ function proxyUrl(url: string): string {
   return `${randomProxy}/?destination=${encodeURIComponent(url)}`;
 }
 
-async function customFetcher(ctx: any, url: string, options?: any): Promise<any> {
-  const proxiedUrl = proxyUrl(url);
-  const res = await ctx.fetcher(proxiedUrl, options);
-  if (typeof res === 'string' && (res.trim().startsWith('{') || res.trim().startsWith('['))) {
+async function customFetcher(ctx: ShowScrapeContext | MovieScrapeContext, url: string, options?: any): Promise<any> {
+  // Try up to 3 different proxies before falling back to direct access
+  for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      return JSON.parse(res);
-    } catch {
-      return res;
+      const proxiedUrl = proxyUrl(url);
+      return await ctx.fetcher(proxiedUrl, options);
+    } catch (error) {
+      // If it's a 520 error (Cloudflare issue), try next proxy
+      if (attempt < 2) continue;
+      // On last proxy attempt failure, try direct access
+      return ctx.proxiedFetcher(url, options);
     }
   }
-  return res;
 }
 
-async function getShowboxId(ctx: any, query: string): Promise<{ id: string; slug: string } | undefined> {
+async function getShareKey(
+  ctx: ShowScrapeContext | MovieScrapeContext,
+  showboxId: string,
+  mediaType: string,
+): Promise<string | null> {
+  const typeCode = mediaType === 'tv' ? '2' : '1';
+  const shareLinkUrl = `${SHOWBOX_BASE}/index/share_link?id=${showboxId}&type=${typeCode}`;
+
+  try {
+    const response = await customFetcher(ctx, shareLinkUrl, {
+      headers: REQUEST_HEADERS,
+    });
+
+    const data = response;
+
+    if (typeof data === 'object' && data !== null) {
+      // Check for nested data
+      if ('data' in data && typeof data.data === 'object' && data.data !== null && 'link' in data.data) {
+        return (data.data as any).link.split('/').pop();
+      }
+
+      if ('link' in data) {
+        // Maybe it returns a febbox link? https://www.febbox.com/share/KEY
+        return (data as any).link.split('/').pop();
+      }
+      if ('key' in data) {
+        return (data as any).key;
+      }
+      if ('data' in data) {
+        // generic data field
+        const val = (data as any).data;
+        if (typeof val === 'string' && val.includes('febbox.com')) {
+          return val.split('/').pop() || null;
+        }
+        return String(val);
+      }
+    }
+
+    return String(data);
+  } catch (error) {
+    return null;
+  }
+}
+
+async function getShowboxId(
+  ctx: ShowScrapeContext | MovieScrapeContext,
+  query: string,
+  _mediaType: string,
+): Promise<string | null> {
   const searchUrl = `${SHOWBOX_BASE}/search?keyword=${encodeURIComponent(query)}`;
 
-  for (let i = 0; i < 3; i++) {
+  try {
     const response = await customFetcher(ctx, searchUrl, {
-      headers: { ...REQUEST_HEADERS, referer: `${SHOWBOX_BASE}/` },
+      headers: REQUEST_HEADERS,
     });
-    if (!response || typeof response !== 'string') continue;
 
     const $ = load(response);
-    const el = $('.film-poster').first();
-    let id = el.find('.film-poster-ahref').attr('data-id') || el.attr('data-movie-id');
-    const href = el.find('.film-poster-ahref').attr('href') || el.find('a').attr('href');
-    const slug = href ? href.split('/').pop() : undefined;
 
-    if (!id && slug?.includes('-')) id = slug.split('-').pop();
+    const results = $('.film-poster-ahref');
 
-    if (id && slug) return { id, slug };
+    if (results.length === 0) {
+      return null;
+    }
+
+    let targetUrl: string | null = null;
+    for (const result of results.toArray()) {
+      const title = $(result).attr('title')?.trim();
+      const href = $(result).attr('href');
+
+      if (title?.toLowerCase() === query.toLowerCase()) {
+        targetUrl = `${SHOWBOX_BASE}${href}`;
+        break;
+      }
+    }
+
+    if (!targetUrl && results.length > 0) {
+      const href = $(results[0]).attr('href');
+      targetUrl = `${SHOWBOX_BASE}${href}`;
+    }
+
+    if (targetUrl) {
+      const detailResponse = await customFetcher(ctx, targetUrl, {
+        headers: REQUEST_HEADERS,
+      });
+
+      const detail$ = load(detailResponse);
+      const headingLink = detail$('h2.heading-name a');
+
+      if (headingLink.length > 0) {
+        const href = headingLink.attr('href');
+        const showId = href?.split('/').pop();
+        return showId || null;
+      }
+
+      // Fallback: extract from URL
+      const match = targetUrl.match(/-(\d+)$/);
+      if (match) {
+        return match[1];
+      }
+    }
+
+    return null;
+  } catch (error) {
+    return null;
   }
-  return undefined;
 }
 
-async function getShareKey(ctx: any, id: string, slug: string, type: string): Promise<string | undefined> {
-  const typeCode = type === 'tv' ? '2' : '1';
-  const shareLinkUrl = `${SHOWBOX_BASE}/index/share_link?id=${id}&type=${typeCode}`;
-  const referer = `${SHOWBOX_BASE}/${type === 'tv' ? 'tv' : 'movie'}/${slug}`;
+async function getFebboxFileList(
+  ctx: ShowScrapeContext | MovieScrapeContext,
+  shareKey: string,
+  parentId: number = 0,
+): Promise<any> {
+  const pidStr = parentId.toString();
+  const listUrl = `${FEBBOX_BASE}/file/file_share_list?share_key=${shareKey}&pwd=&parent_id=${pidStr}`;
 
-  const response = await customFetcher(ctx, shareLinkUrl, {
-    headers: { ...REQUEST_HEADERS, 'x-requested-with': 'XMLHttpRequest', referer },
+  const response = await customFetcher(ctx, listUrl, {
+    headers: REQUEST_HEADERS,
   });
 
-  const link =
-    response?.data?.link ||
-    response?.link ||
-    (typeof response?.data === 'string' && response.data.includes('febbox') ? response.data : undefined);
-  return link && typeof link === 'string' ? link.split('/').pop() : undefined;
+  return response;
 }
 
-async function findFileFid(ctx: any, shareKey: string, media: any): Promise<number | undefined> {
-  const isShow = media.type === 'show';
-  const listUrl = `${FEBBOX_BASE}/file/file_share_list?share_key=${shareKey}&pwd=&parent_id=0`;
-  const rootData = await customFetcher(ctx, listUrl, { headers: REQUEST_HEADERS });
-  let files = rootData?.data?.file_list || [];
-
-  if (isShow) {
-    const sNum = media.season.number;
-    const seasonFolder = files.find(
-      (f: any) => f.is_dir === 1 && f.file_name.toLowerCase().replace(/\s/g, '').includes(`season${sNum}`),
-    );
-    if (!seasonFolder) return undefined;
-
-    const seasonUrl = `${FEBBOX_BASE}/file/file_share_list?share_key=${shareKey}&pwd=&parent_id=${seasonFolder.fid}`;
-    const seasonData = await customFetcher(ctx, seasonUrl, { headers: REQUEST_HEADERS });
-    files = seasonData?.data?.file_list || [];
-
-    const epStr = `E${media.episode.number.toString().padStart(2, '0')}`;
-    const episodeFile = files.find((f: any) => f.is_dir === 0 && f.file_name.toUpperCase().includes(epStr));
-    return episodeFile?.fid;
+async function findFileFid(
+  ctx: ShowScrapeContext | MovieScrapeContext,
+  shareKey: string,
+  mediaType: string,
+  season?: number,
+  episode?: number,
+): Promise<number | null> {
+  const rootData = await getFebboxFileList(ctx, shareKey);
+  if (!rootData || !rootData.data || !rootData.data.file_list) {
+    return null;
   }
 
-  const video = files
-    .filter((f: any) => f.is_dir === 0)
-    .sort((a: any, b: any) => (b.file_size_bytes || 0) - (a.file_size_bytes || 0))[0];
-  return video?.fid;
+  const files = rootData.data.file_list;
+
+  if (mediaType === 'movie') {
+    const videoFiles = files.filter((f: any) => f.ext && ['mp4', 'mkv', 'avi'].includes(f.ext.toLowerCase()));
+    if (videoFiles.length === 0) {
+      return null;
+    }
+
+    videoFiles.sort(
+      (a: any, b: any) => parseInt(b.file_size_bytes || '0', 10) - parseInt(a.file_size_bytes || '0', 10),
+    );
+    return videoFiles[0].fid;
+  }
+
+  if (mediaType === 'tv' && season && episode) {
+    const seasonFolderName = `Season ${season}`;
+    const seasonFolderNamePad = `Season ${season.toString().padStart(2, '0')}`;
+
+    let seasonFid: number | null = null;
+    for (const f of files) {
+      if (f.is_dir === 1) {
+        const fname = f.file_name.trim();
+        if (
+          fname.toLowerCase() === seasonFolderName.toLowerCase() ||
+          fname.toLowerCase() === seasonFolderNamePad.toLowerCase()
+        ) {
+          seasonFid = f.fid;
+          break;
+        }
+      }
+    }
+
+    if (!seasonFid) {
+      for (const f of files) {
+        if (f.is_dir === 1) {
+          const fname = f.file_name.trim();
+          const seasonRegex = new RegExp(`S0?${season}\\b`, 'i');
+          const seasonOnlyRegex = new RegExp(`\\b${season}\\b.*season`, 'i');
+          if (seasonRegex.test(fname) && !seasonOnlyRegex.test(fname)) {
+            seasonFid = f.fid;
+            break;
+          }
+        }
+      }
+    }
+
+    if (!seasonFid) {
+      return null;
+    }
+
+    const seasonData = await getFebboxFileList(ctx, shareKey, seasonFid);
+    if (!seasonData || !seasonData.data || !seasonData.data.file_list) {
+      return null;
+    }
+
+    const episodeFiles = seasonData.data.file_list;
+
+    const episodePatterns = [
+      new RegExp(`S0?${season}E0?${episode}\\b`, 'i'),
+      new RegExp(`${season}x0?${episode}\\b`, 'i'),
+      new RegExp(`E0?${episode}\\b`, 'i'),
+      new RegExp(`\\b${episode}\\b`, 'i'), // Risky, might match other numbers
+    ];
+
+    for (const f of episodeFiles) {
+      if (f.is_dir === 0 && f.ext && ['mp4', 'mkv', 'avi'].includes(f.ext.toLowerCase())) {
+        const fname = f.file_name;
+        for (const pattern of episodePatterns) {
+          if (pattern.test(fname)) {
+            return f.fid;
+          }
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
+async function getStreamUrl(
+  ctx: ShowScrapeContext | MovieScrapeContext,
+  fid: number,
+  shareKey: string,
+): Promise<string | null> {
+  const payload = {
+    fid,
+    share_key: shareKey,
+    user_token: null,
+  };
+
+  try {
+    const response = await customFetcher(ctx, MEDIA_PROXY_API, {
+      method: 'POST',
+      headers: {
+        ...REQUEST_HEADERS,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (response && response.sources && response.sources.length > 0) {
+      const sources = response.sources;
+
+      // Sort by quality ranking
+      const qualityRank = (q: string): number => {
+        const quality = q.toUpperCase();
+        if (quality.includes('1080')) return 100;
+        if (quality.includes('720')) return 80;
+        if (quality === 'ORG') return 60;
+        if (quality.includes('480')) return 40;
+        if (quality.includes('360')) return 20;
+        return 0;
+      };
+
+      sources.sort((a: any, b: any) => qualityRank(b.quality) - qualityRank(a.quality));
+      return sources[0].download_url;
+    }
+
+    return null;
+  } catch (error) {
+    return null;
+  }
 }
 
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
-  const mediaType = ctx.media.type === 'show' ? 'tv' : 'movie';
+  ctx.progress(10);
 
-  // 1. Get IDs (Using nullish coalescing to satisfy TS)
-  const result = await getShowboxId(ctx, ctx.media.title);
-  if (!result || !result.id || !result.slug) throw new NotFoundError('No Showbox ID found');
+  const isShow = ctx.media.type === 'show';
+  const mediaType = isShow ? 'tv' : 'movie';
+  const queryName = (ctx.media.title || '').replace('and', '&');
 
-  // 2. Get Share Key
-  const shareKey = await getShareKey(ctx, result.id, result.slug, mediaType);
-  if (!shareKey) throw new NotFoundError('No Share Key found');
+  const showboxId = await getShowboxId(ctx, queryName, mediaType);
+  if (!showboxId) {
+    throw new NotFoundError('Could not find Showbox ID');
+  }
 
-  // 3. Find FID
-  const fid = await findFileFid(ctx, shareKey, ctx.media);
-  if (!fid) throw new NotFoundError('No File ID found');
+  const shareKey = await getShareKey(ctx, showboxId, mediaType);
+  if (!shareKey) {
+    throw new NotFoundError('Could not get Share Key');
+  }
 
-  // 4. Resolve Stream
-  const response = await customFetcher(ctx, MEDIA_PROXY_API, {
-    method: 'POST',
-    headers: { ...REQUEST_HEADERS, 'content-type': 'application/json' },
-    body: JSON.stringify({ fid, share_key: shareKey }),
-  });
+  let fid: number | null;
+  if (isShow) {
+    const showCtx = ctx as ShowScrapeContext;
+    fid = await findFileFid(ctx, shareKey, mediaType, showCtx.media.season.number, showCtx.media.episode.number);
+  } else {
+    fid = await findFileFid(ctx, shareKey, mediaType);
+  }
 
-  const source = response?.sources?.find((s: any) => s.download_url.includes('.m3u8'));
-  if (!source) throw new NotFoundError('No stream found');
+  if (!fid) {
+    throw new NotFoundError('Could not find file ID');
+  }
+
+  ctx.progress(50);
+
+  const streamUrl = await getStreamUrl(ctx, fid, shareKey);
+
+  if (!streamUrl) {
+    throw new NotFoundError('No stream found');
+  }
+
+  ctx.progress(90);
 
   return {
     embeds: [],
     stream: [
       {
         id: 'primary',
-        type: 'hls',
-        playlist: source.download_url,
+        type: 'hls' as const,
+        playlist: streamUrl,
         flags: [flags.CORS_ALLOWED],
         captions: [],
-        headers: { Referer: FEBBOX_BASE },
       },
     ],
   };
@@ -176,7 +389,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
 export const bludclartScraper = makeSourcerer({
   id: 'bludclart',
-  name: 'Bludclart 🤝',
+  name: 'Bludclart',
   rank: 202,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
