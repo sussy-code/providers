@@ -1,34 +1,25 @@
-import { defineConfig } from "vite";
-import path from "node:path";
+import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
+import path from 'path';
 
 export default defineConfig({
   build: {
-    target: "node18",
     lib: {
-      entry: path.resolve(__dirname, "src/index.ts"),
-      name: "providers",
-      formats: ["es"],
-      fileName: () => "index.js"
+      entry: path.resolve(__dirname, 'src/index.ts'),
+      name: 'Providers',
+      fileName: 'index',
+      formats: ['es', 'cjs', 'umd']
     },
+    outDir: 'lib',
+    emptyOutDir: true,
     rollupOptions: {
-      external: [
-        "puppeteer",
-        "@puppeteer/browsers",
-        "http",
-        "https",
-        "url",
-        "fs",
-        "path",
-        "child_process",
-        "stream",
-        "events",
-        "net",
-        "tls"
-      ]
+      external: ['puppeteer'],
+      output: {
+        globals: {
+          puppeteer: 'puppeteer'
+        }
+      }
     }
   },
-
-  optimizeDeps: {
-    exclude: ["puppeteer", "@puppeteer/browsers"]
-  }
+  plugins: [dts()],
 });
