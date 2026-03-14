@@ -6,10 +6,10 @@ import { serverMirrorEmbed } from '@/providers/embeds/server-mirrors';
 import { turbovidScraper } from '@/providers/embeds/turbovid';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { autoembedScraper } from '@/providers/sources/autoembed';
-import { bludclartScraper } from '@/providers/sources/florence/bludclart';
-import { roseScraper } from '@/providers/sources/florence/rose';
 import { dopeboxEmbeds, dopeboxScraper } from '@/providers/sources/dopebox/index';
 import { ee3Scraper } from '@/providers/sources/ee3';
+import { bludclartScraper } from '@/providers/sources/florence/bludclart';
+import { thunderleafScraper } from '@/providers/sources/florence/thunderleaf';
 import { fsharetvScraper } from '@/providers/sources/fsharetv';
 import { fsOnlineEmbeds, fsOnlineScraper } from '@/providers/sources/fsonline/index';
 import { insertunitScraper } from '@/providers/sources/insertunit';
@@ -103,7 +103,6 @@ export function gatherAllSources(): Array<Sourcerer> {
     fsOnlineScraper,
     dopeboxScraper,
     bludclartScraper,
-    roseScraper,
     cuevana3Scraper,
     ridooMoviesScraper,
     hdRezkaScraper,
@@ -116,6 +115,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     ee3Scraper,
     fsharetvScraper,
     zoechipScraper,
+    thunderleafScraper,
     mp4hydraScraper,
     embedsuScraper,
     slidemoviesScraper,
