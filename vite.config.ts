@@ -11,41 +11,40 @@ if (shouldTestProviders) tests = ['src/__test__/providers/**/*.test.ts'];
 export default defineConfig((env) => ({
   plugins: [
     env.mode !== 'test' && eslintPlugin(),
-    dts({
-      rollupTypes: true,
-    }),
+    dts({ rollupTypes: true }),
   ],
-  css: {
-    postcss: {
-      plugins: [],
-    },
-  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
-  rollupOptions: {
-  external: [
-    ...Object.keys(pkg.dependencies),
-    'puppeteer',
-    '@puppeteer/browsers',
-    'proxy-agent',
-    'node:http',
-    'node:https',
-    'node:url',
-  ],
-  output: {
-    globals: Object.fromEntries(
-      Object.keys(pkg.dependencies).map((v) => [v, v])
-    ),
-  },
-    outDir: 'lib',
+  build: {
+    minify: false,
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'index',
       fileName: 'index',
       formats: ['umd', 'es'],
+    },
+    outDir: 'lib',
+    emptyOutDir: true,
+    target: 'esnext',
+    rollupOptions: {
+      // Externalize dependencies that should not be bundled
+      external: [
+        ...Object.keys(pkg.dependencies),
+        'puppeteer',
+        '@puppeteer/browsers',
+        'proxy-agent',
+        'node:http',
+        'node:https',
+        'node:url',
+      ],
+      output: {
+        globals: Object.fromEntries(
+          Object.keys(pkg.dependencies).map((v) => [v, v])
+        ),
+      },
     },
   },
   test: {
