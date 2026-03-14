@@ -33,12 +33,14 @@ export default defineConfig((env) => ({
       // Externalize dependencies that should not be bundled
       external: [
         ...Object.keys(pkg.dependencies),
-        'puppeteer',
-        '@puppeteer/browsers',
-        'proxy-agent',
-        'node:http',
-        'node:https',
-        'node:url',
+    'puppeteer',
+    '@puppeteer/browsers',
+    'proxy-agent',
+    'node:http',
+    'node:https',
+    'node:url',
+    'node:path',
+    'node:fs',
       ],
       output: {
         globals: Object.fromEntries(
