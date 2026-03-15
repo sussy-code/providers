@@ -13,6 +13,7 @@ import { thunderleafScraper } from '@/providers/sources/florence/thunderleaf';
 import { fsharetvScraper } from '@/providers/sources/fsharetv';
 import { fsOnlineEmbeds, fsOnlineScraper } from '@/providers/sources/fsonline/index';
 import { insertunitScraper } from '@/providers/sources/insertunit';
+import { videasyScraper } from '@/providers/sources/videasy'
 import { mp4hydraScraper } from '@/providers/sources/mp4hydra';
 import { pirxcyScraper } from '@/providers/sources/pirxcy';
 import { tugaflixScraper } from '@/providers/sources/tugaflix';
@@ -124,6 +125,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     streamboxScraper,
     nunflixScraper,
     EightStreamScraper,
+    videasyScraper,
     wecimaScraper,
     animeflvScraper,
     pirxcyScraper,
