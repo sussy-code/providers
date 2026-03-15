@@ -49,8 +49,8 @@ async function ThunderleafScraper(
 
 export const thunderleafScraper = makeSourcerer({
   id: "thunderleaf",
-  name: "Thunderleaf",
-  rank: 171,
+  name: "Thunderleaf API 🤝",
+  rank: 202,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: ThunderleafScraper,
