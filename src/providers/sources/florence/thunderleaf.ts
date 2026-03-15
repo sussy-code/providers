@@ -3,7 +3,7 @@ import { makeSourcerer, SourcererOutput } from "@/providers/base";
 import { MovieScrapeContext, ShowScrapeContext } from "@/utils/context";
 import { NotFoundError } from "@/utils/errors";
 
-const API = "https://ubiquitous-parakeet-pxqvgx7j57jhrrqx-3000.app.github.dev";
+const API = "https://thunderleaf.onrender.com";
 
 async function ThunderleafScraper(
   ctx: MovieScrapeContext | ShowScrapeContext
