@@ -3,7 +3,7 @@ import { makeSourcerer, SourcererOutput } from "@/providers/base";
 import { MovieScrapeContext, ShowScrapeContext } from "@/utils/context";
 import { NotFoundError } from "@/utils/errors";
 
-const API = "https://thunderleaf.onrender.com";
+const API = "https://thunderleaf.asteral-ss2.workers.dev";
 
 async function ThunderleafScraper(
   ctx: MovieScrapeContext | ShowScrapeContext
