@@ -1,4 +1,4 @@
-import { warezcdnPlayerBase } from '@/providers/sources/warezcdn/common';
+import { warezcdnPlayerBase } from '@/providers/sources/disabled/warezcdn/common';
 import { EmbedScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 

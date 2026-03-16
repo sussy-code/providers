@@ -171,7 +171,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const debridScraper = makeSourcerer({
   id: 'debrid',
   name: 'Debrid',
-  rank: 450,
+  rank: 26,
   disabled: !getDebridToken(),
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,

@@ -213,7 +213,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const cuevana3Scraper = makeSourcerer({
   id: 'cuevana3',
   name: 'Cuevana3',
-  rank: 80,
+  rank: 7,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,

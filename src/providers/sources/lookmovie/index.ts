@@ -33,7 +33,7 @@ export const lookmovieScraper = makeSourcerer({
   id: 'lookmovie',
   name: 'LookMovie',
   disabled: false,
-  rank: 170,
+  rank: 19,
   flags: [flags.IP_LOCKED],
   scrapeShow: universalScraper,
   scrapeMovie: universalScraper,

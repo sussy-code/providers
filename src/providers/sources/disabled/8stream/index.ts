@@ -69,7 +69,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const EightStreamScraper = makeSourcerer({
   id: '8stream',
   name: '8stream',
-  rank: 111,
+  rank: 21,
   flags: [],
   disabled: true,
   scrapeMovie: comboScraper,

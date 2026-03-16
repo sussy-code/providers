@@ -176,7 +176,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const pelisplushdScraper = makeSourcerer({
   id: 'pelisplushd',
   name: 'PelisPlusHD',
-  rank: 75,
+  rank: 4,
   flags: [flags.IP_LOCKED], // Vidhide embeds are IP locked
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,

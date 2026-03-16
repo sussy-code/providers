@@ -44,7 +44,8 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const zunimeScraper = makeSourcerer({
   id: 'zunime',
   name: 'Zunime',
-  rank: 114,
+  rank: 1,
+  disabled: true,
   flags: [],
   scrapeShow: comboScraper,
 });

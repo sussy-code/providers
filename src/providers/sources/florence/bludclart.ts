@@ -390,8 +390,8 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const bludclartScraper = makeSourcerer({
   id: 'bludclart',
   name: 'Bludclart',
-  rank: 171,
-  disabled: false,
+  rank: 24,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,

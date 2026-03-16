@@ -9,7 +9,7 @@ import { NotFoundError } from '@/utils/errors';
 import { convertPlaylistsToDataUrls } from '@/utils/playlist';
 
 import { InfoResponse } from './types';
-import { SourcererOutput, makeSourcerer } from '../../base';
+import { SourcererOutput, makeSourcerer } from '../../../base';
 
 const baseUrl = 'https://soaper.cc';
 

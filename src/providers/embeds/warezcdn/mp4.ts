@@ -1,6 +1,6 @@
 import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
-import { warezcdnWorkerProxy } from '@/providers/sources/warezcdn/common';
+import { warezcdnWorkerProxy } from '@/providers/sources/disabled/warezcdn/common';
 import { EmbedScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 

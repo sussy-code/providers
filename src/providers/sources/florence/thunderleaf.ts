@@ -50,7 +50,7 @@ async function ThunderleafScraper(
 export const thunderleafScraper = makeSourcerer({
   id: "thunderleaf",
   name: "Thunderleaf API 🤝",
-  rank: 202,
+  rank: 25,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: ThunderleafScraper,

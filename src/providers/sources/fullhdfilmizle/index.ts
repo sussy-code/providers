@@ -120,7 +120,7 @@ async function scrapeMovie(ctx: MovieScrapeContext): Promise<SourcererOutput> {
 export const fullhdfilmizleScraper = makeSourcerer({
   id: 'fullhdfilmizle',
   name: 'FullHDFilmizle (Turkish)',
-  rank: 6,
+  rank: 21,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie,

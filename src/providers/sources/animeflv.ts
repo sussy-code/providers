@@ -193,7 +193,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const animeflvScraper = makeSourcerer({
   id: 'animeflv',
   name: 'AnimeFLV',
-  rank: 90,
+  rank: 10,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeShow: comboScraper,

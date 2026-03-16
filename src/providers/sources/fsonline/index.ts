@@ -122,7 +122,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 export const fsOnlineScraper = makeSourcerer({
   id: 'fsonline',
   name: 'FSOnline',
-  rank: 140,
+  rank: 22,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
@@ -132,7 +132,7 @@ export const fsOnlineEmbeds = [
   makeEmbed({
     id: 'fsonline-doodstream',
     name: 'Doodstream',
-    rank: 140,
+    rank: 22,
     scrape: scrapeDoodstreamEmbed,
     flags: [flags.CORS_ALLOWED],
   }),
