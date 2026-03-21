@@ -14,6 +14,8 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
   const season = (ctx as ShowScrapeContext).media.season?.number || 1;
   const episode = (ctx as ShowScrapeContext).media.episode?.number || 1;
 
+  const turnstileToken = localStorage.getItem('turnstile_token');
+
   const endpoints = [
     "fed",
     "bomber",
@@ -27,6 +29,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     'Referer': 'https://xprime.today/',
     'Origin': 'https://xprime.today',
     'Accept': 'application/json',
+    'cf-turnstile-response': turnstileToken || '', 
   };
 
   for (const ep of endpoints) {
