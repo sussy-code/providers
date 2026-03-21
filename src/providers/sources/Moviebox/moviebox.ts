@@ -48,7 +48,7 @@ async function fetchMovieboxStream(
 export const movieboxScraper = makeSourcerer({
   id: 'moviebox',
   name: 'Moviebox',
-  rank: 14,
+  rank: 99,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: (ctx: MovieScrapeContext) => fetchMovieboxStream(ctx, 'movie'),

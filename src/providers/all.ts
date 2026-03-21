@@ -17,6 +17,8 @@ import { movieboxScraper } from '@/providers/sources/Moviebox/moviebox';
 import { flixerScraper } from '@/providers/sources/Moviebox/flixerz';
 import { hdmovieScraper } from '@/providers/sources/Moviebox/hdmovie';
 import { zyonScraper } from './sources/Moviebox/zyon';
+import { smashyScraper } from '@/providers/sources/florence/smashy';
+import { xprimeScraper } from '@/providers/sources/florence/xprime';
 import { mp4hydraScraper } from '@/providers/sources/disabled/mp4hydra';
 import { pirxcyScraper } from '@/providers/sources/disabled/pirxcy';
 import { tugaflixScraper } from '@/providers/sources/tugaflix';
@@ -83,7 +85,6 @@ import { debridScraper } from './sources/debrid';
 import { embedsuScraper } from './sources/disabled/embedsu';
 import { fullhdfilmizleScraper } from './sources/fullhdfilmizle';
 import { hdRezkaScraper } from './sources/hdrezka';
-import { lookmovieScraper } from './sources/lookmovie';
 import { movies4fScraper } from './sources/movies4f';
 import { myanimeScraper } from './sources/myanime';
 import { nunflixScraper } from './sources/disabled/nunflix';
@@ -114,6 +115,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     insertunitScraper,
     zyonScraper,
     soaperTvScraper,
+    smashyScraper,
     autoembedScraper,
     myanimeScraper,
     tugaflixScraper,
@@ -126,6 +128,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     slidemoviesScraper,
     vidapiClickScraper,
     hdmovieScraper,
+    xprimeScraper,
     flixerScraper,
     coitusScraper,
     streamboxScraper,
@@ -141,7 +144,6 @@ export function gatherAllSources(): Array<Sourcerer> {
     zunimeScraper,
     vidnestScraper,
     animetsuScraper,
-    lookmovieScraper,
     turbovidSourceScraper,
     pelisplushdScraper,
     primewireScraper,
