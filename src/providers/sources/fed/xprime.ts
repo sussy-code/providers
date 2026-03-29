@@ -10,7 +10,7 @@ const UA = 'Windows NT 10.0 Very nice person';
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
   let turnstileToken: string;
   try {
-    turnstileToken = await getTurnstileToken('0x4AAAAAABgPwhrOT6x6sTjI');
+    turnstileToken = await getTurnstileToken('0x4AAAAAACuH31Fvud7uaIMf');
   } catch {
     throw new NotFoundError('Turnstile verification failed');
   }

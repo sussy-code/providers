@@ -40,7 +40,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
   let turnstileToken: string;
   try {
-    turnstileToken = await getTurnstileToken('0x4AAAAAABgPwhrOT6x6sTjI');
+    turnstileToken = await getTurnstileToken('0x4AAAAAACuH31Fvud7uaIMf');
   } catch (error) {
     // eslint-disable-next-line no-alert
     alert('FED API Turnstile verification failed. Please refresh the page and try again.');
