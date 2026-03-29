@@ -86,7 +86,7 @@ async function getStream(ctx: ScrapeContext, url: string): Promise<[string, stri
   }
   // console.log(LOG_PREFIX, 'Stream URL', streamURL);
 
-  return [streamURL, streamHost];
+  return [streamURL, new URL(streamURL).hostname];
 }
 
 export async function scrapeDoodstreamEmbed(ctx: EmbedScrapeContext): Promise<EmbedOutput> {

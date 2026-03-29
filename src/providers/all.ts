@@ -1,4 +1,11 @@
 import { Embed, Sourcerer } from '@/providers/base';
+import { AnimekaiScraper } from './embeds/animekai';
+import { animekaiScraper } from './sources/animekai';
+import { vidkingEmbedScraper } from './embeds/vidking';
+import { vidkingScraper } from './sources/vidKing';
+import { FedAPIScraper } from './sources/fed/fedapi';
+//import { FedAPIDBScraper } from './sources/fed/fedapidb';
+import { xprimeScraper } from './sources/fed/xprime';
 import { doodScraper } from '@/providers/embeds/dood';
 import { filemoonScraper } from '@/providers/embeds/filemoon';
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
@@ -13,12 +20,11 @@ import { thunderleafScraper } from '@/providers/sources/florence/thunderleaf';
 import { fsharetvScraper } from '@/providers/sources/disabled/fsharetv';
 import { fsOnlineEmbeds, fsOnlineScraper } from '@/providers/sources/fsonline/index';
 import { insertunitScraper } from '@/providers/sources/disabled/insertunit';
-import { movieboxScraper } from '@/providers/sources/Moviebox/moviebox';
+import { movieboxScraper } from '@/providers/sources/disabled/moviebox';
 import { flixerScraper } from '@/providers/sources/Moviebox/flixerz';
 import { hdmovieScraper } from '@/providers/sources/Moviebox/hdmovie';
 import { zyonScraper } from './sources/Moviebox/zyon';
 import { smashyScraper } from '@/providers/sources/florence/smashy';
-import { xprimeScraper } from '@/providers/sources/florence/xprime';
 import { mp4hydraScraper } from '@/providers/sources/disabled/mp4hydra';
 import { pirxcyScraper } from '@/providers/sources/disabled/pirxcy';
 import { tugaflixScraper } from '@/providers/sources/tugaflix';
@@ -91,7 +97,7 @@ import { nunflixScraper } from './sources/disabled/nunflix';
 import { pelisplushdScraper } from './sources/pelisplushd';
 import { primewireScraper } from './sources/disabled/primewire';
 import { rgshowsScraper } from './sources/rgshows';
-import { ridooMoviesScraper } from './sources/disabled/ridomovies';
+import { ridooMoviesScraper } from './sources/ridomovies';
 import { slidemoviesScraper } from './sources/disabled/slidemovies';
 import { soaperTvScraper } from './sources/disabled/soapertv';
 import { streamboxScraper } from './sources/disabled/streambox';
@@ -128,12 +134,12 @@ export function gatherAllSources(): Array<Sourcerer> {
     slidemoviesScraper,
     vidapiClickScraper,
     hdmovieScraper,
-    xprimeScraper,
     flixerScraper,
     coitusScraper,
     streamboxScraper,
     nunflixScraper,
     EightStreamScraper,
+    xprimeScraper,
     movieboxScraper,
     wecimaScraper,
     animeflvScraper,
@@ -151,6 +157,10 @@ export function gatherAllSources(): Array<Sourcerer> {
     debridScraper,
     cinehdplusScraper,
     fullhdfilmizleScraper,
+    animekaiScraper,
+    FedAPIScraper,
+    //FedAPIDBScraper,
+    vidkingScraper
   ];
 }
 
@@ -217,5 +227,7 @@ export function gatherAllEmbeds(): Array<Embed> {
     droploadScraper,
     supervideoScraper,
     voeScraper,
+    AnimekaiScraper,
+    vidkingEmbedScraper
   ];
 }

@@ -127,7 +127,7 @@ async function smashyScrapy(
 export const smashyScraper = makeSourcerer({
   id: 'smashy',
   name: 'SmashyStream',
-  rank: 90,
+  rank: 94,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: smashyScrapy,
   scrapeShow: smashyScrapy,
