@@ -37,7 +37,7 @@ async function fetchMovieboxStream(
   }
 
   const apiUrl = `${API_BASE}/moviebox/sources-with-title?${params.toString()}`;
-  
+
   // DEBUG: Log the request URL
   console.log('[moviebox] Request URL:', apiUrl);
 
@@ -49,10 +49,10 @@ async function fetchMovieboxStream(
         'User-Agent': 'Mozilla/5.0',
       },
     });
-    
+
     // DEBUG: Log raw response
     console.log('[moviebox] Raw API Response:', rawResponse.slice(0, 2000));
-    
+
     // Try to parse as JSON
     let response: MovieboxApiResponse;
     try {

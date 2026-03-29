@@ -5,15 +5,12 @@ import { flags } from '@/entrypoint/utils/targets';
 import { getTurnstileToken } from '@/utils/turnstile';
 
 const baseUrl = 'mznxiwqjdiq00239q.space';
-const UA = "Windows NT 10.0 Very nice person";
+const UA = 'Windows NT 10.0 Very nice person';
 
-async function comboScraper(
-  ctx: ShowScrapeContext | MovieScrapeContext
-): Promise<SourcererOutput> {
-
+async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
   let turnstileToken: string;
   try {
-    turnstileToken = await getTurnstileToken('0x4AAAAAACuH31Fvud7uaIMf');
+    turnstileToken = await getTurnstileToken('0x4AAAAAABgPwhrOT6x6sTjI');
   } catch {
     throw new NotFoundError('Turnstile verification failed');
   }
@@ -26,13 +23,13 @@ async function comboScraper(
   const season = (ctx as ShowScrapeContext).media.season?.number || 1;
   const episode = (ctx as ShowScrapeContext).media.episode?.number || 1;
 
-  const endpoints = ["primebox","fed","vento","bomber","blackout"];
+  const endpoints = ['primebox', 'fed', 'vento', 'bomber', 'blackout'];
 
   const commonHeaders = {
     'User-Agent': UA,
-    'Referer': 'https://xprime.today/',
-    'Origin': 'https://xprime.today',
-    'Accept': 'application/json',
+    Referer: 'https://xprime.today/',
+    Origin: 'https://xprime.today',
+    Accept: 'application/json',
     'cf-turnstile-response': turnstileToken,
   };
 
@@ -42,10 +39,8 @@ async function comboScraper(
         `https://${baseUrl}/${ep}?name=${name}&id=${tmdbId}&imdb=${imdbId}` +
         `&season=${season}&episode=${episode}&year=${year}`;
 
-      if (ep === "primebox") {
-        url =
-          `https://${baseUrl}/${ep}?name=${name}` +
-          `&fallback_year=${year}&season=${season}&episode=${episode}`;
+      if (ep === 'primebox') {
+        url = `https://${baseUrl}/${ep}?name=${name}` + `&fallback_year=${year}&season=${season}&episode=${episode}`;
       }
 
       const res = await ctx.proxiedFetcher(url, {
@@ -75,7 +70,6 @@ async function comboScraper(
           ],
         };
       }
-
     } catch {}
   }
 

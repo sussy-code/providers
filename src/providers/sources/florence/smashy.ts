@@ -25,7 +25,7 @@ function extractM3U8(html: string): string | null {
   const patterns = [
     /https?:\/\/[^"'\\]+\.m3u8[^"'\\]*/,
     /file:\s*"(https?:\/\/[^"]+\.m3u8[^"]*)"/,
-    /file:\s*'(https?:\/\/[^']+\.m3u8[^']*)'/
+    /file:\s*'(https?:\/\/[^']+\.m3u8[^']*)'/,
   ];
 
   for (const pattern of patterns) {
@@ -51,9 +51,8 @@ function extractM3U8(html: string): string | null {
 async function resolveEmbed(
   ctx: ShowScrapeContext | MovieScrapeContext,
   url: string,
-  depth = 0
+  depth = 0,
 ): Promise<string | null> {
-
   if (depth > 5) return null;
 
   const html = await fetchPage(ctx, url);
@@ -69,9 +68,7 @@ async function resolveEmbed(
     .filter(Boolean);
 
   for (const src of iframes) {
-    const nextUrl = src.startsWith('http')
-      ? src
-      : `${SMASHY_BASE}${src}`;
+    const nextUrl = src.startsWith('http') ? src : `${SMASHY_BASE}${src}`;
 
     const found = await resolveEmbed(ctx, nextUrl, depth + 1);
     if (found) return found;
@@ -80,10 +77,7 @@ async function resolveEmbed(
   return null;
 }
 
-async function smashyScrapy(
-  ctx: ShowScrapeContext | MovieScrapeContext
-): Promise<SourcererOutput> {
-
+async function smashyScrapy(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
   ctx.progress(10);
 
   const tmdb = ctx.media.tmdbId;

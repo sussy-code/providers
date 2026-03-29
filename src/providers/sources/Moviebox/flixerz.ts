@@ -15,12 +15,12 @@ function isHexToken(str: string): boolean {
 // Helper: Extract body text from various response shapes
 function extractResponseBody(res: unknown): string {
   if (typeof res === 'string') return res;
-  
+
   if (res instanceof Buffer) return res.toString('utf-8');
-  
+
   if (res && typeof res === 'object') {
     const obj = res as Record<string, unknown>;
-    
+
     // Common response body locations
     const bodyFields = ['data', 'body', 'text', 'content', 'response'];
     for (const field of bodyFields) {
@@ -35,11 +35,11 @@ function extractResponseBody(res: unknown): string {
         if (typeof nested.text === 'string') return nested.text;
       }
     }
-    
+
     // Try JSON stringify as last resort
     return JSON.stringify(obj);
   }
-  
+
   return String(res);
 }
 
@@ -93,14 +93,14 @@ async function fetchFlixerzStream(
     // Debug: Log response structure
     console.log('[flixerz] Raw response type:', typeof rawResponse);
     console.log('[flixerz] Raw response keys:', Object.keys(rawResponse || {}));
-    
+
     // Extract body text
     const token = extractResponseBody(rawResponse).trim();
-    
+
     // Debug: Log extracted token
     console.log('[flixerz] Extracted token preview:', token.slice(0, 100));
     console.log('[flixerz] Token length:', token.length);
-    
+
     if (!isHexToken(token)) {
       console.error(`[flixerz] Expected hex token, got: ${token.slice(0, 200)}`);
       throw new Error('Invalid token response from API');
@@ -109,7 +109,7 @@ async function fetchFlixerzStream(
     console.log(`[flixerz] Got token (${token.length} chars), testing playback URLs...`);
 
     const candidates = buildPlaybackUrls(token);
-    
+
     for (const candidate of candidates) {
       try {
         const testRes = await ctx.proxiedFetcher<string>(candidate, {
@@ -118,7 +118,7 @@ async function fetchFlixerzStream(
             Origin: 'https://videasy.net',
           },
         });
-        
+
         if (testRes.startsWith('#EXTM3U') || testRes.includes('#EXTINF:')) {
           console.log(`[flixerz] ✅ Found working playlist: ${candidate}`);
           return {
@@ -162,7 +162,6 @@ async function fetchFlixerzStream(
         },
       ],
     };
-
   } catch (err) {
     console.error('[flixerz] Error:', err);
     throw new NotFoundError('Flixerz stream not found');

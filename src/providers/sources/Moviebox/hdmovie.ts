@@ -16,14 +16,8 @@ async function fetchhdmovieStream(
       year: String(ctx.media.releaseYear),
       tmdbId: String(ctx.media.tmdbId),
       imdbId: ctx.media.imdbId ?? '',
-      episodeId:
-        type === 'tv' && 'episode' in ctx.media
-          ? String(ctx.media.episode.number)
-          : '1',
-      seasonId:
-        type === 'tv' && 'season' in ctx.media
-          ? String(ctx.media.season.number)
-          : '1',
+      episodeId: type === 'tv' && 'episode' in ctx.media ? String(ctx.media.episode.number) : '1',
+      seasonId: type === 'tv' && 'season' in ctx.media ? String(ctx.media.season.number) : '1',
     });
 
     const url = `${API_BASE}/hdmovie/sources-with-title?${params.toString()}`;

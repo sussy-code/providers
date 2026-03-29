@@ -160,7 +160,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     animekaiScraper,
     FedAPIScraper,
     //FedAPIDBScraper,
-    vidkingScraper
+    vidkingScraper,
   ];
 }
 
@@ -228,6 +228,6 @@ export function gatherAllEmbeds(): Array<Embed> {
     supervideoScraper,
     voeScraper,
     AnimekaiScraper,
-    vidkingEmbedScraper
+    vidkingEmbedScraper,
   ];
 }

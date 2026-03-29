@@ -19,10 +19,7 @@ const getUserToken = (): string | null => {
   }
 };
 
-
 const BASE_URL = 'https://mznxiwqjdiq00239q.space';
-
-
 
 interface StreamEntry {
   type: 'hls' | 'mp4';
