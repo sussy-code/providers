@@ -5,7 +5,10 @@ import { vidkingEmbedScraper } from './embeds/vidking';
 import { vidkingScraper } from './sources/vidKing';
 import { FedAPIScraper } from './sources/fed/fedapi';
 //import { FedAPIDBScraper } from './sources/fed/fedapidb';
+import { FEDIAPIScraper } from './sources/test';
+import { coitusScraper } from './sources/disabled/coitus'
 import { xprimeScraper } from './sources/fed/xprime';
+import { movielairScrape } from './sources/florence/movielair'
 import { doodScraper } from '@/providers/embeds/dood';
 import { filemoonScraper } from '@/providers/embeds/filemoon';
 import { mixdropScraper } from '@/providers/embeds/mixdrop';
@@ -85,7 +88,6 @@ import { EightStreamScraper } from './sources/disabled/8stream';
 import { animeflvScraper } from './sources/animeflv';
 import { animetsuScraper } from './sources/animetsu';
 import { cinehdplusScraper } from './sources/cinehdplus-es';
-import { coitusScraper } from './sources/disabled/coitus';
 import { cuevana3Scraper } from './sources/cuevana3';
 import { debridScraper } from './sources/debrid';
 import { embedsuScraper } from './sources/disabled/embedsu';
@@ -121,6 +123,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     insertunitScraper,
     zyonScraper,
     soaperTvScraper,
+    FEDIAPIScraper,
     smashyScraper,
     autoembedScraper,
     myanimeScraper,
@@ -129,6 +132,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     fsharetvScraper,
     zoechipScraper,
     thunderleafScraper,
+    movielairScrape,
     mp4hydraScraper,
     embedsuScraper,
     slidemoviesScraper,

@@ -65,7 +65,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
 export const coitusScraper = makeSourcerer({
   id: 'coitus',
-  name: 'Autoembed+',
+  name: 'Coitus',
   rank: 91,
   disabled: true,
   flags: [flags.CORS_ALLOWED],
