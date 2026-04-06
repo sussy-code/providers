@@ -1,72 +1,35 @@
-import { EmbedOutput, makeEmbed } from '@/providers/base';
-import { NotFoundError } from '@/utils/errors';
+import { flags } from "@/entrypoint/utils/targets";
+import { EmbedOutput, makeEmbed } from "@/providers/base";
+import { NotFoundError } from "@/utils/errors";
 
-import { Caption, labelToLanguageCode } from '../captions';
-
-interface StreamData {
-  headers: {
-    Referer: string;
-    Origin?: string;
-  };
-  sources: Array<{
-    url: string;
-    isM3U8: boolean;
-  }>;
-  subtitles?: Array<{
-    url: string;
-    lang?: string;
-    kind?: string;
-  }>;
-}
+const consumetBase = 'https://api.consumet.org/anime/animekai';
 
 export const AnimekaiScraper = makeEmbed({
   id: 'animekai-embed',
   name: 'AnimeKai',
   rank: 415,
-  flags: [], // ← REQUIRED
+  flags: [flags.CORS_ALLOWED], 
   async scrape(ctx): Promise<EmbedOutput> {
     const { episodeId } = JSON.parse(ctx.url);
-    const data = await ctx.fetcher<StreamData>(
-      `https://api.1anime.app/anime/animekai/watch/${encodeURIComponent(episodeId)}`,
-    );
+  
+    const data = await ctx.fetcher<any>(`${consumetBase}/watch/${encodeURIComponent(episodeId)}`);
 
     if (!data?.sources?.length) throw new NotFoundError('No stream found');
 
-    ctx.progress(50);
-
-    const captions: Caption[] = (data.subtitles ?? [])
-      .filter((sub) => sub.lang && sub.kind !== 'thumbnails')
-      .map((sub) => ({
-        type: 'vtt',
-        id: sub.url,
-        url: sub.url,
-        language: labelToLanguageCode(sub.lang!.replace(/_\[.*?\]$/, '').trim()) || 'unknown',
-        hasCorsRestrictions: true,
-      }));
-
-    const hlsSource = data.sources.find((s) => s.isM3U8);
-    if (!hlsSource) throw new NotFoundError('No HLS stream found');
-
-    ctx.progress(90);
-
-    const headers: Record<string, string> = {};
-    if (data.headers.Referer) {
-      headers.Referer = data.headers.Referer;
-      try {
-        headers.Origin = new URL(data.headers.Referer).origin;
-      } catch {}
-    }
-    if (data.headers.Origin) headers.Origin = data.headers.Origin;
-
+    const hlsSource = data.sources.find((s: any) => s.isM3U8) || data.sources[0];
+    
     return {
       stream: [
         {
           id: 'primary',
-          captions,
-          playlist: hlsSource.url,
-          headers,
           type: 'hls',
-          flags: [],
+          playlist: hlsSource.url,
+          flags: [flags.CORS_ALLOWED],
+          captions: [],
+          headers: {
+            'Referer': data.headers?.Referer || 'https://anikai.to/',
+            'User-Agent': data.headers?.['User-Agent'] || 'Mozilla/5.0'
+          },
         },
       ],
     };

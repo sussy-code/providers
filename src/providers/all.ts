@@ -4,6 +4,8 @@ import { animekaiScraper } from './sources/animekai';
 //import { vidkingEmbedScraper } from './embeds/vidking';
 //import { vidkingScraper } from './sources/vidKing';
 import { FedApiScraper } from './sources/fed/fedapi';
+import { vidrockScraper } from './sources/vidrock';
+import { watchanimeworldScraper } from './sources/watchanimeworld';
 //import { FedAPIDBScraper } from './sources/fed/fedapidb';
 import { vidlinkScraper } from './sources/vidlink';
 import { coitusScraper } from './sources/disabled/coitus'
@@ -21,10 +23,7 @@ import { bludclartScraper } from '@/providers/sources/florence/bludclart';
 import { fsharetvScraper } from '@/providers/sources/disabled/fsharetv';
 import { fsOnlineEmbeds, fsOnlineScraper } from '@/providers/sources/fsonline/index';
 import { insertunitScraper } from '@/providers/sources/disabled/insertunit';
-import { movieboxScraper } from '@/providers/sources/Moviebox/moviebox';
-import { flixerScraper } from '@/providers/sources/Moviebox/flixerz';
-import { hdmovieScraper } from '@/providers/sources/Moviebox/hdmovie';
-import { zyonScraper } from './sources/Moviebox/zyon';
+import { videasyScraper } from '@/providers/sources/videasy';
 import { smashyScraper } from '@/providers/sources/florence/smashy';
 import { mp4hydraScraper } from '@/providers/sources/disabled/mp4hydra';
 import { pirxcyScraper } from '@/providers/sources/disabled/pirxcy';
@@ -119,7 +118,6 @@ export function gatherAllSources(): Array<Sourcerer> {
     hdRezkaScraper,
     warezcdnScraper,
     insertunitScraper,
-    zyonScraper,
     soaperTvScraper,
     smashyScraper,
     autoembedScraper,
@@ -133,13 +131,10 @@ export function gatherAllSources(): Array<Sourcerer> {
     embedsuScraper,
     slidemoviesScraper,
     vidapiClickScraper,
-    hdmovieScraper,
-    flixerScraper,
     coitusScraper,
     streamboxScraper,
     nunflixScraper,
     EightStreamScraper,
-    movieboxScraper,
     wecimaScraper,
     animeflvScraper,
     pirxcyScraper,
@@ -159,6 +154,9 @@ export function gatherAllSources(): Array<Sourcerer> {
     animekaiScraper,
     FedApiScraper,
     vidlinkScraper,
+    videasyScraper,
+    vidrockScraper,
+    watchanimeworldScraper
     //FedAPIDBScraper,
     //vidkingScraper,
   ];

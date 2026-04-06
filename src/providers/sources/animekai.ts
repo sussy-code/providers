@@ -2,55 +2,51 @@ import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-const consumetBase = 'https://api.1anime.app/anime/animekai';
-
-interface SearchResult {
-  id: string;
-  title: string;
-}
-
-interface SearchResponse {
-  results: SearchResult[];
-}
-
-interface Episode {
-  id: string;
-  number: number;
-}
-
-interface InfoResponse {
-  episodes: Episode[];
-}
-
-function normalizeTitle(s: string): string {
-  return s
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase();
-}
+const consumetBase = 'https://api.consumet.org/anime/animekai';
 
 async function searchAnime(ctx: ShowScrapeContext, title: string): Promise<string> {
-  const data = await ctx.fetcher<SearchResponse>(`${consumetBase}/${encodeURIComponent(title)}`);
-  if (!data?.results?.length) throw new NotFoundError('Anime not found on AnimeKai');
-  const normalizedTitle = normalizeTitle(title);
-  const exact = data.results.find((r) => normalizeTitle(r.title) === normalizedTitle);
+  const data = await ctx.fetcher<any>(`${consumetBase}/${encodeURIComponent(title)}`);
+  
+  if (!data?.results?.length) {
+    // If "Attack on Titan" fails, we hope the next attempt in scrapeAnimekai handles it
+    throw new NotFoundError(`No results for "${title}"`);
+  }
+
+  // Find exact match or take the first result
+  const normalizedTitle = title.toLowerCase().trim();
+  const exact = data.results.find((r: any) => 
+    r.title.toLowerCase().trim() === normalizedTitle || 
+    r.id.includes(normalizedTitle.replace(/\s+/g, '-'))
+  );
+
   return (exact ?? data.results[0]).id;
 }
 
 async function scrapeAnimekai(ctx: ShowScrapeContext): Promise<SourcererOutput> {
-  const title = ctx.media.title;
-  const episodeNumber = ctx.media.episode.number;
+  let animeId = '';
+  
+  try {
+    animeId = await searchAnime(ctx, ctx.media.title);
+  } catch (e) {
+      throw e;
+  }
 
-  const animeId = await searchAnime(ctx, title);
+  const info = await ctx.fetcher<any>(`${consumetBase}/info`, {
+    query: { id: animeId }
+  });
 
-  const info = await ctx.fetcher<InfoResponse>(`${consumetBase}/info?id=${animeId}`);
-  if (!info?.episodes?.length) throw new NotFoundError('No episodes found on AnimeKai');
+  if (!info?.episodes?.length) throw new NotFoundError('No episodes found');
 
-  const ep = info.episodes.find((e) => e.number === episodeNumber);
-  if (!ep) throw new NotFoundError('Episode not found on AnimeKai');
+  const ep = info.episodes.find((e: any) => e.number === ctx.media.episode.number);
+  if (!ep) throw new NotFoundError('Episode not found');
 
   return {
-    embeds: [{ embedId: 'animekai-embed', url: JSON.stringify({ episodeId: ep.id }) }],
+    embeds: [
+      { 
+        embedId: 'animekai-embed', 
+        url: JSON.stringify({ episodeId: ep.id }) 
+      }
+    ],
   };
 }
 
@@ -58,7 +54,7 @@ export const animekaiScraper = makeSourcerer({
   id: 'animekai',
   name: 'AnimeKai 🔥',
   rank: 15,
-  disabled: false,
   flags: [],
+  disabled: true,
   scrapeShow: scrapeAnimekai,
 });
