@@ -41,7 +41,7 @@ async function fetchzyonStream(
 
 export const zyonScraper = makeSourcerer({
   id: 'zyon',
-  name: 'Zyon (Movies Only)',
+  name: 'Zyon',
   rank: 13,
   disabled: false,
   flags: [flags.CORS_ALLOWED],

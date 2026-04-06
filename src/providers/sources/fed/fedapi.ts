@@ -6,6 +6,19 @@ import { Caption, labelToLanguageCode } from '../../captions';
 
 const BASE_URL = 'https://thunderleaf.asteral-ss2.workers.dev';
 
+const getUserToken = (): string | null => {
+  try {
+    if (typeof window === 'undefined') return null;
+    const prefData = window.localStorage.getItem('__MW::preferences');
+    if (!prefData) return null;
+    const parsedAuth = JSON.parse(prefData);
+    return parsedAuth?.state?.febboxKey || null;
+  } catch (e) {
+    console.warn('Unable to access localStorage or parse auth data:', e);
+    return null;
+  }
+};
+
 const getRegion = (): string | null => {
   try {
     if (typeof window === 'undefined') return null;
@@ -113,7 +126,7 @@ export const FedApiScraper = makeSourcerer({
   id: 'fedapi',
   name: 'FED API',
   rank: 103,
-  disabled: false,
+  disabled: !getUserToken(),
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: FedScraper,
   scrapeShow: FedScraper,

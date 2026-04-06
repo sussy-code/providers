@@ -1,127 +1,118 @@
-import { load } from 'cheerio';
-
 import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
-const SMASHY_BASE = 'https://player.smashystream.com';
+const API_BASE = 'https://api.smashystream.top/api/v1';
+const ENC_DEC_API = 'https://enc-dec.app/api';
 
-const REQUEST_HEADERS = {
-  'user-agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0',
-  accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-  'accept-language': 'en-US,en;q=0.9',
-  referer: 'https://movielair.cc/',
-  origin: 'https://movielair.cc',
+const HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+  'Referer': 'https://smashystream.top/',
 };
 
-async function fetchPage(ctx: ShowScrapeContext | MovieScrapeContext, url: string) {
-  return ctx.proxiedFetcher(url, {
-    headers: REQUEST_HEADERS,
-  });
-}
+async function smashyScrapy(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
+  const { tmdbId, imdbId } = ctx.media;
+  ctx.progress(5);
 
-function extractM3U8(html: string): string | null {
-  const patterns = [
-    /https?:\/\/[^"'\\]+\.m3u8[^"'\\]*/,
-    /file:\s*"(https?:\/\/[^"]+\.m3u8[^"]*)"/,
-    /file:\s*'(https?:\/\/[^']+\.m3u8[^']*)'/,
+  const tokenRes = await ctx.fetcher<any>(`${ENC_DEC_API}/enc-vidstack`);
+  const token = tokenRes?.result?.token;
+  const userId = tokenRes?.result?.userId || tokenRes?.result?.user_id || 'none';
+
+  if (!token) throw new NotFoundError('API Token unreachable');
+
+  const players = [
+    { name: 'Player SY', endpoint: 'videosmashyi', type: '1', idType: 'imdb' },
+    { name: 'Player O',  endpoint: 'videoophim',   type: '2', idType: 'tmdb' },
+    { name: 'Player F',  endpoint: 'videoff',      type: '2', idType: 'tmdb' },
   ];
 
-  for (const pattern of patterns) {
-    const match = html.match(pattern);
-    if (match) return match[1] || match[0];
-  }
-
-  const jsonMatch = html.match(/sources:\s*(\[[^\]]+\])/);
-  if (jsonMatch) {
+  for (const player of players) {
     try {
-      const sources = JSON.parse(jsonMatch[1]);
-      if (Array.isArray(sources)) {
-        for (const s of sources) {
-          if (s?.file?.includes('.m3u8')) return s.file;
+      const id = player.idType === 'imdb' ? imdbId : tmdbId;
+      if (!id) continue;
+
+      const url = ctx.media.type === 'movie'
+        ? `${API_BASE}/${player.endpoint}/${id}?token=${token}&user_id=${userId}`
+        : `${API_BASE}/${player.endpoint}/${id}/${ctx.media.season.number}/${ctx.media.episode.number}?token=${token}&user_id=${userId}`;
+
+      const res = await ctx.fetcher<any>(url, { headers: HEADERS });
+      if (res?.success === false || res?.msg?.includes('not found')) continue;
+
+      const encryptedData = player.type === '1' 
+        ? (res?.data || res?.url) 
+        : (res?.data?.sources?.[0]?.file || res?.data?.file || res?.file);
+
+      if (!encryptedData) continue;
+
+      let finalEncrypted = encryptedData;
+      if (player.type === '1' && encryptedData.includes('/#')) {
+        const [host, videoId] = encryptedData.split('/#');
+        const syHost = host.startsWith('http') ? host : `https:${host}`;
+        finalEncrypted = await ctx.fetcher<string>(`${syHost}/api/v1/video?id=${videoId}`, { 
+          headers: { ...HEADERS, 'Referer': syHost + '/' } 
+        });
+      }
+
+      const decrypted = await ctx.fetcher<any>(`${ENC_DEC_API}/dec-vidstack`, {
+        method: 'POST',
+        body: { text: finalEncrypted, type: player.type }
+      });
+
+      if (decrypted?.result) {
+        let streamUrl = decrypted.result.trim();
+        if (!streamUrl.startsWith('http')) streamUrl = `https:${streamUrl.startsWith('//') ? '' : '//'}${streamUrl}`;
+        
+        const isHls = streamUrl.toLowerCase().includes('.m3u8');
+        
+        // This specific branching ensures the runner validates the stream correctly
+        if (isHls) {
+          return {
+            embeds: [],
+            stream: [{
+              id: `smashy-${player.endpoint}`,
+              type: 'hls',
+              playlist: streamUrl,
+              flags: [flags.CORS_ALLOWED],
+              captions: [],
+              headers: {
+                'Referer': 'https://smashystream.top/',
+                'Origin': 'https://smashystream.top',
+                'User-Agent': HEADERS['User-Agent']
+              }
+            }]
+          };
+        } else {
+          return {
+            embeds: [],
+            stream: [{
+              id: `smashy-${player.endpoint}`,
+              type: 'file',
+              flags: [flags.CORS_ALLOWED],
+              captions: [],
+              qualities: {
+                unknown: {
+                  type: 'mp4',
+                  url: streamUrl,
+                }
+              } as any
+            }]
+          };
         }
       }
-    } catch {}
-  }
-
-  return null;
-}
-
-async function resolveEmbed(
-  ctx: ShowScrapeContext | MovieScrapeContext,
-  url: string,
-  depth = 0,
-): Promise<string | null> {
-  if (depth > 5) return null;
-
-  const html = await fetchPage(ctx, url);
-
-  let stream = extractM3U8(html);
-  if (stream) return stream;
-
-  const $ = load(html);
-
-  const iframes = $('iframe')
-    .map((_, el) => $(el).attr('src'))
-    .get()
-    .filter(Boolean);
-
-  for (const src of iframes) {
-    const nextUrl = src.startsWith('http') ? src : `${SMASHY_BASE}${src}`;
-
-    const found = await resolveEmbed(ctx, nextUrl, depth + 1);
-    if (found) return found;
-  }
-
-  return null;
-}
-
-async function smashyScrapy(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
-  ctx.progress(10);
-
-  const tmdb = ctx.media.tmdbId;
-
-  let url: string;
-
-  if (ctx.media.type === 'show') {
-    const show = ctx as ShowScrapeContext;
-
-    if (!show.media.season || !show.media.episode) {
-      throw new NotFoundError('Missing season/episode');
+    } catch (e) {
+      continue;
     }
-
-    url = `${SMASHY_BASE}/tv/${tmdb}/${show.media.season.number}/${show.media.episode.number}`;
-  } else {
-    url = `${SMASHY_BASE}/movie/${tmdb}`;
   }
 
-  const stream = await resolveEmbed(ctx, url);
-
-  if (!stream) {
-    throw new NotFoundError('Smashy stream not found');
-  }
-
-  ctx.progress(90);
-
-  return {
-    embeds: [],
-    stream: [
-      {
-        id: 'smashy',
-        type: 'hls',
-        playlist: stream,
-        flags: [flags.CORS_ALLOWED],
-        captions: [],
-      },
-    ],
-  };
+  throw new NotFoundError('No playable streams found');
 }
 
 export const smashyScraper = makeSourcerer({
   id: 'smashy',
   name: 'SmashyStream',
   rank: 94,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: smashyScrapy,
   scrapeShow: smashyScrapy,

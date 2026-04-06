@@ -41,7 +41,7 @@ async function fetchhdmovieStream(
 
 export const hdmovieScraper = makeSourcerer({
   id: 'hdmovie',
-  name: 'HD-Movie (Movies Only)',
+  name: 'HD-Movie',
   rank: 16,
   disabled: false,
   flags: [flags.CORS_ALLOWED],

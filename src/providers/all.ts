@@ -5,9 +5,8 @@ import { animekaiScraper } from './sources/animekai';
 //import { vidkingScraper } from './sources/vidKing';
 import { FedApiScraper } from './sources/fed/fedapi';
 //import { FedAPIDBScraper } from './sources/fed/fedapidb';
-import { FEDIAPIScraper } from './sources/test';
+import { vidlinkScraper } from './sources/vidlink';
 import { coitusScraper } from './sources/disabled/coitus'
-import { xprimeScraper } from './sources/fed/xprime';
 import { movielairScrape } from './sources/florence/movielair'
 import { doodScraper } from '@/providers/embeds/dood';
 import { filemoonScraper } from '@/providers/embeds/filemoon';
@@ -19,11 +18,10 @@ import { autoembedScraper } from '@/providers/sources/disabled/autoembed';
 import { dopeboxEmbeds, dopeboxScraper } from '@/providers/sources/disabled/dopebox/index';
 import { ee3Scraper } from '@/providers/sources/ee3';
 import { bludclartScraper } from '@/providers/sources/florence/bludclart';
-import { thunderleafScraper } from '@/providers/sources/florence/thunderleaf';
 import { fsharetvScraper } from '@/providers/sources/disabled/fsharetv';
 import { fsOnlineEmbeds, fsOnlineScraper } from '@/providers/sources/fsonline/index';
 import { insertunitScraper } from '@/providers/sources/disabled/insertunit';
-import { movieboxScraper } from '@/providers/sources/disabled/moviebox';
+import { movieboxScraper } from '@/providers/sources/Moviebox/moviebox';
 import { flixerScraper } from '@/providers/sources/Moviebox/flixerz';
 import { hdmovieScraper } from '@/providers/sources/Moviebox/hdmovie';
 import { zyonScraper } from './sources/Moviebox/zyon';
@@ -123,7 +121,6 @@ export function gatherAllSources(): Array<Sourcerer> {
     insertunitScraper,
     zyonScraper,
     soaperTvScraper,
-    FEDIAPIScraper,
     smashyScraper,
     autoembedScraper,
     myanimeScraper,
@@ -131,7 +128,6 @@ export function gatherAllSources(): Array<Sourcerer> {
     ee3Scraper,
     fsharetvScraper,
     zoechipScraper,
-    thunderleafScraper,
     movielairScrape,
     mp4hydraScraper,
     embedsuScraper,
@@ -143,7 +139,6 @@ export function gatherAllSources(): Array<Sourcerer> {
     streamboxScraper,
     nunflixScraper,
     EightStreamScraper,
-    xprimeScraper,
     movieboxScraper,
     wecimaScraper,
     animeflvScraper,
@@ -163,6 +158,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     fullhdfilmizleScraper,
     animekaiScraper,
     FedApiScraper,
+    vidlinkScraper,
     //FedAPIDBScraper,
     //vidkingScraper,
   ];
