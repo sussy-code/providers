@@ -4,7 +4,7 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 import { Caption, labelToLanguageCode } from '../../captions';
 
-const BASE_URL = 'https://thunderleaf.asteral-ss2.workers.dev';
+const BASE_URL = 'https://fedapi.asteral-ss2.workers.dev';
 
 const getUserToken = (): string | null => {
   try {
