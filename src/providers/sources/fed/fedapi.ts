@@ -2,130 +2,88 @@ import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
-import { getTurnstileToken } from '@/utils/turnstile';
-
 import { Caption, labelToLanguageCode } from '../../captions';
 
-const getUserToken = (): string | null => {
+const BASE_URL = 'https://thunderleaf.asteral-ss2.workers.dev';
+
+const getRegion = (): string | null => {
   try {
     if (typeof window === 'undefined') return null;
-    const prefData = window.localStorage.getItem('__MW::preferences');
-    if (!prefData) return null;
-    const parsedAuth = JSON.parse(prefData);
-    return parsedAuth?.state?.febboxKey || null;
+    const regionData = window.localStorage.getItem('__MW::region');
+    if (!regionData) return null;
+    const parsed = JSON.parse(regionData);
+    return parsed?.state?.region ?? null;
   } catch (e) {
-    console.warn('Unable to access localStorage or parse auth data:', e);
     return null;
   }
 };
 
-const BASE_URL = 'https://mznxiwqjdiq00239q.space';
+function selectSubdomainByRegion(input: string | null): string | null {
+  const region = (input || '').toLowerCase();
+  const match = region.match(/(usa5|usa6|usa7|uk1|de2|hk1|ca1|au1|sg1|in1)/);
+  if (match) return match[1];
 
-interface StreamEntry {
-  type: 'hls' | 'mp4';
-  url: string;
+  if (region.includes('dallas')) return 'usa5';
+  if (region.includes('portland')) return 'usa6';
+  if (region.includes('new-york')) return 'usa7';
+  if (region.includes('paris')) return Math.random() < 0.5 ? 'uk1' : 'de2';
+  return null; 
 }
 
-interface StreamData {
-  streams: Record<string, StreamEntry | string>;
-  subtitles: Record<string, any>;
-  error?: string;
-  name?: string;
-  size?: string;
-}
-
-async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
-  const userToken = getUserToken();
-  if (!userToken) throw new NotFoundError('Requires a user token!');
-
-  let turnstileToken: string;
+function rewriteSheguSubdomain(originalUrl: string, subdomain: string): string {
   try {
-    turnstileToken = await getTurnstileToken('0x4AAAAAACuH31Fvud7uaIMf');
-  } catch (error) {
-    // eslint-disable-next-line no-alert
-    alert('FED API Turnstile verification failed. Please refresh the page and try again.');
-    throw new NotFoundError(`Turnstile verification failed: ${error}`);
-  }
-
-  ctx.progress(50);
-
-  const name = ctx.media.title;
-  let apiUrl = `${BASE_URL}/fedapi?name=${encodeURIComponent(name)}&year=${ctx.media.releaseYear}&ui=${encodeURIComponent(userToken)}`;
-  if (ctx.media.type === 'show') {
-    apiUrl += `&season=${ctx.media.season.number}&episode=${ctx.media.episode.number}`;
-  }
-
-  const res = await fetch(apiUrl, { credentials: 'omit' });
-  if (!res.ok) throw new NotFoundError('API request failed');
-  const data: StreamData = await res.json();
-
-  if (data?.error && data.error.endsWith('not found in database')) {
-    throw new NotFoundError('No stream found');
-  }
-  if (!data) throw new NotFoundError('No response from API');
-
-  ctx.progress(90);
-
-  type StreamInfo = { url: string; type: 'hls' | 'mp4' };
-  const streams = Object.entries(data.streams).reduce((acc: Record<string, StreamInfo>, [quality, entry]) => {
-    const url = typeof entry === 'string' ? entry : entry.url;
-    const type = typeof entry === 'string' ? 'mp4' : entry.type;
-
-    let qualityKey: number;
-    if (quality === 'ORG') {
-      const urlPath = url.split('?')[0];
-      if (urlPath.toLowerCase().includes('.mp4') || type === 'hls') {
-        acc.unknown = { url, type };
-      }
-      return acc;
+    const parsed = new URL(originalUrl);
+    if (parsed.hostname.endsWith('.shegu.net')) {
+      parsed.hostname = `${subdomain}.shegu.net`;
+      return parsed.toString();
     }
-    if (quality === '4K') {
-      qualityKey = 2160;
-    } else {
-      qualityKey = parseInt(quality.replace('P', ''), 10);
-    }
-    if (Number.isNaN(qualityKey) || acc[qualityKey]) return acc;
-    acc[qualityKey] = { url, type };
-    return acc;
-  }, {});
+    return originalUrl;
+  } catch {
+    return originalUrl;
+  }
+}
+
+async function FedScraper(ctx: MovieScrapeContext | ShowScrapeContext): Promise<SourcererOutput> {
+  const tmdbId = ctx.media.tmdbId;
+  if (!tmdbId) throw new NotFoundError('Missing TMDB ID');
+
+  const region = getRegion();
+  ctx.progress(30);
+
+  const url = ctx.media.type === 'movie' 
+    ? `${BASE_URL}/movie/${tmdbId}` 
+    : `${BASE_URL}/tv/${tmdbId}/${ctx.media.season.number}/${ctx.media.episode.number}`;
+
+  const data = await ctx.fetcher<any>(url);
+
+  if (!data || !data.success || !data.stream) {
+    throw new NotFoundError('No stream found in Thunderleaf');
+  }
+
+  let finalStreamUrl = data.stream;
+
+  const selectedSubdomain = selectSubdomainByRegion(region);
+  if (selectedSubdomain) {
+    finalStreamUrl = rewriteSheguSubdomain(finalStreamUrl, selectedSubdomain);
+  }
+
+  ctx.progress(80);
 
   const captions: Caption[] = [];
   if (data.subtitles) {
-    for (const [langKey, subtitleData] of Object.entries(data.subtitles)) {
-      const languageKeyPart = langKey.split('_')[0];
-      const languageName = languageKeyPart.charAt(0).toUpperCase() + languageKeyPart.slice(1);
+    Object.entries(data.subtitles).forEach(([langKey, sub]: [string, any]) => {
+      const languageName = langKey.split('_')[0];
       const languageCode = labelToLanguageCode(languageName)?.toLowerCase() ?? 'unknown';
-
-      if (subtitleData.subtitle_link) {
-        const url = subtitleData.subtitle_link;
-        const isVtt = url.toLowerCase().endsWith('.vtt');
+      if (sub.url) {
         captions.push({
-          type: isVtt ? 'vtt' : 'srt',
-          id: url,
-          url,
+          type: sub.url.endsWith('.vtt') ? 'vtt' : 'srt',
+          id: sub.url,
+          url: sub.url,
           language: languageCode,
           hasCorsRestrictions: false,
         });
       }
-    }
-  }
-
-  ctx.progress(90);
-
-  const hlsStream = streams[2160] ?? streams[1080] ?? streams[720] ?? streams[480] ?? streams[360] ?? streams.unknown;
-  if (hlsStream?.type === 'hls') {
-    return {
-      embeds: [],
-      stream: [
-        {
-          id: 'primary',
-          captions,
-          playlist: hlsStream.url,
-          type: 'hls',
-          flags: [flags.CORS_ALLOWED],
-        },
-      ],
-    };
+    });
   }
 
   return {
@@ -133,27 +91,30 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     stream: [
       {
         id: 'primary',
-        captions,
-        qualities: {
-          ...(streams[2160] && { '4k': { type: 'mp4', url: streams[2160].url } }),
-          ...(streams[1080] && { 1080: { type: 'mp4', url: streams[1080].url } }),
-          ...(streams[720] && { 720: { type: 'mp4', url: streams[720].url } }),
-          ...(streams[480] && { 480: { type: 'mp4', url: streams[480].url } }),
-          ...(streams[360] && { 360: { type: 'mp4', url: streams[360].url } }),
-          ...(streams.unknown && { unknown: { type: 'mp4', url: streams.unknown.url } }),
-        },
         type: 'file',
         flags: [flags.CORS_ALLOWED],
-      },
+        captions,
+        qualities: {
+          unknown: {
+            type: 'mp4',
+            url: finalStreamUrl,
+          },
+        },
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+          'Referer': 'https://www.febbox.com/',
+        },
+      } as const,
     ],
   };
 }
 
-export const FedAPIScraper = makeSourcerer({
+export const FedApiScraper = makeSourcerer({
   id: 'fedapi',
-  name: 'FED API 🔥',
-  rank: 101,
+  name: 'FED API',
+  rank: 103,
+  disabled: false,
   flags: [flags.CORS_ALLOWED],
-  scrapeMovie: comboScraper,
-  scrapeShow: comboScraper,
+  scrapeMovie: FedScraper,
+  scrapeShow: FedScraper,
 });

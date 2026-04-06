@@ -1,9 +1,9 @@
 import { Embed, Sourcerer } from '@/providers/base';
 import { AnimekaiScraper } from './embeds/animekai';
 import { animekaiScraper } from './sources/animekai';
-import { vidkingEmbedScraper } from './embeds/vidking';
-import { vidkingScraper } from './sources/vidKing';
-import { FedAPIScraper } from './sources/fed/fedapi';
+//import { vidkingEmbedScraper } from './embeds/vidking';
+//import { vidkingScraper } from './sources/vidKing';
+import { FedApiScraper } from './sources/fed/fedapi';
 //import { FedAPIDBScraper } from './sources/fed/fedapidb';
 import { FEDIAPIScraper } from './sources/test';
 import { coitusScraper } from './sources/disabled/coitus'
@@ -162,9 +162,9 @@ export function gatherAllSources(): Array<Sourcerer> {
     cinehdplusScraper,
     fullhdfilmizleScraper,
     animekaiScraper,
-    FedAPIScraper,
+    FedApiScraper,
     //FedAPIDBScraper,
-    vidkingScraper,
+    //vidkingScraper,
   ];
 }
 
@@ -232,6 +232,6 @@ export function gatherAllEmbeds(): Array<Embed> {
     supervideoScraper,
     voeScraper,
     AnimekaiScraper,
-    vidkingEmbedScraper,
+    //vidkingEmbedScraper,
   ];
 }

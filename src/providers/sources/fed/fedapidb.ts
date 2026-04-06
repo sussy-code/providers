@@ -4,7 +4,7 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 import { getTurnstileToken } from '@/utils/turnstile';
 
-import { Caption, labelToLanguageCode } from '../captions';
+import { Caption, labelToLanguageCode } from '../../captions';
 
 const getUserToken = (): string | null => {
   try {
