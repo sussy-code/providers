@@ -113,9 +113,7 @@ return {
           url: finalStreamUrl,
         },
       },
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-        },
+      headers: {},
      } as const,
    ],
   };
@@ -126,7 +124,7 @@ export const FedApiScraper = makeSourcerer({
   name: 'FED API',
   rank: 103,
   disabled: !getUserToken(),
-  flags: [flags.CORS_ALLOWED],
+  flags: [],
   scrapeMovie: FedScraper,
   scrapeShow: FedScraper,
 });
