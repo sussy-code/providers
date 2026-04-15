@@ -99,26 +99,25 @@ async function FedScraper(ctx: MovieScrapeContext | ShowScrapeContext): Promise<
     });
   }
 
-  return {
-    embeds: [],
-    stream: [
-      {
-        id: 'primary',
-        type: 'file',
-        flags: [flags.CORS_ALLOWED],
-        captions,
-        qualities: {
-          unknown: {
-            type: 'mp4',
-            url: finalStreamUrl,
-          },
+return {
+  embeds: [],
+  stream: [
+    {
+      id: 'primary',
+      type: 'file',
+      flags: [], 
+      captions,
+      qualities: {
+        unknown: {
+          type: 'mp4',
+          url: finalStreamUrl,
         },
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-          'Referer': 'https://www.febbox.com/',
+      },
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
         },
-      } as const,
-    ],
+     } as const,
+   ],
   };
 }
 
