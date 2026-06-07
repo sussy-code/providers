@@ -100,27 +100,24 @@ async function FedScraper(ctx: MovieScrapeContext | ShowScrapeContext): Promise<
     });
   }
 
-return {
-  embeds: [],
-  if (token) {
-    stream: [
-   {
-      id: 'primary',
-      type: 'file',
-      flags: [], 
-      captions,
-      qualities: {
-        unknown: {
-          type: 'mp4',
-          url: finalStreamUrl,
+const stream =
+  token
+   ? [
+       {
+        id: 'primary',
+        type: 'file',
+        flags: [], 
+        captions,
+          qualities: {
+            unknown: {
+              type: 'mp4',
+              url: finalStreamUrl,
+          },
         },
-      },
-      headers: {},
-     } as const,
-   ],
-      } else {
-        stream: []
-  };
+        headers: {},
+       } as const,
+     ],
+    return { embeds: [], stream };
 }
 
 export const FedApiScraper = makeSourcerer({
