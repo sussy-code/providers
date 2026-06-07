@@ -1,19 +1,17 @@
 import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { NotFoundError } from '@/utils/errors';
-import { labelToLanguageCode } from '../../captions';
+import { Caption, labelToLanguageCode } from '../../captions';
 
 const BASE_URL = 'https://fedapi.asteral-ss2.workers.dev';
 
 const getUserToken = () => {
   try {
     if (typeof window === 'undefined') return null;
+    const data = window.localStorage.getItem('__MW::preferences');
+    if (!data) return null;
 
-    const prefData = window.localStorage.getItem('__MW::preferences');
-    if (!prefData) return null;
-
-    const parsed = JSON.parse(prefData);
-    return parsed?.state?.febboxKey || null;
+    return JSON.parse(data)?.state?.febboxKey || null;
   } catch {
     return null;
   }
@@ -22,16 +20,25 @@ const getUserToken = () => {
 const getRegion = () => {
   try {
     if (typeof window === 'undefined') return null;
+    const data = window.localStorage.getItem('__MW::region');
+    if (!data) return null;
 
-    const regionData = window.localStorage.getItem('__MW::region');
-    if (!regionData) return null;
-
-    const parsed = JSON.parse(regionData);
-    return parsed?.state?.region || null;
+    return JSON.parse(data)?.state?.region || null;
   } catch {
     return null;
   }
 };
+
+function encodeUrl(url) {
+  return btoa(url)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
+
+function proxyEncode(url) {
+  return `${BASE_URL}/proxy?decodeurl=${encodeUrl(url)}`;
+}
 
 function selectSubdomainByRegion(input) {
   const region = (input || '').toLowerCase();
@@ -42,17 +49,20 @@ function selectSubdomainByRegion(input) {
   if (region.includes('dallas')) return 'usa5';
   if (region.includes('portland')) return 'usa6';
   if (region.includes('new-york')) return 'usa7';
-  if (region.includes('paris')) return Math.random() < 0.5 ? 'uk1' : 'de2';
+
+  if (region.includes('paris')) {
+    return Math.random() < 0.5 ? 'uk1' : 'de2';
+  }
 
   return null;
 }
 
-function rewriteSheguSubdomain(url, subdomain) {
+function rewriteSheguSubdomain(url, sub) {
   try {
     const parsed = new URL(url);
 
     if (parsed.hostname.endsWith('.shegu.net')) {
-      parsed.hostname = `${subdomain}.shegu.net`;
+      parsed.hostname = `${sub}.shegu.net`;
       return parsed.toString();
     }
 
@@ -63,14 +73,11 @@ function rewriteSheguSubdomain(url, subdomain) {
 }
 
 async function FedScraper(ctx) {
-  const token = getUserToken();
-  if (!token) throw new NotFoundError('Missing user token');
-
   const tmdbId = ctx.media.tmdbId;
   if (!tmdbId) throw new NotFoundError('Missing TMDB ID');
 
   const region = getRegion();
-  ctx.progress(30);
+  ctx.progress(20);
 
   const url =
     ctx.media.type === 'movie'
@@ -79,16 +86,20 @@ async function FedScraper(ctx) {
 
   const data = await ctx.fetcher(url);
 
-  if (!data || !data.success || !data.stream) {
+  if (!data?.success || !data?.stream) {
     throw new NotFoundError('No stream found');
   }
 
-  let finalStreamUrl = data.stream;
+  ctx.progress(60);
 
-  const selectedSubdomain = selectSubdomainByRegion(region);
-  if (selectedSubdomain) {
-    finalStreamUrl = rewriteSheguSubdomain(finalStreamUrl, selectedSubdomain);
+  let streamUrl = data.stream;
+
+  const sub = selectSubdomainByRegion(region);
+  if (sub) {
+    streamUrl = rewriteSheguSubdomain(streamUrl, sub);
   }
+
+  const finalStream = proxyEncode(streamUrl);
 
   ctx.progress(80);
 
@@ -96,21 +107,22 @@ async function FedScraper(ctx) {
 
   if (data.subtitles) {
     Object.entries(data.subtitles).forEach(([langKey, sub]) => {
-      const languageName = langKey.split('_')[0];
-      const languageCode =
-        labelToLanguageCode(languageName)?.toLowerCase() || 'unknown';
+      const lang = langKey.split('_')[0];
+      const code = labelToLanguageCode(lang)?.toLowerCase() || 'unknown';
 
-      if (sub?.url) {
+      if (sub.url) {
         captions.push({
           type: sub.url.endsWith('.vtt') ? 'vtt' : 'srt',
           id: sub.url,
           url: sub.url,
-          language: languageCode,
+          language: code,
           hasCorsRestrictions: false,
         });
       }
     });
   }
+
+  ctx.progress(100);
 
   return {
     embeds: [],
@@ -123,10 +135,13 @@ async function FedScraper(ctx) {
         qualities: {
           unknown: {
             type: 'mp4',
-            url: finalStreamUrl,
+            url: finalStream,
           },
         },
-        headers: {},
+        headers: {
+          Referer: BASE_URL,
+          'User-Agent': 'Mozilla/5.0',
+        },
       },
     ],
   };
