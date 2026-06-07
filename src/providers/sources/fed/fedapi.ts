@@ -9,12 +9,13 @@ const BASE_URL = 'https://fedapi.asteral-ss2.workers.dev';
 const getUserToken = (): string | null => {
   try {
     if (typeof window === 'undefined') return null;
+
     const prefData = window.localStorage.getItem('__MW::preferences');
     if (!prefData) return null;
-    const parsedAuth = JSON.parse(prefData);
-    return parsedAuth?.state?.febboxKey || null;
-  } catch (e) {
-    console.warn('Unable to access localStorage or parse auth data:', e);
+
+    const parsed = JSON.parse(prefData);
+    return parsed?.state?.febboxKey ?? null;
+  } catch {
     return null;
   }
 };
@@ -101,8 +102,9 @@ async function FedScraper(ctx: MovieScrapeContext | ShowScrapeContext): Promise<
 
 return {
   embeds: [],
-  stream: [
-    {
+  if (token) {
+    stream: [
+   {
       id: 'primary',
       type: 'file',
       flags: [], 
@@ -116,6 +118,8 @@ return {
       headers: {},
      } as const,
    ],
+      } else {
+        stream: []
   };
 }
 
