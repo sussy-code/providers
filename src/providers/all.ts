@@ -8,6 +8,8 @@ import { vidrockScraper } from './sources/vidrock';
 import { watchanimeworldScraper } from './sources/watchanimeworld';
 //import { FedAPIDBScraper } from './sources/fed/fedapidb';
 import { vidlinkScraper } from './sources/vidlink';
+import { filmuScraper } from './sources/filmu';
+import { filmuEmbedScraper } from './embeds/filmi';
 import { coitusScraper } from './sources/disabled/coitus'
 import { movielairScrape } from './sources/florence/movielair'
 import { doodScraper } from '@/providers/embeds/dood';
@@ -61,20 +63,14 @@ import { vidhideEnglishScraper, vidhideLatinoScraper, vidhideSpanishScraper } fr
 import { vidifyEmbeds } from './embeds/vidify';
 import { vidnestAllmoviesEmbed, vidnestHollymoviehdEmbed } from './embeds/vidnest';
 import {
-  VidsrcsuServer10Scraper,
-  VidsrcsuServer11Scraper,
-  VidsrcsuServer12Scraper,
-  VidsrcsuServer1Scraper,
-  VidsrcsuServer20Scraper,
-  VidsrcsuServer2Scraper,
-  VidsrcsuServer3Scraper,
-  VidsrcsuServer4Scraper,
-  VidsrcsuServer5Scraper,
-  VidsrcsuServer6Scraper,
-  VidsrcsuServer7Scraper,
-  VidsrcsuServer8Scraper,
-  VidsrcsuServer9Scraper,
-} from './embeds/vidsrcsu';
+  movies111Embed,
+  mappleEmbed,
+  rivestreamEmbed,
+  smashyEmbed,
+  vidzenEmbed,
+  vidfastEmbed,
+  embedSuEmbed
+} from './embeds/filmU';
 import { viperScraper } from './embeds/viper';
 import { voeScraper } from './embeds/voe';
 import { warezcdnembedHlsScraper } from './embeds/warezcdn/hls';
@@ -156,9 +152,10 @@ export function gatherAllSources(): Array<Sourcerer> {
     vidlinkScraper,
     videasyScraper,
     vidrockScraper,
-    watchanimeworldScraper
+    watchanimeworldScraper,
     //FedAPIDBScraper,
     //vidkingScraper,
+    filmuScraper
   ];
 }
 
@@ -186,19 +183,6 @@ export function gatherAllEmbeds(): Array<Embed> {
     turbovidScraper,
     mp4hydraServer1Scraper,
     mp4hydraServer2Scraper,
-    VidsrcsuServer1Scraper,
-    VidsrcsuServer2Scraper,
-    VidsrcsuServer3Scraper,
-    VidsrcsuServer4Scraper,
-    VidsrcsuServer5Scraper,
-    VidsrcsuServer6Scraper,
-    VidsrcsuServer7Scraper,
-    VidsrcsuServer8Scraper,
-    VidsrcsuServer9Scraper,
-    VidsrcsuServer10Scraper,
-    VidsrcsuServer11Scraper,
-    VidsrcsuServer12Scraper,
-    VidsrcsuServer20Scraper,
     viperScraper,
     streamwishJapaneseScraper,
     streamwishLatinoScraper,
@@ -227,5 +211,13 @@ export function gatherAllEmbeds(): Array<Embed> {
     voeScraper,
     AnimekaiScraper,
     //vidkingEmbedScraper,
+    filmuEmbedScraper,
+    embedSuEmbed,
+    vidfastEmbed,
+    vidzenEmbed,
+    smashyEmbed,
+    rivestreamEmbed,
+    mappleEmbed,
+    movies111Embed
   ];
 }
