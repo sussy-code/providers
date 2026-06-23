@@ -68,7 +68,6 @@ import {
   rivestreamEmbed,
   smashyEmbed,
   vidzenEmbed,
-  vidfastEmbed,
   embedSuEmbed
 } from './embeds/filmU';
 import { viperScraper } from './embeds/viper';
@@ -213,7 +212,6 @@ export function gatherAllEmbeds(): Array<Embed> {
     //vidkingEmbedScraper,
     filmuEmbedScraper,
     embedSuEmbed,
-    vidfastEmbed,
     vidzenEmbed,
     smashyEmbed,
     rivestreamEmbed,
