@@ -1,6 +1,5 @@
 import path from 'path';
 import { defineConfig } from 'vitest/config';
-import eslintPlugin from '@nabla/vite-plugin-eslint';
 import dts from 'vite-plugin-dts';
 import pkg from './package.json';
 
@@ -10,7 +9,6 @@ if (shouldTestProviders) tests = ['src/__test__/providers/**/*.test.ts'];
 
 export default defineConfig((env) => ({
   plugins: [
-    env.mode !== 'test' && eslintPlugin(),
     dts({
       rollupTypes: true,
     }),

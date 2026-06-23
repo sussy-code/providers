@@ -1,9 +1,15 @@
 import { build, preview } from 'vite';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 const root = dirname(fileURLToPath(import.meta.url));
+
+if (!process.env.PUPPETEER_EXECUTABLE_PATH) {
+  throw new Error(
+    'PUPPETEER_EXECUTABLE_PATH is not set. Point it to your Chrome/Chromium executable (e.g. `export PUPPETEER_EXECUTABLE_PATH=$(which google-chrome)`).',
+  );
+}
 
 await build({
   root,
@@ -17,6 +23,7 @@ const server = await preview({
 let browser;
 try {
   browser = await puppeteer.launch({
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
