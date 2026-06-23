@@ -3,7 +3,7 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-import puppeteer, { Browser } from 'puppeteer';
+import puppeteer, { Browser } from 'puppeteer-core';
 import Spinnies from 'spinnies';
 import { PreviewServer, build, preview } from 'vite';
 
@@ -21,6 +21,10 @@ async function runBrowserScraping(
 ) {
   if (!existsSync(join(__dirname, '../../lib/index.js')))
     throw new Error('Please compile before running cli in browser mode');
+  if (!process.env.PUPPETEER_EXECUTABLE_PATH)
+    throw new Error(
+      'PUPPETEER_EXECUTABLE_PATH is not set. Point it to your Chrome/Chromium executable (e.g. `export PUPPETEER_EXECUTABLE_PATH=$(which google-chrome)`).',
+    );
   const config = getConfig();
   if (!config.proxyUrl)
     throw new Error('Simple proxy url must be set in the environment (MOVIE_WEB_PROXY_URL) for browser mode to work');
@@ -37,6 +41,7 @@ async function runBrowserScraping(
       root,
     });
     browser = await puppeteer.launch({
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
