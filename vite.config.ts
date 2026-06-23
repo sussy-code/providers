@@ -9,7 +9,7 @@ if (shouldTestProviders) tests = ['src/__test__/providers/**/*.test.ts'];
 
 export default defineConfig((env) => ({
   plugins: [
-    env.mode !== 'test' && dts({
+    dts({
       rollupTypes: true,
     }),
   ],
